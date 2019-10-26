@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+    <classPathEntry
+            location="C:\Users\backho\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
+
+    <context id="context" targetRuntime="MyBatis3Simple">
+
+        <property name="javaFileEncoding" value="utf-8"/>
+
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection userId="neoforutona" password="neoforutona1020" driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://forutonadb.thkomeet.com:3306/forutona?useSSL=true&amp;verifyServerCertificate=false&amp;nullCatalogMeansCurrent=true"/>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.wing.forutona.AuthDto" targetProject=".">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="Mappers" targetProject=".">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator targetPackage="com.wing.forutona.AuthDao" type="XMLMAPPER" targetProject=".">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+        <table schema="forutona" tableName="UserInfo" enableUpdateByPrimaryKey="true" enableDeleteByExample="true"
+               enableUpdateByExample="true">
+        </table>
+
+    </context>
+</generatorConfiguration>
