@@ -65,9 +65,12 @@ public class UserInfoDao {
 
     public String GetFirebaseUid(String uid){
         try {
+            System.out.println("GetFirebaseUid2");
             UserRecord recode = fireBaseAdmin.getUser(uid);
             return recode.getUid();
         }catch (Exception ex){
+            System.out.println(ex);
+            ex.printStackTrace();
             return "";
         }
 

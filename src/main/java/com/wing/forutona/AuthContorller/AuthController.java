@@ -22,6 +22,7 @@ public class AuthController {
 
     @GetMapping(value = "/api/v1/Auth/GetUid")
     String GetFirebaseUid(@RequestParam String Uid) {
+        System.out.println("GetFirebaseUid1");
         return userInfoDao.GetFirebaseUid(Uid);
     }
 }
