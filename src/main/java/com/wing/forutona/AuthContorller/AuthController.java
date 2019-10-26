@@ -13,7 +13,7 @@ public class AuthController {
     @Autowired
     UserInfoDao userInfoDao;
 
-    @PostMapping(value = "/Auth/UpdateUser")
+    @PostMapping(value = "/api/v1/Auth/UpdateUser")
     int InsertUserInfo(@RequestBody Userinfo param) {
         return userInfoDao.InsertUserInfo(param);
     }

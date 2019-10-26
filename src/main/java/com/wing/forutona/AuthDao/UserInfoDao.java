@@ -17,10 +17,6 @@ public class UserInfoDao {
 
         return mapper.insert(param);
     }
-    public int InsertUserInfo1(Userinfo param) {
-        UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
 
-        return mapper.insert(param);
-    }
 
 }
