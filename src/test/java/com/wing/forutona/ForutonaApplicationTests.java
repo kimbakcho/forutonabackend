@@ -8,6 +8,7 @@ class ForutonaApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
