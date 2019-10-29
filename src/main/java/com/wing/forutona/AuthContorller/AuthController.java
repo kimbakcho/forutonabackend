@@ -1,5 +1,7 @@
 package com.wing.forutona.AuthContorller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.auth.UserInfo;
 import com.wing.forutona.AuthDao.UserInfoDao;
 import com.wing.forutona.AuthDto.Userinfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,8 @@ public class AuthController {
 
     @GetMapping(value = "/api/v1/Auth/GetUid")
     String GetFirebaseUid(@RequestParam String Uid) {
-        System.out.println("GetFirebaseUid1");
         return userInfoDao.GetFirebaseUid(Uid);
     }
+
+
 }

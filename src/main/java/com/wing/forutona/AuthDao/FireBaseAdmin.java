@@ -19,7 +19,6 @@ import java.util.Map;
 public class FireBaseAdmin {
     FireBaseAdmin() {
         try {
-            System.out.println("FireBaseAdmin1");
             FileInputStream serviceAccount =
                     new FileInputStream(Prefrerance.serviekeypath);
 
@@ -29,9 +28,7 @@ public class FireBaseAdmin {
                     .build();
 
             FirebaseApp.initializeApp(options);
-            System.out.println("FireBaseAdmin2");
         }catch (Exception ex){
-            System.out.println("FireBaseAdmin error");
             System.out.println(ex);
         }
     }
@@ -44,7 +41,15 @@ public class FireBaseAdmin {
             additionalClaims.put("nickname", item.getNickname());
 
             String customToken = FirebaseAuth.getInstance().createCustomToken(item.getUid(),additionalClaims);
-
+            return customToken;
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+    String GetUserInfoCustomToken(String uid){
+        try {
+            String customToken = FirebaseAuth.getInstance().createCustomToken(uid);
             return customToken;
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
@@ -52,7 +57,6 @@ public class FireBaseAdmin {
         }
     }
     UserRecord getUser(String uid) throws FirebaseAuthException {
-        System.out.println("GetFirebaseUid3");
         return FirebaseAuth.getInstance().getUser(uid);
     }
 
