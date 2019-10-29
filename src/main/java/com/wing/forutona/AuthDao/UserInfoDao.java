@@ -36,9 +36,8 @@ public class UserInfoDao {
             header.add(HttpHeaders.AUTHORIZATION,"Bearer "+param.getSnstoken());
             ResponseEntity<String> response = new RestTemplate().exchange("https://openapi.naver.com/v1/nid/me",
                     HttpMethod.GET, new HttpEntity(header), String.class);
-
             JSONObject obj = new JSONObject(response.getBody());
-            String uid = "Naver"  + obj.getJSONObject("response").getString("id");
+            String uid = param.getSnsservice()  + obj.getJSONObject("response").getString("id");
             return GetCustomToken(param,  uid);
 
         }else if(param.getSnsservice().equals("Kakao") ){
@@ -47,9 +46,14 @@ public class UserInfoDao {
             header.add(HttpHeaders.CONTENT_TYPE,"application/x-www-form-urlencoded;charset=utf-8");
             ResponseEntity<String> response = new RestTemplate().exchange("https://kapi.kakao.com/v2/user/me ",
                     HttpMethod.POST, new HttpEntity(header), String.class);
-            System.out.println(response.getBody());
             JSONObject obj = new JSONObject(response.getBody());
-            String uid = "Kakao" +obj.getInt("id");
+            String uid = param.getSnsservice() +obj.getInt("id");
+            return GetCustomToken(param, uid);
+        }else if(param.getSnsservice().equals("Facebook") ) {
+            String geturl = "https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token="+param.getSnstoken();
+            ResponseEntity<String> response  = new RestTemplate().getForEntity(geturl,String.class);
+            JSONObject obj = new JSONObject(response.getBody());
+            String uid = param.getSnsservice() +obj.getString("id");
             return GetCustomToken(param, uid);
         }
         return "";
