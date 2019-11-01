@@ -36,6 +36,12 @@ public class AuthController {
         return userInfoDao.UploadProfileImage(request);
     }
 
+    @GetMapping(value="/api/v1/Auth/GetUserInfoMain")
+    Userinfo GetUserInfoMain(@RequestHeader(value = "authorization") String Authtoken,@RequestParam(value = "uid")String uid )
+    {
+        return userInfoDao.GetUserInfoMain(Authtoken,uid);
+    }
+
 
 
 }

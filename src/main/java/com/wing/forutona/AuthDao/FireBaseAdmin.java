@@ -8,6 +8,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
@@ -37,6 +38,22 @@ public class FireBaseAdmin {
 
         }catch (Exception ex){
             System.out.println(ex);
+        }
+    }
+    FirebaseToken VerifyIdToken(String token) {
+        boolean checkRevoked = true;
+        try {
+            FirebaseToken token1 = FirebaseAuth.getInstance().verifyIdToken(token,checkRevoked);
+            return token1;
+        } catch (FirebaseAuthException e) {
+            if (e.getErrorCode().equals("id-token-revoked")) {
+                // Token has been revoked. Inform the user to re-authenticate or signOut() the user.
+                return null;
+            } else {
+                // Token is invalid.
+                return null;
+            }
+
         }
     }
     String GetUserInfoCustomToken(UserInfoMain item){

@@ -11,5 +11,5 @@ public class UserInfoMain extends Userinfo{
         this.snstoken = snstoken;
     }
 
-    public  String snstoken;
+    public  String snstoken="";
 }

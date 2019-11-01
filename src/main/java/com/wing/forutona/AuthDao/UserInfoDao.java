@@ -4,6 +4,8 @@ import com.google.api.client.util.Lists;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
@@ -131,7 +133,13 @@ public class UserInfoDao {
         return "https://storage.googleapis.com/publicforutona/profileimage/"+savefilename;
      }
 
-
+    public Userinfo GetUserInfoMain(String Authtoken,String uid ){
+        String requesttoken = Authtoken.replace("Bearer ","");
+        FirebaseToken firebasetoken  = fireBaseAdmin.VerifyIdToken(requesttoken);
+        UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+        Userinfo userinfo = mapper.selectByPrimaryKey(firebasetoken.getUid());
+        return userinfo;
+    }
 
 
 }
