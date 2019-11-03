@@ -3,12 +3,14 @@ package com.wing.forutona.AuthContorller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.UserInfo;
 import com.wing.forutona.AuthDao.UserInfoDao;
+import com.wing.forutona.AuthDto.Phoneauthtable;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -41,7 +43,12 @@ public class AuthController {
     {
         return userInfoDao.GetUserInfoMain(Authtoken,uid);
     }
+    @PostMapping(value="/api/v1/Auth/requestAuthPhoneNumber")
+    void requestAuthPhoneNumber(@RequestBody Phoneauthtable body)
+    {
+        userInfoDao.requestAuthPhoneNumber(body);
 
+    }
 
 
 }

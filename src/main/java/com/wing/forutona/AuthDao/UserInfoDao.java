@@ -1,5 +1,6 @@
 package com.wing.forutona.AuthDao;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Lists;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -7,6 +8,7 @@ import com.google.cloud.storage.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
+import com.wing.forutona.AuthDto.Phoneauthtable;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -14,6 +16,7 @@ import com.wing.forutona.Prefrerance;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,9 +31,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Component
 public class UserInfoDao {
@@ -140,6 +144,22 @@ public class UserInfoDao {
         Userinfo userinfo = mapper.selectByPrimaryKey(firebasetoken.getUid());
         return userinfo;
     }
+
+    public void requestAuthPhoneNumber(Phoneauthtable phone){
+        System.out.println(phone.getUuid());
+        System.out.println(phone.getPhonenumber());
+        PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
+        try{
+            mapper.insert(phone);
+        }catch (DuplicateKeyException ex){
+            Phoneauthtable phoneauthtable = mapper.selectByPrimaryKey(phone.getUuid());
+            phoneauthtable.setUpdatetime(new Date());
+            phoneauthtable.setRequestcount(phoneauthtable.getRequestcount()+1);
+            mapper.updateByPrimaryKey(phoneauthtable);
+            System.out.println(ex.getMessage());
+        }
+    }
+
 
 
 }
