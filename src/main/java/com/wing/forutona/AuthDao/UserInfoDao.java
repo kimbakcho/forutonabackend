@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDto.Phoneauthtable;
+import com.wing.forutona.AuthDto.PhoneauthtableCustom;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,10 +50,27 @@ public class UserInfoDao {
     @Autowired
     GoogleStorgeAdmin googlesotrageAdmin;
 
-    public int InsertUserInfo(UserInfoMain param) {
-        UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+    public int InsertUserInfo(UserInfoMain param,String Authtoken) {
+        int result = 0;
+        String returncode = "";
+        String authtoken =  Authtoken.replace("Bearer ","");
+        if(fireBaseAdmin.VerifyIdToken(authtoken) == null){
+            return 0;
+        }
+        try{
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(param.getPhonenumber().getBytes());
+            returncode =  bytesToHex(md.digest());
+        }catch (Exception ex){
 
-        return mapper.insert(param);
+        }
+        if(param.getPhoneauthcheckcode().equals(returncode) ){
+            UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+            result = mapper.insert(param);
+        }else {
+            result = 0;
+        }
+        return result;
     }
 
     public String SnsLoginFireBase(UserInfoMain param)  {
@@ -148,16 +167,57 @@ public class UserInfoDao {
     public void requestAuthPhoneNumber(Phoneauthtable phone){
         System.out.println(phone.getUuid());
         System.out.println(phone.getPhonenumber());
+        PhoneauthtableCustomMapper mapper1 = sqlSession.getMapper(PhoneauthtableCustomMapper.class);
+        PhoneauthtableCustom customdata = new PhoneauthtableCustom();
+        customdata.setEventuuid(phone.getUuid().replaceAll("-",""));
+        customdata.setUuid(phone.getUuid());
+        try{
+            mapper1.DropRemoveEvent(customdata);
+        }catch (Exception ex){
+
+        }
+        //해당 부분 전화 번호 Send 만 해주면됨.
+        phone.setAuthnumber("123456");
         PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
         try{
             mapper.insert(phone);
         }catch (DuplicateKeyException ex){
             Phoneauthtable phoneauthtable = mapper.selectByPrimaryKey(phone.getUuid());
             phoneauthtable.setUpdatetime(new Date());
+            phoneauthtable.setAuthnumber(phone.getAuthnumber());
+            if(phoneauthtable.getRequestcount() == null){
+                phoneauthtable.setRequestcount(0);
+            }
             phoneauthtable.setRequestcount(phoneauthtable.getRequestcount()+1);
             mapper.updateByPrimaryKey(phoneauthtable);
             System.out.println(ex.getMessage());
         }
+        //5분뒤 DB에서 삭제
+        mapper1.CreateRemoveEvent(customdata);
+    }
+    public String requestAuthVerificationPhoneNumber(Phoneauthtable phone){
+        PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
+        Phoneauthtable getphone = mapper.selectByPrimaryKey(phone.getUuid());
+        String returncode = "";
+        if(getphone.getAuthnumber().equals(phone.getAuthnumber())){
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(phone.getPhonenumber().getBytes());
+                returncode =  bytesToHex(md.digest());
+            }catch (Exception ex){
+                returncode =  "false";
+            }
+        }else {
+            returncode =  "false";
+        }
+        return returncode;
+    }
+    public static String bytesToHex(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b: bytes) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
     }
 
 

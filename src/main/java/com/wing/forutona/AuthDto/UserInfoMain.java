@@ -11,5 +11,16 @@ public class UserInfoMain extends Userinfo{
         this.snstoken = snstoken;
     }
 
-    public  String snstoken="";
+    String snstoken="";
+
+    public String getPhoneauthcheckcode() {
+        return phoneauthcheckcode;
+    }
+
+    public void setPhoneauthcheckcode(String phoneauthcheckcode) {
+        this.phoneauthcheckcode = phoneauthcheckcode;
+    }
+
+    String phoneauthcheckcode;
+
 }

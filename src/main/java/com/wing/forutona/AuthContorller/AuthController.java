@@ -20,8 +20,8 @@ public class AuthController {
     UserInfoDao userInfoDao;
 
     @PostMapping(value = "/api/v1/Auth/InsertUserInfo")
-    int InsertUserInfo(@RequestBody UserInfoMain param) {
-        return userInfoDao.InsertUserInfo(param);
+    int InsertUserInfo(@RequestBody UserInfoMain param,@RequestHeader(value = "authorization") String Authtoken) {
+        return userInfoDao.InsertUserInfo(param,Authtoken);
     }
     @PostMapping(value = "/api/v1/Auth/SnsLoginFireBase")
     String SnsLoginFireBase(@RequestBody UserInfoMain param) {
@@ -47,8 +47,11 @@ public class AuthController {
     void requestAuthPhoneNumber(@RequestBody Phoneauthtable body)
     {
         userInfoDao.requestAuthPhoneNumber(body);
-
     }
 
+    @PostMapping(value="/api/v1/Auth/requestAuthVerificationPhoneNumber")
+    String requestAuthVerificationPhoneNumber(@RequestBody Phoneauthtable body){
+        return userInfoDao.requestAuthVerificationPhoneNumber(body);
+    }
 
 }
