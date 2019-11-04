@@ -81,7 +81,13 @@ public class FireBaseAdmin {
         }
     }
     UserRecord getUser(String uid) throws FirebaseAuthException {
+
         return FirebaseAuth.getInstance().getUser(uid);
     }
+
+    UserRecord getUserByEmail(String email) throws FirebaseAuthException {
+        return FirebaseAuth.getInstance().getUserByEmail(email);
+    }
+
 
 }

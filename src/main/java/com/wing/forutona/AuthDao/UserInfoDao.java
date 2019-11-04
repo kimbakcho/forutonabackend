@@ -220,6 +220,18 @@ public class UserInfoDao {
         return builder.toString();
     }
 
-
+     public  UserInfoMain getUsePasswordFindPhoneInfoByemail(String email){
+         UserInfoMain reslutuserinfo;
+        try {
+             UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+             Userinfo userinfo = mapper.selectByPrimaryKey(fireBaseAdmin.getUserByEmail(email).getUid());
+             reslutuserinfo = new UserInfoMain();
+             reslutuserinfo.setEmail(userinfo.getEmail());
+             reslutuserinfo.setPhonenumber(userinfo.getPhonenumber());
+         }catch (Exception ex){
+             return null;
+         }
+         return reslutuserinfo;
+     }
 
 }

@@ -54,4 +54,8 @@ public class AuthController {
         return userInfoDao.requestAuthVerificationPhoneNumber(body);
     }
 
+    @GetMapping(value="/api/v1/Auth/getUsePasswordFindPhoneInfoByemail")
+    UserInfoMain getUsePasswordFindPhoneInfoByemail(@RequestParam String email){
+        return userInfoDao.getUsePasswordFindPhoneInfoByemail(email);
+    }
 }
