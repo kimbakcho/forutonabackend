@@ -8,6 +8,7 @@ import com.google.cloud.storage.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
+import com.google.gson.JsonObject;
 import com.wing.forutona.AuthDto.Phoneauthtable;
 import com.wing.forutona.AuthDto.PhoneauthtableCustom;
 import com.wing.forutona.AuthDto.UserInfoMain;
@@ -15,6 +16,7 @@ import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import com.wing.forutona.Prefrerance;
 import org.apache.ibatis.session.SqlSession;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -32,6 +34,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -169,15 +173,21 @@ public class UserInfoDao {
         System.out.println(phone.getPhonenumber());
         PhoneauthtableCustomMapper mapper1 = sqlSession.getMapper(PhoneauthtableCustomMapper.class);
         PhoneauthtableCustom customdata = new PhoneauthtableCustom();
-        customdata.setEventuuid(phone.getUuid().replaceAll("-",""));
+        customdata.setEventuuid("PHONEPW"+phone.getUuid().replaceAll("-",""));
         customdata.setUuid(phone.getUuid());
         try{
             mapper1.DropRemoveEvent(customdata);
         }catch (Exception ex){
 
         }
+
+        double dValue = Math.random();
+        int iValue = (int)(dValue * 100000)+100000;
+        phone.setAuthnumber(String.format("%d",iValue));
+
         //해당 부분 전화 번호 Send 만 해주면됨.
-        phone.setAuthnumber("123456");
+        SuerMSendsns(phone.getPhonenumber(),phone.getAuthnumber());
+
         PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
         try{
             mapper.insert(phone);
@@ -220,6 +230,42 @@ public class UserInfoDao {
         return builder.toString();
     }
 
+    public int SuerMSendsns(String Phonenumber,String authNumber){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        URI SureMuri = null;
+        try {
+            SureMuri = new URI("https://rest.surem.com/sms/v1/json");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        headers.add(HttpHeaders.CONTENT_TYPE,"application/json ");
+        JSONObject snsobject = new JSONObject();
+        snsobject.put("usercode",Prefrerance.sureMID);
+        snsobject.put("deptcode",Prefrerance.sureMdeptcode);
+        JSONArray messagearray = new JSONArray();
+        JSONObject messageobj = new JSONObject();
+        messageobj.put("to",Phonenumber);
+        messagearray.put(messageobj);
+        snsobject.put("messages",messagearray);
+        String sendmessage = "<#>\n";
+        if(Phonenumber.substring(1,3).equals("82")){
+            sendmessage += "[인증번호:"+authNumber+"] FORUTONA 계정 인증번호 입니다. [FORUTONA]\n";
+        }
+        sendmessage += Prefrerance.smssretrieverappsign;
+        snsobject.put("text",sendmessage);
+        snsobject.put("from",Prefrerance.sureMFrom);
+        System.out.println(snsobject.toString());
+//        HttpEntity<String> request = new HttpEntity<>(snsobject.toString(),headers);
+//        ResponseEntity<String> response = restTemplate.postForEntity(SureMuri,request, String.class);
+//        JSONObject responsesns = new JSONObject(response.getBody());
+//        String snsreslutcode = responsesns.getString("code");
+//        if(snsreslutcode.equals("200")){
+//            return 1;
+//        }
+        return 0;
+    }
+
      public  UserInfoMain getUsePasswordFindPhoneInfoByemail(String email){
          UserInfoMain reslutuserinfo;
         try {
@@ -234,4 +280,18 @@ public class UserInfoDao {
          return reslutuserinfo;
      }
 
+     public int passwrodChangefromphone(UserInfoMain userinfo){
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(userinfo.getPhonenumber().getBytes());
+            String returncode =  bytesToHex(md.digest());
+            //번호 위조 체크
+            if(returncode.equals(userinfo.getPhoneauthcheckcode())) {
+                return fireBaseAdmin.changeEmailUserPassword(userinfo.getEmail(),userinfo.getPassword());
+            }
+            return 0;
+        }catch (Exception ex){
+            return 0;
+        }
+     };
 }

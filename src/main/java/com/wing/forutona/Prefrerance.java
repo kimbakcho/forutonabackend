@@ -9,4 +9,9 @@ public class Prefrerance {
 //    public static  String serviekeypath = "/home/forutona/servicekeys/forutona-firebase-adminsdk-p6ho6-ab85124646.json";
 //    public static  String storgeserviekeypath = "/home/forutona/servicekeys/Forutona-3539edf2b36d.json";
 //    public static  String smssretrieverappsign = "DnCuZoNCCGH";
+
+    public static String sureMID = "forutona";
+    public static String sureMdeptcode = "XX-XXX-XX";
+    public static String sureMFrom = "010-4544-1455";
+
 }

@@ -89,5 +89,21 @@ public class FireBaseAdmin {
         return FirebaseAuth.getInstance().getUserByEmail(email);
     }
 
+    int changeEmailUserPassword(String email,String password){
+        try{
+            UserRecord record = FirebaseAuth.getInstance().getUserByEmail(email);
+            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(record.getUid());
+            request.setPassword(password);
+            UserRecord userRecord  = FirebaseAuth.getInstance().updateUser(request);
+            if(userRecord.getEmail().equals(email) ){
+                return 1;
+            }
+            return 0;
+        }catch (Exception ex){
+            return 0;
+        }
+    }
+
+
 
 }

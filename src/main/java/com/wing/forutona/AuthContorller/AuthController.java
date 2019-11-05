@@ -58,4 +58,9 @@ public class AuthController {
     UserInfoMain getUsePasswordFindPhoneInfoByemail(@RequestParam String email){
         return userInfoDao.getUsePasswordFindPhoneInfoByemail(email);
     }
+
+    @PostMapping(value="/api/v1/Auth/passwrodChangefromphone")
+    int passwrodChangefromphone(@RequestBody UserInfoMain userinfo){
+        return userInfoDao.passwrodChangefromphone(userinfo);
+    }
 }

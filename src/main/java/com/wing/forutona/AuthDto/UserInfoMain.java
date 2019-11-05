@@ -23,4 +23,13 @@ public class UserInfoMain extends Userinfo{
 
     String phoneauthcheckcode;
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    String password;
 }
