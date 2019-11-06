@@ -40,7 +40,7 @@ public class FireBaseAdmin {
             System.out.println(ex);
         }
     }
-    FirebaseToken VerifyIdToken(String token) {
+    public FirebaseToken VerifyIdToken(String token) {
         boolean checkRevoked = true;
         try {
             FirebaseToken token1 = FirebaseAuth.getInstance().verifyIdToken(token,checkRevoked);

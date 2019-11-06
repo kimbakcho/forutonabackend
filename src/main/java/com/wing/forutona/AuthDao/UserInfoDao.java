@@ -202,6 +202,8 @@ public class UserInfoDao {
             mapper.updateByPrimaryKey(phoneauthtable);
             System.out.println(ex.getMessage());
         }
+
+
         //5분뒤 DB에서 삭제
         mapper1.CreateRemoveEvent(customdata);
     }
