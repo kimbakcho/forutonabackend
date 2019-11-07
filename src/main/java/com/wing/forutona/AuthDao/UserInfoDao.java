@@ -20,10 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -186,8 +185,19 @@ public class UserInfoDao {
         phone.setAuthnumber(String.format("%d",iValue));
 
         //해당 부분 전화 번호 Send 만 해주면됨.
-        SuerMSendsns(phone.getPhonenumber(),phone.getAuthnumber());
-
+        SuerMSendsns(phone.getPhonenumber(),phone.getAuthnumber(),phone.getIsocode());
+//        SureSMSAPI sms = new SureSMSAPI() {
+//            @Override
+//            public void report(SureSMSDeliveryReport dr) {
+//                // 통신사로부터 받은 결과 데이터
+//                System.out.print("msgkey="+dr.getMember()+"\t");	// 발송한 메시지의 키값
+//                System.out.print("result="+dr.getResult()+"\t");	// '2': 통신사 결과 성공.  '4': 통신사 결과 실패
+//                System.out.print("errorcode="+dr.getErrorCode()+"\t");	// 통신사 에러코드 ( 101 : 성공 )
+//                System.out.print("recvtime="+dr.getRecvDate()+dr.getRecvTime()+"\t");	// 단말기 도착 시간
+//                System.out.println();
+//            }
+//        };
+//        sms.sendMain(0,Prefrerance.sureMID,Prefrerance.sureMdeptcode,Prefrerance.sureMFrom,)
         PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
         try{
             mapper.insert(phone);
@@ -232,7 +242,7 @@ public class UserInfoDao {
         return builder.toString();
     }
 
-    public int SuerMSendsns(String Phonenumber,String authNumber){
+    public int SuerMSendsns(String Phonenumber,String authNumber,String isocode){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         URI SureMuri = null;
@@ -241,30 +251,34 @@ public class UserInfoDao {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        headers.add(HttpHeaders.CONTENT_TYPE,"application/json ");
+        Charset utf8 = Charset.forName("UTF-8");
+        MediaType mediaType = new MediaType("application","json",utf8);
+        headers.setContentType(mediaType);
         JSONObject snsobject = new JSONObject();
         snsobject.put("usercode",Prefrerance.sureMID);
         snsobject.put("deptcode",Prefrerance.sureMdeptcode);
         JSONArray messagearray = new JSONArray();
         JSONObject messageobj = new JSONObject();
-        messageobj.put("to",Phonenumber);
+        if(isocode.equals("KR")){
+            messageobj.put("to",Phonenumber.replace("+82","0"));
+        }
         messagearray.put(messageobj);
         snsobject.put("messages",messagearray);
         String sendmessage = "<#>\n";
-        if(Phonenumber.substring(1,3).equals("82")){
+        if(isocode.equals("KR")){
             sendmessage += "[인증번호:"+authNumber+"] FORUTONA 계정 인증번호 입니다. [FORUTONA]\n";
         }
         sendmessage += Prefrerance.smssretrieverappsign;
         snsobject.put("text",sendmessage);
         snsobject.put("from",Prefrerance.sureMFrom);
         System.out.println(snsobject.toString());
-//        HttpEntity<String> request = new HttpEntity<>(snsobject.toString(),headers);
-//        ResponseEntity<String> response = restTemplate.postForEntity(SureMuri,request, String.class);
-//        JSONObject responsesns = new JSONObject(response.getBody());
-//        String snsreslutcode = responsesns.getString("code");
-//        if(snsreslutcode.equals("200")){
-//            return 1;
-//        }
+        HttpEntity<String> request = new HttpEntity<>(snsobject.toString(),headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(SureMuri,request, String.class);
+        JSONObject responsesns = new JSONObject(response.getBody());
+        String snsreslutcode = responsesns.getString("code");
+        if(snsreslutcode.equals("200")){
+            return 1;
+        }
         return 0;
     }
 
@@ -276,6 +290,7 @@ public class UserInfoDao {
              reslutuserinfo = new UserInfoMain();
              reslutuserinfo.setEmail(userinfo.getEmail());
              reslutuserinfo.setPhonenumber(userinfo.getPhonenumber());
+             reslutuserinfo.setIsocode(userinfo.getIsocode());
          }catch (Exception ex){
              return null;
          }
