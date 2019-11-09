@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.FcubeDao.FcubeDao;
 import com.wing.forutona.FcubeDto.Fcube;
+import com.wing.forutona.FcubeDto.FcubeExtender1;
 import com.wing.forutona.FcubeDto.Fcubecontent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -47,14 +48,27 @@ public class FcubeController {
     }
 
     @GetMapping(value = "/api/v1/Fcube/getusercubes")
-    public List<Fcube> getusercubes(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token){
+    public List<FcubeExtender1> getusercubes(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
         if(ftoken !=null){
+            List<FcubeExtender1> temp1= fcubeDao.GetUserCubes(ftoken.getUid());
             return fcubeDao.GetUserCubes(ftoken.getUid());
         }else {
             return null;
         }
+    }
+
+    @PostMapping(value="/api/v1/Fcube/deletecube")
+    public int deletecube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody Fcube cube){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.deletecube(cube);
+        }else {
+            return 0;
+        }
+
     }
 
 }
