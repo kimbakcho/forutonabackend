@@ -9,7 +9,9 @@ import com.wing.forutona.FcubeDto.Fcubecontent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -68,7 +70,27 @@ public class FcubeController {
         }else {
             return 0;
         }
-
+    }
+    @PostMapping(value="/api/v1/Fcube/cuberelationimageupload")
+    String CubeRelationImageUpload(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,MultipartHttpServletRequest request) throws IOException {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.CubeRelationImageUpload(request);
+        }else {
+            return "";
+        }
     }
 
+    @PostMapping(value="/api/v1/Fcube/cuberelationimagedelete")
+    int CubeRelationImageDelete(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestParam String url) throws IOException {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.CubeRelationImageDelete(url);
+        }else {
+            return 0;
+        }
+
+    }
 }
