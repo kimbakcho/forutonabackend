@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.FcubeDao.FcubeDao;
 import com.wing.forutona.FcubeDto.Fcube;
+import com.wing.forutona.FcubeDto.FcubeContentSelector;
 import com.wing.forutona.FcubeDto.FcubeExtender1;
 import com.wing.forutona.FcubeDto.Fcubecontent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,17 @@ public class FcubeController {
         }else {
             return 0;
         }
+    }
 
+    @PostMapping(value="/api/v1/Fcube/getFcubecontent")
+    List<Fcubecontent> getFcubecontent(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody
+    FcubeContentSelector selectitem) {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.selectwithFcubeContentSelector(selectitem);
+        }else {
+            return null;
+        }
     }
 }

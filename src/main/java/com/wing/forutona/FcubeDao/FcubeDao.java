@@ -7,6 +7,7 @@ import com.google.cloud.storage.Storage;
 import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.FcubeDto.Fcube;
+import com.wing.forutona.FcubeDto.FcubeContentSelector;
 import com.wing.forutona.FcubeDto.FcubeExtender1;
 import com.wing.forutona.FcubeDto.Fcubecontent;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -97,5 +98,10 @@ public class FcubeDao {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
         storage.create(blobInfo, getfile.get(0).getBytes());
         return "https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename;
+    }
+
+    public List<Fcubecontent> selectwithFcubeContentSelector(FcubeContentSelector selectitem){
+        FcubecontentExtend1Mapper mapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
+        return mapper.selectwithFcubeContentSelector(selectitem);
     }
 }

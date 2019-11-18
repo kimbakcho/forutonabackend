@@ -59,4 +59,17 @@
     select idx, Cubeuuid, ContentType, ContentUpdateTime, ContentValue
     from FcubeContent
   </select>
+
+
+  <select id="selectwithFcubeContentSelector" parameterType="FcubeContentSelector" resultType="com.wing.forutona.FcubeDto.Fcubecontent">
+    SELECT idx,Cubeuuid,ContentType,ContentValue,ContentUpdateTime FROM FcubeContent
+    <where>
+      AND cubeuuid = #{cubeuuid}
+      AND ContentType IN
+      <foreach collection="contenttypes" item="type"  open="(" close=")" separator=",">
+        #{type}
+      </foreach>
+    </where>
+  </select>
+
 </mapper>
