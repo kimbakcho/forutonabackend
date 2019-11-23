@@ -3,10 +3,7 @@ package com.wing.forutona.FcubeContorller;
 import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.FcubeDao.FcubeDao;
-import com.wing.forutona.FcubeDto.Fcube;
-import com.wing.forutona.FcubeDto.FcubeContentSelector;
-import com.wing.forutona.FcubeDto.FcubeExtender1;
-import com.wing.forutona.FcubeDto.Fcubecontent;
+import com.wing.forutona.FcubeDto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -104,5 +101,22 @@ public class FcubeController {
         }else {
             return null;
         }
+    }
+
+    @PostMapping(value = "/api/v1/Fcube/InsertCubeReply")
+    Fcubereply InsertCubeReply(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody
+            Fcubereply reply) throws Exception {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.InsertCubeReply(reply);
+        }else {
+            return null;
+        }
+    }
+
+    @GetMapping(value="/api/v1/Fcube/SelectReplyForCube")
+    List<FcubereplyExtender1> SelectReplyForCube(@RequestParam String cubeuuid,@RequestParam int offset,@RequestParam int limit){
+        return fcubeDao.SelectReplyForCube(cubeuuid,offset,limit);
     }
 }

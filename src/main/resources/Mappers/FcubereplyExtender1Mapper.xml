@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wing.forutona.FcubeDao.FcubereplyExtender1Mapper">
+  <resultMap id="BaseResultMap" type="com.wing.forutona.FcubeDto.FcubereplyExtender1">
+    <id column="CommntNo" jdbcType="INTEGER" property="commntno" />
+    <result column="Cuebuuid" jdbcType="VARCHAR" property="cuebuuid" />
+    <result column="Uid" jdbcType="VARCHAR" property="uid" />
+    <result column="Bgroup" jdbcType="INTEGER" property="bgroup" />
+    <result column="Sorts" jdbcType="INTEGER" property="sorts" />
+    <result column="Depth" jdbcType="INTEGER" property="depth" />
+    <result column="CommntText" jdbcType="VARCHAR" property="commnttext" />
+    <result column="CommntTime" jdbcType="TIMESTAMP" property="commnttime" />
+    <result column="NickName" jdbcType="VARCHAR" property="nickname" />
+    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+
+  </resultMap>
+
+  <select id="SelectBgroubReplyMax" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultType="INTEGER">
+    SELECT IFNULL(MAX(A.Bgroup)+1,1) as Bgroup FROM FcubeReply A
+    <where>
+      A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} FOR UPDATE
+    </where>
+  </select>
+
+  <select id="SelectStep1ForReply" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultType="INTEGER">
+    <![CDATA[
+    SELECT IFNULL(MIN(A.Sorts),0) FROM FcubeReply A
+    WHERE  A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND A.Bgroup = #{bgroup,jdbcType=INTEGER}
+    AND A.Sorts >  #{sorts,jdbcType=INTEGER}
+    AND DEPTH <=  #{depth,jdbcType=INTEGER} FOR UPDATE
+     ]]>
+  </select>
+  <select id="SelectStep2ForReply" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultType="INTEGER">
+    SELECT IFNULL(MAX(A.Sorts),0) + 1 FROM FcubeReply A
+    WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND A.Bgroup = #{bgroup,jdbcType=INTEGER} FOR UPDATE
+  </select>
+  <update id="UpdateStep2ForReply" parameterType="com.wing.forutona.FcubeDto.Fcubereply">
+    <![CDATA[
+    UPDATE FcubeReply A SET A.Sorts = A.Sorts + 1
+    WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND A.Bgroup = #{bgroup,jdbcType=INTEGER} AND A.Sorts >=  #{sorts,jdbcType=INTEGER}
+   ]]>
+  </update>
+  <insert id="insert" parameterType="com.wing.forutona.FcubeDto.Fcubereply">
+    insert into FcubeReply (Cubeuuid, Uid,Bgroup,
+    Sorts, Depth,
+    CommntText)
+    values (#{cubeuuid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR},#{bgroup,jdbcType=INTEGER},
+    #{sorts,jdbcType=INTEGER}, #{depth,jdbcType=INTEGER},
+    #{commnttext,jdbcType=VARCHAR})
+  </insert>
+  <select id="SelectReplyForCube" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultMap="BaseResultMap" >
+    SELECT A.CommntNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl
+    FROM FcubeReply A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
+    ORDER BY A.Bgroup desc, A.Sorts asc
+  </select>
+
+</mapper>

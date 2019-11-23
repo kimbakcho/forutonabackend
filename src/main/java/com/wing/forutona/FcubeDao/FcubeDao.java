@@ -6,20 +6,21 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
-import com.wing.forutona.FcubeDto.Fcube;
-import com.wing.forutona.FcubeDto.FcubeContentSelector;
-import com.wing.forutona.FcubeDto.FcubeExtender1;
-import com.wing.forutona.FcubeDto.Fcubecontent;
+import com.wing.forutona.FcubeDto.*;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,13 @@ public class FcubeDao {
             fcube.setInfluence(0.0);
         }
         fcube.setMaketime(new Date());
+        Date dt = new Date();
+        //임시로 ACtivation 타임 생성일 기준 +5일로 해줌
+        LocalDateTime localDateTime = LocalDateTime.now().plusDays(5);
+
+        Date date = Date.from( localDateTime.atZone( ZoneId.systemDefault()).toInstant());
+
+        fcube.setActivationtime(date);
         return mapper.insert(fcube);
     };
 
@@ -99,9 +107,45 @@ public class FcubeDao {
         storage.create(blobInfo, getfile.get(0).getBytes());
         return "https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename;
     }
-
     public List<Fcubecontent> selectwithFcubeContentSelector(FcubeContentSelector selectitem){
         FcubecontentExtend1Mapper mapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
         return mapper.selectwithFcubeContentSelector(selectitem);
     }
+
+    @Transactional
+    public Fcubereply InsertCubeReply(Fcubereply reply) throws  Exception{
+        FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
+        reply.setSorts(mapper.SelectStep1ForReply(reply));
+        reply.setCommnttime(new Date());
+        if(reply.getBgroup() == 0){
+            reply.setBgroup(mapper.SelectBgroubReplyMax(reply));
+            if(mapper.insert(reply)==1){
+                return reply;
+            }else {
+                return null;
+            }
+        }
+        if(reply.getSorts() == 0){
+            reply.setSorts(mapper.SelectStep2ForReply(reply));
+            reply.setDepth(reply.getDepth()+1);
+            if(mapper.insert(reply)==1){
+                return reply;
+            }else {
+                return null;
+            }
+        }else {
+            mapper.UpdateStep2ForReply(reply);
+            if(mapper.insert(reply)==1){
+                return reply;
+            }else {
+                return null;
+            }
+        }
+    }
+
+    public List<FcubereplyExtender1> SelectReplyForCube(String cubeuuid,int offset,int limit){
+        FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
+        return mapper.SelectReplyForCube(new FcubereplySearch(cubeuuid,offset,limit));
+    }
+
 }
