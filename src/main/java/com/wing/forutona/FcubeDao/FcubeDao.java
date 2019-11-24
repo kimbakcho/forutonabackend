@@ -148,4 +148,16 @@ public class FcubeDao {
         return mapper.SelectReplyForCube(new FcubereplySearch(cubeuuid,offset,limit));
     }
 
+    public int updateCubeState(Fcube cube){
+        FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
+        return mapper.updateCubeState(cube);
+    };
+
+    public List<FcubeplayerExtender1> selectPlayers(String cubeuuid,String uid){
+        FcubeplayerExtender1Mapper mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+        Fcubeplayer cube = new Fcubeplayer();
+        cube.setCubeuuid(cubeuuid);
+        cube.setUid(uid);
+        return mapper.selectPlayers(cube);
+    }
 }

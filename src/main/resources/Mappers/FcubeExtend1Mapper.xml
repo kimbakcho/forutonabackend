@@ -28,5 +28,8 @@
       A.Uid = #{uid}
     </where>
   </select>
-
+  <update id="updateCubeState" parameterType="com.wing.forutona.FcubeDto.Fcube">
+    UPDATE Fcube SET CubeState = #{cubestate,jdbcType=INTEGER},ActivationTime = #{activationtime,jdbcType=TIMESTAMP}
+    where Cubeuuid =  #{cubeuuid,jdbcType=VARCHAR}
+  </update>
 </mapper>

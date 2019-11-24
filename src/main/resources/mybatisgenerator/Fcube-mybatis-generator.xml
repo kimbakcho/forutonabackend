@@ -42,5 +42,11 @@
         <table schema="forutona" tableName="FcubeReply" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
 
+        <table schema="forutona" tableName="FcubePlayer" enableCountByExample="false" enableDeleteByExample="true"
+               enableSelectByExample="true" enableUpdateByExample="true" />
+
+        <table schema="forutona" tableName="FcubeQuestSuccess" enableCountByExample="false" enableDeleteByExample="true"
+               enableSelectByExample="true" enableUpdateByExample="true" />
+
     </context>
 </generatorConfiguration>

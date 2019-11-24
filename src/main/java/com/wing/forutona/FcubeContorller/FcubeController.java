@@ -119,4 +119,27 @@ public class FcubeController {
     List<FcubereplyExtender1> SelectReplyForCube(@RequestParam String cubeuuid,@RequestParam int offset,@RequestParam int limit){
         return fcubeDao.SelectReplyForCube(cubeuuid,offset,limit);
     }
+
+    @PostMapping(value="/api/v1/Fcube/updateCubeState")
+    int updateCubeState(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody Fcube cube){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.updateCubeState(cube);
+        }else {
+            return 0;
+        }
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/SelectPlayers")
+    List<FcubeplayerExtender1> SelectPlayers(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                             @RequestParam String cubeuuid,@RequestParam(required = false) String uid){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.selectPlayers(cubeuuid,uid);
+        }else {
+            return null;
+        }
+    }
 }
