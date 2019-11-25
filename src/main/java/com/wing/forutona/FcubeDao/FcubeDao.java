@@ -160,4 +160,9 @@ public class FcubeDao {
         cube.setUid(uid);
         return mapper.selectPlayers(cube);
     }
+
+    public List<FcubeExtender1> findNearDistanceCube(FCubeGeoSearchUtil searchItem){
+        FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
+        return mapper.findNearDistanceCube(searchItem);
+    }
 }

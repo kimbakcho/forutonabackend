@@ -22,7 +22,7 @@
   <select id="selectUserBoxAll" parameterType="com.wing.forutona.FcubeDto.Fcube" resultMap="BaseResultMap">
     SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
-    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,
+    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,
     A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Uid = #{uid}
@@ -32,4 +32,26 @@
     UPDATE Fcube SET CubeState = #{cubestate,jdbcType=INTEGER},ActivationTime = #{activationtime,jdbcType=TIMESTAMP}
     where Cubeuuid =  #{cubeuuid,jdbcType=VARCHAR}
   </update>
+  <select id="findNearDistanceCube" parameterType="com.wing.forutona.FcubeDto.FCubeGeoSearchUtil" resultMap="BaseResultMap">
+     SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
+    A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
+    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,
+    A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
+                 * COS(RADIANS(A.latitude))
+                 * COS(RADIANS(#{longitude}) - RADIANS(A.longitude))
+                 + SIN(RADIANS(#{latitude}))
+                 * SIN(RADIANS(A.latitude)))) AS distancewithme
+    FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    <where>
+      A.latitude
+      BETWEEN  #{latitude} - ( #{distance} / 111.045 )
+      AND #{latitude} + ( #{distance} / 111.045 )
+      AND A.longitude
+      BETWEEN #{longitude} - (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
+      AND #{longitude} + (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
+    </where>
+    ORDER BY distancewithme
+    LIMIT #{limit}
+    OFFSET #{offset}
+  </select>
 </mapper>

@@ -142,4 +142,16 @@ public class FcubeController {
             return null;
         }
     }
+
+    @PostMapping(value="/api/v1/Fcube/findNearDistanceCube")
+    List<FcubeExtender1> findNearDistanceCube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody FCubeGeoSearchUtil searchItem){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null){
+            return fcubeDao.findNearDistanceCube(searchItem);
+        }else {
+            return null;
+        }
+    }
+
 }
