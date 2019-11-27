@@ -7,4 +7,7 @@ public class FcubeExtender1 extends Fcube{
     String nickname;
     String profilepicktureurl;
     String distancewithme;
+    String contenttype;
+    String contentvalue;
+
 }

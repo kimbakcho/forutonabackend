@@ -17,6 +17,8 @@
     <result column="HasPassword" jdbcType="INTEGER" property="haspassword" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+    <result column="ContentType" jdbcType="VARCHAR" property="contenttype" />
+    <result column="ContentValue" jdbcType="LONGVARCHAR" property="contentvalue" />
   </resultMap>
 
   <select id="selectUserBoxAll" parameterType="com.wing.forutona.FcubeDto.Fcube" resultMap="BaseResultMap">
@@ -40,8 +42,8 @@
                  * COS(RADIANS(A.latitude))
                  * COS(RADIANS(#{longitude}) - RADIANS(A.longitude))
                  + SIN(RADIANS(#{latitude}))
-                 * SIN(RADIANS(A.latitude)))) AS distancewithme
-    FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+                 * SIN(RADIANS(A.latitude)))) AS distancewithme,C.ContentType,C.ContentValue
+    FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid LEFT JOIN FcubeContent C ON  A.Cubeuuid = C.Cubeuuid
     <where>
       A.latitude
       BETWEEN  #{latitude} - ( #{distance} / 111.045 )
@@ -49,6 +51,7 @@
       AND A.longitude
       BETWEEN #{longitude} - (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
       AND #{longitude} + (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
+      AND C.ContentType = 'description'
     </where>
     ORDER BY distancewithme
     LIMIT #{limit}
