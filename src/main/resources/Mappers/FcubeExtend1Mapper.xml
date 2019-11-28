@@ -52,6 +52,7 @@
       BETWEEN #{longitude} - (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
       AND #{longitude} + (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
       AND C.ContentType = 'description'
+      AND A.CubeState = 1
     </where>
     ORDER BY distancewithme
     LIMIT #{limit}

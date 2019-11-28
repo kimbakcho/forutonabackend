@@ -165,4 +165,9 @@ public class FcubeDao {
         FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
         return mapper.findNearDistanceCube(searchItem);
     }
+
+    public int insertFcubePlayer(Fcubeplayer fcubeplayer){
+        FcubeplayerMapper mapper = sqlSession.getMapper(FcubeplayerMapper.class);
+        return mapper.insert(fcubeplayer);
+    }
 }

@@ -9,15 +9,20 @@
     <id column="idx" jdbcType="INTEGER" property="idx" />
     <result column="Cubeuuid" jdbcType="VARCHAR" property="cubeuuid" />
     <result column="Uid" jdbcType="VARCHAR" property="uid" />
+    <result column="HasLike" jdbcType="INTEGER" property="haslike" />
+    <result column="HasDisLike" jdbcType="INTEGER" property="hasdislike" />
+    <result column="HasGiveup" jdbcType="INTEGER" property="hasgiveup" />
+    <result column="HasExit" jdbcType="INTEGER" property="hasexit" />
     <result column="latitude" jdbcType="DOUBLE" property="latitude" />
-    <result column="nickname" jdbcType="VARCHAR" property="NickName" />
-    <result column="profilepicktureurl" jdbcType="VARCHAR" property="ProfilePicktureUrl" />
+    <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+    <result column="StartTime" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="PlayState" jdbcType="INTEGER" property="playstate" />
   </resultMap>
   <select id="selectPlayers" parameterType="com.wing.forutona.FcubeDto.Fcubeplayer" resultMap="BaseResultMap">
-    SELECT A.idx, A.Cubeuuid, A.Uid, A.latitude, A.longitude,B.NickName,B.ProfilePicktureUrl FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    SELECT A.idx, A.Cubeuuid, A.Uid,A.HasLike,A.HasDisLike,A.HasGiveup,A.StartTime,A.PlayState ,B.latitude, B.longitude,B.NickName,B.ProfilePicktureUrl FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
-      <if test="uid != null">
+      <if test="uid.length != 0">
         AND A.Uid = #{uid, jdbcType=VARCHAR}
       </if>
     </where>
