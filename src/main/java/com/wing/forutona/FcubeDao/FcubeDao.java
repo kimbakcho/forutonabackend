@@ -170,4 +170,5 @@ public class FcubeDao {
         FcubeplayerMapper mapper = sqlSession.getMapper(FcubeplayerMapper.class);
         return mapper.insert(fcubeplayer);
     }
+
 }

@@ -15,6 +15,7 @@ import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import com.wing.forutona.Prefrerance;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -311,4 +312,9 @@ public class UserInfoDao {
             return 0;
         }
      };
+
+    public int updateCurrentPosition(UserInfoMain userinfo){
+        UserinfoMainMapper mapper  = sqlSession.getMapper(UserinfoMainMapper.class);
+        return mapper.updateCurrentPosition(userinfo);
+    }
 }
