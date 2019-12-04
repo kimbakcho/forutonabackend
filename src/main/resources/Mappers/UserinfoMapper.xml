@@ -22,6 +22,8 @@
     <result column="IsoCode" jdbcType="VARCHAR" property="isocode" />
     <result column="latitude" jdbcType="DOUBLE" property="latitude" />
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+    <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
+    <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
@@ -40,14 +42,14 @@
       Sex, AgeDate, Email, ForutonaAgree, 
       PrivateAgree, PositionAgree, MartketingAgree, 
       AgeLimitAgree, SnsService, Phonenumber, 
-      IsoCode, latitude, longitude
-      )
+      IsoCode, latitude, longitude, 
+      PositionUpdateTime, UserLevel)
     values (#{uid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{profilepicktureurl,jdbcType=VARCHAR}, 
       #{sex,jdbcType=INTEGER}, #{agedate,jdbcType=DATE}, #{email,jdbcType=VARCHAR}, #{forutonaagree,jdbcType=TINYINT}, 
       #{privateagree,jdbcType=TINYINT}, #{positionagree,jdbcType=TINYINT}, #{martketingagree,jdbcType=TINYINT}, 
       #{agelimitagree,jdbcType=TINYINT}, #{snsservice,jdbcType=VARCHAR}, #{phonenumber,jdbcType=VARCHAR}, 
-      #{isocode,jdbcType=VARCHAR}, #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}
-      )
+      #{isocode,jdbcType=VARCHAR}, #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, 
+      #{positionupdatetime,jdbcType=TIMESTAMP}, #{userlevel,jdbcType=DOUBLE})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.wing.forutona.AuthDto.Userinfo">
     <!--
@@ -69,7 +71,9 @@
       Phonenumber = #{phonenumber,jdbcType=VARCHAR},
       IsoCode = #{isocode,jdbcType=VARCHAR},
       latitude = #{latitude,jdbcType=DOUBLE},
-      longitude = #{longitude,jdbcType=DOUBLE}
+      longitude = #{longitude,jdbcType=DOUBLE},
+      PositionUpdateTime = #{positionupdatetime,jdbcType=TIMESTAMP},
+      UserLevel = #{userlevel,jdbcType=DOUBLE}
     where Uid = #{uid,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -79,7 +83,7 @@
     -->
     select Uid, NickName, ProfilePicktureUrl, Sex, AgeDate, Email, ForutonaAgree, PrivateAgree, 
     PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode, 
-    latitude, longitude
+    latitude, longitude, PositionUpdateTime, UserLevel
     from UserInfo
     where Uid = #{uid,jdbcType=VARCHAR}
   </select>
@@ -90,7 +94,7 @@
     -->
     select Uid, NickName, ProfilePicktureUrl, Sex, AgeDate, Email, ForutonaAgree, PrivateAgree, 
     PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode, 
-    latitude, longitude
+    latitude, longitude, PositionUpdateTime, UserLevel
     from UserInfo
   </select>
 </mapper>

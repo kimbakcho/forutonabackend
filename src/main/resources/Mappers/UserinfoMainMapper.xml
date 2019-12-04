@@ -22,6 +22,8 @@
     <result column="IsoCode" jdbcType="VARCHAR" property="isocode" />
     <result column="latitude" jdbcType="DOUBLE" property="latitude" />
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+    <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
+    <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
   </resultMap>
   <update id="updateCurrentPosition" parameterType="com.wing.forutona.AuthDto.UserInfoMain">
     UPDATE UserInfo Set latitude = #{latitude},longitude= #{longitude} Where Uid = #{uid}

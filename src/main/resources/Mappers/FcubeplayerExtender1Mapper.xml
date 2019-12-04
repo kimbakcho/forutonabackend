@@ -17,9 +17,14 @@
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
     <result column="StartTime" jdbcType="TIMESTAMP" property="starttime" />
     <result column="PlayState" jdbcType="INTEGER" property="playstate" />
+    <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
+    <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
   </resultMap>
   <select id="selectPlayers" parameterType="com.wing.forutona.FcubeDto.Fcubeplayer" resultMap="BaseResultMap">
-    SELECT A.idx, A.Cubeuuid, A.Uid,A.HasLike,A.HasDisLike,A.HasGiveup,A.StartTime,A.PlayState ,B.latitude, B.longitude,B.NickName,B.ProfilePicktureUrl FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    SELECT A.idx, A.Cubeuuid, A.Uid,A.HasLike,A.HasDisLike,
+    A.HasGiveup,A.StartTime,A.PlayState ,B.latitude,B.longitude,
+    B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel
+     FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
       <if test="uid.length != 0">

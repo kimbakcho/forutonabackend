@@ -19,13 +19,15 @@
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
     <result column="ContentType" jdbcType="VARCHAR" property="contenttype" />
     <result column="ContentValue" jdbcType="LONGVARCHAR" property="contentvalue" />
+    <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
+    <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
   </resultMap>
 
   <select id="selectUserBoxAll" parameterType="com.wing.forutona.FcubeDto.Fcube" resultMap="BaseResultMap">
     SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,
-    A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Uid = #{uid}
     </where>
@@ -38,7 +40,7 @@
      SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,
-    A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
+    A.MaximumPlayers,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
                  * COS(RADIANS(A.latitude))
                  * COS(RADIANS(#{longitude}) - RADIANS(A.longitude))
                  + SIN(RADIANS(#{latitude}))
