@@ -39,7 +39,7 @@ public class FcubeController {
     }
 
     @PostMapping(value = "/api/v1/Fcube/makecubecontent")
-    public int MakeCube(@RequestBody Fcubecontent fcubecontent, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token){
+    public int MakeCube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody Fcubecontent fcubecontent ){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
         if(ftoken !=null ){
@@ -167,5 +167,52 @@ public class FcubeController {
         }
     }
 
+    @PostMapping(value="/api/v1/Fcube/getFcubeplayercontent")
+    List<FcubeplayercontentExtender1> getFcubeplayercontent(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                                            @RequestBody FcubeplayercontentSelector selectitem){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(selectitem.getUid())) {
+            return fcubeDao.selectwithFcubeplayercontentSelector(selectitem);
+        }else {
+            return null;
+        }
+    }
+
+    @PostMapping(value="/api/v1/Fcube/makeFcubeplayercontent")
+    int makeFcubeplayercontent(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                                            @RequestBody Fcubeplayercontent makeitem){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(makeitem.getUid())) {
+            return fcubeDao.makeFcubeplayercontent(makeitem);
+        }else {
+            return 0;
+        }
+    }
+
+    @PostMapping(value="/api/v1/Fcube/updateFcubeplayercontent")
+    int updateFcubeplayercontent(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                               @RequestBody FcubeplayercontentExtender1 updateitem){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(updateitem.getUid())) {
+            return fcubeDao.updateFcubeplayercontent(updateitem);
+        }else {
+            return 0;
+        }
+    }
+
+    @PostMapping(value="/api/v1/Fcube/deleteFcubeplayercontent")
+    int deleteFcubeplayercontent(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                 @RequestBody FcubeplayercontentExtender1 deleteitem){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(deleteitem.getUid())) {
+            return fcubeDao.deleteFcubeplayercontent(deleteitem);
+        }else {
+            return 0;
+        }
+    }
 
 }

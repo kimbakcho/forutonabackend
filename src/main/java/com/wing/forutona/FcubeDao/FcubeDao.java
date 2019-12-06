@@ -171,4 +171,20 @@ public class FcubeDao {
         return mapper.insert(fcubeplayer);
     }
 
+    public List<FcubeplayercontentExtender1> selectwithFcubeplayercontentSelector(FcubeplayercontentSelector selectitem){
+        FcubeplayercontentExtender1Mapper mapper = sqlSession.getMapper(FcubeplayercontentExtender1Mapper.class);
+        return mapper.selectwithFcubeplayercontentSelector(selectitem);
+    }
+    public int makeFcubeplayercontent(Fcubeplayercontent makeitem){
+        FcubeplayercontentMapper mapper = sqlSession.getMapper(FcubeplayercontentMapper.class);
+        return mapper.insert(makeitem);
+    }
+    public int updateFcubeplayercontent(FcubeplayercontentExtender1 makeitem){
+        FcubeplayercontentExtender1Mapper mapper = sqlSession.getMapper(FcubeplayercontentExtender1Mapper.class);
+        return mapper.updateFcubeplayercontent(makeitem);
+    }
+    public int deleteFcubeplayercontent(FcubeplayercontentExtender1 makeitem){
+        FcubeplayercontentExtender1Mapper mapper = sqlSession.getMapper(FcubeplayercontentExtender1Mapper.class);
+        return mapper.deleteFcubeplayercontent(makeitem);
+    }
 }
