@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @RestController
 public class FcubeController {
@@ -215,4 +218,49 @@ public class FcubeController {
         }
     }
 
+    @PostMapping(value="/api/v1/Fcube/uploadAuthForImage")
+    ResponseBodyEmitter UploadAuthForImage(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,MultipartHttpServletRequest request) throws IOException {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        System.out.println(request.getParameter("uid"));
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(request.getParameter("uid"))) {
+            fcubeDao.UploadAuthForImage(emitter,request);
+            return emitter;
+        }
+        emitter.complete();
+        return emitter;
+    }
+
+
+    @PostMapping(value="/api/v1/Fcube/deleteAuthForImage")
+    ResponseBodyEmitter deleteAuthForImage(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                           @RequestParam String url,@RequestParam String uid) throws IOException {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(uid)) {
+            fcubeDao.deleteAuthForImage(emitter,url);
+            return emitter;
+        }
+        emitter.send(0);
+        emitter.complete();
+        return emitter;
+    }
+
+    @PostMapping(value="/api/v1/Fcube/requestFcubeQuestSuccess")
+    ResponseBodyEmitter requestFcubeQuestSuccess(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                           @RequestBody Fcubequestsuccess item) throws IOException {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        System.out.println(item.getContent());
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(item.getFromuid())) {
+            fcubeDao.requestFcubeQuestSuccess(emitter,item);
+            return emitter;
+        }
+        emitter.send(0);
+        emitter.complete();
+        return null;
+    }
 }

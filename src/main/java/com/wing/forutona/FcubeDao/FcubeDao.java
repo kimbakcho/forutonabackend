@@ -10,11 +10,16 @@ import com.wing.forutona.FcubeDto.*;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -24,6 +29,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 @Component
 public class FcubeDao {
@@ -186,5 +192,79 @@ public class FcubeDao {
     public int deleteFcubeplayercontent(FcubeplayercontentExtender1 makeitem){
         FcubeplayercontentExtender1Mapper mapper = sqlSession.getMapper(FcubeplayercontentExtender1Mapper.class);
         return mapper.deleteFcubeplayercontent(makeitem);
+    }
+
+    @Async
+    public void UploadAuthForImage(ResponseBodyEmitter emitter,MultipartHttpServletRequest request){
+        try {
+            Storage storage =  googlesotrageAdmin.GetStorageInstance();
+            List<MultipartFile> getfile = request.getMultiFileMap().get("CubeAuthRelationImage");
+            String OriginalFile = getfile.get(0).getOriginalFilename();
+            int extentionindex = OriginalFile.lastIndexOf(".");
+            UUID uuid = UUID.randomUUID();
+            String savefilename = "";
+            if(extentionindex > 0){
+                String extention = OriginalFile.substring(extentionindex);
+                savefilename = uuid.toString() + extention;
+            }else {
+                savefilename = uuid.toString();
+            }
+            BlobId blobId = BlobId.of("publicforutona", "cuberelationimage/"+savefilename);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
+            storage.create(blobInfo, getfile.get(0).getBytes());
+            emitter.send("https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename);
+            emitter.complete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Async
+    public void deleteAuthForImage (ResponseBodyEmitter emitter,String url){
+        try{
+            Storage storage =  googlesotrageAdmin.GetStorageInstance();
+            String[] splititem = url.split("/");
+            String buket = splititem[3];
+            String pathname = splititem[4]+"/"+splititem[5];
+            BlobId blobId = BlobId.of(buket, pathname);
+            if(storage.delete(blobId)){
+                emitter.send(1);
+            }else {
+                emitter.send(0);
+            }
+            emitter.complete();
+        }catch (Exception ex){
+
+        }
+    }
+
+    @Async
+    @Transactional
+    public void requestFcubeQuestSuccess(ResponseBodyEmitter emitter,Fcubequestsuccess item){
+        Fcubeplayer searchplayer = new Fcubeplayer();
+        searchplayer.setCubeuuid(item.getCubeuuid());
+        searchplayer.setUid("");
+        FcubeplayerExtender1Mapper playermapper =  sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+        List<FcubeplayerExtender1> players = playermapper.selectPlayers(searchplayer);
+        //Maker Player 리스트에 삽입
+        FcubeplayerExtender1 maker = new FcubeplayerExtender1();
+        maker.setUid(item.getUid());
+        players.add(maker);
+        FcubequestsuccessMapper mapper = sqlSession.getMapper(FcubequestsuccessMapper.class);
+        for(int i=0;i<players.size();i++) {
+            Fcubequestsuccess tempitem = new Fcubequestsuccess();
+            tempitem.setContent(item.getContent());
+            tempitem.setCubeuuid(item.getCubeuuid());
+            tempitem.setFromuid(item.getFromuid());
+            tempitem.setReadingcheck(0);
+            tempitem.setScuesscheck(0);
+            tempitem.setUid(players.get(i).getUid());
+            mapper.insert(tempitem);
+        }
+        try {
+            emitter.send(1);
+            emitter.complete();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 }
