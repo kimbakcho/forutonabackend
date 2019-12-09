@@ -50,6 +50,7 @@
 
         <table schema="forutona" tableName="FcubePlayerContent" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
+        <table schema="forutona" tableName="FcubeQuestSuccessCheck" enableCountByExample="false" enableDeleteByExample="true"
+               enableSelectByExample="true" enableUpdateByExample="true" />
     </context>
 </generatorConfiguration>

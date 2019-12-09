@@ -237,34 +237,21 @@ public class FcubeDao {
         }
     }
 
-    @Async
-    @Transactional
-    public void requestFcubeQuestSuccess(ResponseBodyEmitter emitter,Fcubequestsuccess item){
-        Fcubeplayer searchplayer = new Fcubeplayer();
-        searchplayer.setCubeuuid(item.getCubeuuid());
-        searchplayer.setUid("");
-        FcubeplayerExtender1Mapper playermapper =  sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
-        List<FcubeplayerExtender1> players = playermapper.selectPlayers(searchplayer);
-        //Maker Player 리스트에 삽입
-        FcubeplayerExtender1 maker = new FcubeplayerExtender1();
-        maker.setUid(item.getUid());
-        players.add(maker);
+    public int requestFcubeQuestSuccess(Fcubequestsuccess item){
         FcubequestsuccessMapper mapper = sqlSession.getMapper(FcubequestsuccessMapper.class);
-        for(int i=0;i<players.size();i++) {
-            Fcubequestsuccess tempitem = new Fcubequestsuccess();
-            tempitem.setContent(item.getContent());
-            tempitem.setCubeuuid(item.getCubeuuid());
-            tempitem.setFromuid(item.getFromuid());
-            tempitem.setReadingcheck(0);
-            tempitem.setScuesscheck(0);
-            tempitem.setUid(players.get(i).getUid());
-            mapper.insert(tempitem);
-        }
-        try {
-            emitter.send(1);
-            emitter.complete();
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
+        item.setReadingcheck(0);
+        item.setScuesscheck(0);
+        return mapper.insert(item);
     }
+
+    public List<FcubequestsuccessExtender1> getQuestReqList(FcubequestsuccessExtender1 item){
+        FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
+        return mapper.getQuestReqList(item);
+    }
+    public int updateQuestReq(FcubequestsuccessExtender1 item){
+        item.setJudgmenttime(new Date());
+        FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
+        return mapper.updateQuestReq(item);
+    }
+
 }

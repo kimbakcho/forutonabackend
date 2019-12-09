@@ -249,18 +249,36 @@ public class FcubeController {
     }
 
     @PostMapping(value="/api/v1/Fcube/requestFcubeQuestSuccess")
-    ResponseBodyEmitter requestFcubeQuestSuccess(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+    int requestFcubeQuestSuccess(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                            @RequestBody Fcubequestsuccess item) throws IOException {
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
-        System.out.println(item.getContent());
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+
         if(ftoken !=null && ftoken.getUid().equals(item.getFromuid())) {
-            fcubeDao.requestFcubeQuestSuccess(emitter,item);
-            return emitter;
+            return fcubeDao.requestFcubeQuestSuccess(item);
         }
-        emitter.send(0);
-        emitter.complete();
+        return 0;
+    }
+
+    @PostMapping(value="/api/v1/Fcube/getQuestReqList")
+    List<FcubequestsuccessExtender1> getQuestReqList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                                     @RequestBody FcubequestsuccessExtender1 item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getFromuid())) {
+            return fcubeDao.getQuestReqList(item);
+        }
         return null;
+    }
+
+    @PostMapping(value="/api/v1/Fcube/updateQuestReq")
+    int updateQuestReq(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                                     @RequestBody FcubequestsuccessExtender1 item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
+            return fcubeDao.updateQuestReq(item);
+        }
+        return 0;
     }
 }
