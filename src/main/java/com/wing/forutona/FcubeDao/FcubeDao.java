@@ -254,4 +254,18 @@ public class FcubeDao {
         return mapper.updateQuestReq(item);
     }
 
+    public int updateQuesttoplayercomment(FcubequestsuccessExtender1 item) {
+        FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
+        return mapper.updateQuesttoplayercomment(item);
+    }
+
+    public List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(FcubequestsuccessExtender1 item){
+        FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
+        return mapper.getPlayerQuestSuccessList(item);
+    }
+
+    public int insertFcubeQuestSuccessCheck(Fcubequestsuccesscheck item){
+        FcubequestsuccesscheckMapper mapper = sqlSession.getMapper(FcubequestsuccesscheckMapper.class);
+        return mapper.insert(item);
+    }
 }

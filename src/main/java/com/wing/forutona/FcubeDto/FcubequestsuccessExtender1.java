@@ -8,4 +8,6 @@ public class FcubequestsuccessExtender1 extends  Fcubequestsuccess{
     String nickname;
     String profilepicktureurl;
     double userlevel;
+    String readuid;
+    int confirm;
 }

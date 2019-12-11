@@ -281,4 +281,34 @@ public class FcubeController {
         }
         return 0;
     }
+    @PostMapping(value="/api/v1/Fcube/updateQuesttoplayercomment")
+    int updateQuesttoplayercomment(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                       @RequestBody FcubequestsuccessExtender1 item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
+            return fcubeDao.updateQuesttoplayercomment(item);
+        }
+        return 0;
+    }
+    @PostMapping(value="/api/v1/Fcube/getPlayerQuestSuccessList")
+    List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                   @RequestBody FcubequestsuccessExtender1 item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getReaduid())) {
+            return fcubeDao.getPlayerQuestSuccessList(item);
+        }
+        return null;
+    }
+    @PostMapping(value="/api/v1/Fcube/insertFcubeQuestSuccessCheck")
+    int insertFcubeQuestSuccessCheck(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                     @RequestBody Fcubequestsuccesscheck item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getReaduid())) {
+            return fcubeDao.insertFcubeQuestSuccessCheck(item);
+        }
+        return 0;
+    }
 }

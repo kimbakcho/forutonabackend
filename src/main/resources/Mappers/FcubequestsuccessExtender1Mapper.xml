@@ -11,16 +11,19 @@
     <result column="ScuessCheck" jdbcType="INTEGER" property="scuesscheck" />
     <result column="ReqTime" jdbcType="TIMESTAMP" property="reqtime" />
     <result column="JudgmentTime" jdbcType="TIMESTAMP" property="judgmenttime" />
+    <result column="ToPlayerComment" jdbcType="VARCHAR" property="toplayercomment" />
     <result column="Content" jdbcType="LONGVARCHAR" property="content" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
+    <result column="ReadUid" jdbcType="VARCHAR" property="readuid" />
+    <result column="Confirm" jdbcType="INTEGER" property="confirm" />
   </resultMap>
 
   <select id="getQuestReqList" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1" resultMap="BaseResultMap" >
     SELECT  A.reqno, A.Cubeuuid, A.Uid, A.FromUid, A.ContentType, A.ReadingCheck, A.ScuessCheck, A.ReqTime,
-    A.JudgmentTime, A.Content,B.NickName,B.ProfilePicktureUrl,B.UserLevel FROM FcubeQuestSuccess A LEFT JOIN UserInfo B ON A.FromUid = B.Uid
-    WHERE A.Cubeuuid = #{cubeuuid} AND A.Uid = #{uid} ORDER BY ScuessCheck asc,ReqTime asc
+    A.JudgmentTime, A.Content,A.ToPlayerComment,B.NickName,B.ProfilePicktureUrl,B.UserLevel FROM FcubeQuestSuccess A LEFT JOIN UserInfo B ON A.FromUid = B.Uid
+    WHERE A.Cubeuuid = #{cubeuuid} AND A.Uid = #{uid} AND A.ReadingCheck = 0 ORDER BY ScuessCheck asc,ReqTime asc
   </select>
   <update id="updateQuestReq" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1">
     UPDATE  FcubeQuestSuccess
@@ -29,4 +32,16 @@
     JudgmentTime = #{judgmenttime}
     WHERE Cubeuuid = #{cubeuuid} AND FromUid = #{fromuid}
   </update>
+  <update id="updateQuesttoplayercomment" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1">
+    UPDATE  FcubeQuestSuccess
+    set ToPlayerComment = #{toplayercomment}
+    WHERE Cubeuuid = #{cubeuuid} AND FromUid = #{fromuid}
+  </update>
+  <select id="getPlayerQuestSuccessList" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1" resultMap="BaseResultMap">
+    SELECT A.reqno, A.Cubeuuid, A.Uid, A.FromUid, A.ContentType, A.ReadingCheck, A.ScuessCheck, A.ReqTime,
+    A.JudgmentTime, A.Content,A.ToPlayerComment,B.NickName,B.ProfilePicktureUrl,B.UserLevel,C.Confirm
+    FROM FcubeQuestSuccess A LEFT JOIN UserInfo B ON A.FromUid = B.Uid LEFT JOIN FcubeQuestSuccessCheck C
+	 ON A.Cubeuuid = C.Cubeuuid  AND A.Uid = C.Uid AND A.FromUid = C.FromUid AND C.ReadUid = #{readuid}
+	 WHERE A.Cubeuuid = #{cubeuuid} AND C.Confirm IS NULL
+  </select>
 </mapper>
