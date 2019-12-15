@@ -5,6 +5,9 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.auth.FirebaseToken;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.FcubeDto.*;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -26,6 +29,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -237,10 +241,10 @@ public class FcubeDao {
         }
     }
 
+
     public int requestFcubeQuestSuccess(Fcubequestsuccess item){
         FcubequestsuccessMapper mapper = sqlSession.getMapper(FcubequestsuccessMapper.class);
-        item.setReadingcheck(0);
-        item.setScuesscheck(0);
+        item.setJudgmenttime(new Date());
         return mapper.insert(item);
     }
 
@@ -248,10 +252,58 @@ public class FcubeDao {
         FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
         return mapper.getQuestReqList(item);
     }
-    public int updateQuestReq(FcubequestsuccessExtender1 item){
-        item.setJudgmenttime(new Date());
-        FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
-        return mapper.updateQuestReq(item);
+
+    @Async
+    @Transactional
+    public void updateQuestReq(ResponseBodyEmitter emitter,FcubequestsuccessExtender1 item){
+        FcubecontentExtend1Mapper contentmapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
+        FcubequestsuccessExtender1Mapper cubequestsuccessExtender = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
+        FcubeMapper fcubeMapper = sqlSession.getMapper(FcubeMapper.class);
+        FcubeExtend1Mapper fcubeExtenderMapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
+        FcubeContentSelector contentselector = new FcubeContentSelector();
+        contentselector.setCubeuuid(item.getCubeuuid());
+        ArrayList<String> cubetype = new ArrayList<String>();
+        cubetype.add("etcCubemode");
+        contentselector.setContenttypes(cubetype);
+        List<Fcubecontent> contentitems = contentmapper.selectwithFcubeContentSelector(contentselector);
+        try{
+            if(contentitems.size() > 0){
+                var etcCubemode = contentitems.get(0);
+                JsonElement etcCubemoderoot = JsonParser.parseString(etcCubemode.getContentvalue());
+                var etcCubemoderootobj= etcCubemoderoot.getAsJsonObject();
+                String etcquestmode = etcCubemoderootobj.get("mode").getAsString();
+                //single Scuess 모드에서는 1명만 성공 할수 있다.
+                if(etcquestmode.equals("singleSucess")){
+                    List<FcubequestsuccessExtender1> sucessList=  cubequestsuccessExtender.getQuestSucessList(item);
+                    if(sucessList.size() > 0){
+                        //실패 처리
+                        item.setReadingcheck(1);
+                        item.setScuesscheck(0);
+                        item.setJudgmenttime(new Date());
+                        if(cubequestsuccessExtender.updateQuestReq(item)>0){
+                            emitter.send(2);
+                        }else {
+                            emitter.send(0);
+                        }
+                    }else {
+                        item.setJudgmenttime(new Date());
+                        item.setReadingcheck(1);
+                        //큐브 완료 처리 해줌.
+                        var findfcube = fcubeMapper.selectByPrimaryKey(item.getCubeuuid());
+                        findfcube.setCubestate(2);
+                        fcubeExtenderMapper.updateCubeState(findfcube);
+                        emitter.send(cubequestsuccessExtender.updateQuestReq(item));
+                    }
+                    emitter.complete();
+                }else {
+                    emitter.complete();
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            emitter.complete();
+        }
+
     }
 
     public int updateQuesttoplayercomment(FcubequestsuccessExtender1 item) {

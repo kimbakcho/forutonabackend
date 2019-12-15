@@ -253,9 +253,8 @@ public class FcubeController {
                                            @RequestBody Fcubequestsuccess item) throws IOException {
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
-
         if(ftoken !=null && ftoken.getUid().equals(item.getFromuid())) {
-            return fcubeDao.requestFcubeQuestSuccess(item);
+            return  fcubeDao.requestFcubeQuestSuccess(item);
         }
         return 0;
     }
@@ -272,20 +271,22 @@ public class FcubeController {
     }
 
     @PostMapping(value="/api/v1/Fcube/updateQuestReq")
-    int updateQuestReq(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+    ResponseBodyEmitter updateQuestReq(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                                      @RequestBody FcubequestsuccessExtender1 item){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
-            return fcubeDao.updateQuestReq(item);
+            fcubeDao.updateQuestReq(emitter,item);
         }
-        return 0;
+        return emitter;
     }
     @PostMapping(value="/api/v1/Fcube/updateQuesttoplayercomment")
     int updateQuesttoplayercomment(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                        @RequestBody FcubequestsuccessExtender1 item){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+
         if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
             return fcubeDao.updateQuesttoplayercomment(item);
         }
@@ -301,6 +302,7 @@ public class FcubeController {
         }
         return null;
     }
+
     @PostMapping(value="/api/v1/Fcube/insertFcubeQuestSuccessCheck")
     int insertFcubeQuestSuccessCheck(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                      @RequestBody Fcubequestsuccesscheck item){

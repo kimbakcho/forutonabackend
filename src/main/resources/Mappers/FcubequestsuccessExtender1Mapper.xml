@@ -25,6 +25,17 @@
     A.JudgmentTime, A.Content,A.ToPlayerComment,B.NickName,B.ProfilePicktureUrl,B.UserLevel FROM FcubeQuestSuccess A LEFT JOIN UserInfo B ON A.FromUid = B.Uid
     WHERE A.Cubeuuid = #{cubeuuid} AND A.Uid = #{uid} AND A.ReadingCheck = 0 ORDER BY ScuessCheck asc,ReqTime asc
   </select>
+  <select id="getQuestSucessList" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1" resultMap="BaseResultMap" >
+    SELECT  A.reqno, A.Cubeuuid, A.Uid, A.FromUid, A.ContentType, A.ReadingCheck, A.ScuessCheck, A.ReqTime,
+    A.JudgmentTime, A.Content,A.ToPlayerComment,B.NickName,B.ProfilePicktureUrl,B.UserLevel FROM FcubeQuestSuccess A LEFT JOIN UserInfo B ON A.FromUid = B.Uid
+    WHERE A.Cubeuuid = #{cubeuuid} AND A.Uid = #{uid} AND A.ScuessCheck = 1 ORDER BY ReqTime asc FOR UPDATE
+  </select>
+  <update id="updateAllReadingCheck" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1">
+    UPDATE  FcubeQuestSuccess
+        set ReadingCheck = #{readingcheck},
+    WHERE Cubeuuid = #{cubeuuid}
+  </update>
+
   <update id="updateQuestReq" parameterType="com.wing.forutona.FcubeDto.FcubequestsuccessExtender1">
     UPDATE  FcubeQuestSuccess
     set ReadingCheck = #{readingcheck},
