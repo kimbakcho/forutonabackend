@@ -16,6 +16,7 @@ public class AsyncThreadConfiguration {
         threadPoolTaskExecutor.setCorePoolSize(4);
         threadPoolTaskExecutor.setMaxPoolSize(4);
         threadPoolTaskExecutor.setThreadNamePrefix("forutona-pro-pool");
+
         return threadPoolTaskExecutor;
     }
 }
