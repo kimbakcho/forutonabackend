@@ -10,4 +10,5 @@ public class FcubequestsuccessExtender1 extends  Fcubequestsuccess{
     double userlevel;
     String readuid;
     int confirm;
+    String fcmtoken;
 }

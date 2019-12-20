@@ -12,7 +12,7 @@
     <result column="CommntTime" jdbcType="TIMESTAMP" property="commnttime" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
-
+    <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
   </resultMap>
 
   <select id="SelectBgroubReplyMax" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultType="INTEGER">
@@ -49,7 +49,7 @@
     #{commnttext,jdbcType=VARCHAR})
   </insert>
   <select id="SelectReplyForCube" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultMap="BaseResultMap" >
-    SELECT A.CommntNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl
+    SELECT A.CommntNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
     FROM FcubeReply A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
     ORDER BY A.Bgroup desc, A.Sorts asc

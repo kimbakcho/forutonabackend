@@ -30,6 +30,7 @@
     <result column="CubeDisLikes" jdbcType="INTEGER" property="cubedislikes" />
     <result column="JoinPlayer" jdbcType="INTEGER" property="joinplayer" />
     <result column="MaximumPlayers" jdbcType="INTEGER" property="maximumplayers" />
+    <result column="StarPoints" jdbcType="DOUBLE" property="starpoints" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
@@ -51,8 +52,8 @@
       PointReward, InfluenceReward, ActivationTime, 
       CubePassword, HasPassword, CubeScope, 
       InfluenceLevel, CubeHits, CubeLikes, 
-      CubeDisLikes, JoinPlayer, MaximumPlayers
-      )
+      CubeDisLikes, JoinPlayer, MaximumPlayers, 
+      StarPoints)
     values (#{cubeuuid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{cubename,jdbcType=VARCHAR}, #{cubetype,jdbcType=VARCHAR}, 
       #{maketime,jdbcType=TIMESTAMP}, #{influence,jdbcType=DOUBLE}, #{cubestate,jdbcType=INTEGER}, 
@@ -60,8 +61,8 @@
       #{pointreward,jdbcType=DOUBLE}, #{influencereward,jdbcType=DOUBLE}, #{activationtime,jdbcType=TIMESTAMP}, 
       #{cubepassword,jdbcType=VARCHAR}, #{haspassword,jdbcType=INTEGER}, #{cubescope,jdbcType=INTEGER}, 
       #{influencelevel,jdbcType=DOUBLE}, #{cubehits,jdbcType=INTEGER}, #{cubelikes,jdbcType=INTEGER}, 
-      #{cubedislikes,jdbcType=INTEGER}, #{joinplayer,jdbcType=INTEGER}, #{maximumplayers,jdbcType=INTEGER}
-      )
+      #{cubedislikes,jdbcType=INTEGER}, #{joinplayer,jdbcType=INTEGER}, #{maximumplayers,jdbcType=INTEGER}, 
+      #{starpoints,jdbcType=DOUBLE})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.wing.forutona.FcubeDto.Fcube">
     <!--
@@ -91,7 +92,8 @@
       CubeLikes = #{cubelikes,jdbcType=INTEGER},
       CubeDisLikes = #{cubedislikes,jdbcType=INTEGER},
       JoinPlayer = #{joinplayer,jdbcType=INTEGER},
-      MaximumPlayers = #{maximumplayers,jdbcType=INTEGER}
+      MaximumPlayers = #{maximumplayers,jdbcType=INTEGER},
+      StarPoints = #{starpoints,jdbcType=DOUBLE}
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -102,7 +104,7 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward, 
     ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes, 
-    CubeDisLikes, JoinPlayer, MaximumPlayers
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
     from Fcube
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </select>
@@ -114,7 +116,7 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward, 
     ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes, 
-    CubeDisLikes, JoinPlayer, MaximumPlayers
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
     from Fcube
   </select>
 </mapper>

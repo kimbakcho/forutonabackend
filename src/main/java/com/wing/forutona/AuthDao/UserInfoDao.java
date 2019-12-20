@@ -317,4 +317,8 @@ public class UserInfoDao {
         UserinfoMainMapper mapper  = sqlSession.getMapper(UserinfoMainMapper.class);
         return mapper.updateCurrentPosition(userinfo);
     }
+    public int updateFCMtoken(UserInfoMain userinfo){
+        UserinfoMainMapper mapper  = sqlSession.getMapper(UserinfoMainMapper.class);
+        return mapper.updateFCMtoken(userinfo);
+    }
 }

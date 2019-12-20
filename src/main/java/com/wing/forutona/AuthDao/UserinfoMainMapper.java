@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface UserinfoMainMapper extends UserinfoMapper{
     int updateCurrentPosition(UserInfoMain item);
+    int updateFCMtoken(UserInfoMain item);
 }

@@ -24,8 +24,12 @@
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
     <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
+    <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
   </resultMap>
   <update id="updateCurrentPosition" parameterType="com.wing.forutona.AuthDto.UserInfoMain">
     UPDATE UserInfo Set latitude = #{latitude},longitude= #{longitude} Where Uid = #{uid}
+  </update>
+  <update id="updateFCMtoken" parameterType="com.wing.forutona.AuthDto.UserInfoMain">
+    UPDATE UserInfo Set FCMtoken = #{fcmtoken} Where Uid = #{uid}
   </update>
 </mapper>

@@ -19,11 +19,12 @@
     <result column="PlayState" jdbcType="INTEGER" property="playstate" />
     <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
+    <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
   </resultMap>
   <select id="selectPlayers" parameterType="com.wing.forutona.FcubeDto.Fcubeplayer" resultMap="BaseResultMap">
     SELECT A.idx, A.Cubeuuid, A.Uid,A.HasLike,A.HasDisLike,
     A.HasGiveup,A.StartTime,A.PlayState ,B.latitude,B.longitude,
-    B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel
+    B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken
      FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}

@@ -13,5 +13,6 @@ public class FcubeExtender1 extends Fcube{
     String contentvalue;
     Date positionupdatetime;
     double userlevel;
+    String fcmtoken;
 
 }

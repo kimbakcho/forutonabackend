@@ -12,4 +12,5 @@ public class FcubeplayerExtender1 extends Fcubeplayer{
    double longitude;
    Date positionupdatetime;
    double userlevel;
+   String fcmtoken;
 }

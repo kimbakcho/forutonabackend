@@ -271,34 +271,38 @@ public class FcubeDao {
                 var etcCubemode = contentitems.get(0);
                 JsonElement etcCubemoderoot = JsonParser.parseString(etcCubemode.getContentvalue());
                 var etcCubemoderootobj= etcCubemoderoot.getAsJsonObject();
-                String etcquestmode = etcCubemoderootobj.get("mode").getAsString();
-                //single Scuess 모드에서는 1명만 성공 할수 있다.
-                if(etcquestmode.equals("singleSucess")){
-                    List<FcubequestsuccessExtender1> sucessList=  cubequestsuccessExtender.getQuestSucessList(item);
-                    if(sucessList.size() > 0){
-                        //실패 처리
-                        item.setReadingcheck(1);
-                        item.setScuesscheck(0);
-                        item.setJudgmenttime(new Date());
-                        if(cubequestsuccessExtender.updateQuestReq(item)>0){
-                            emitter.send(2);
-                        }else {
-                            emitter.send(0);
-                        }
+                int maxScuess = etcCubemoderootobj.get("maxSuccess").getAsInt();
+                //single Sucess 모드에서는 1명만 성공 할수 있다.
+                List<FcubequestsuccessExtender1> successList=  cubequestsuccessExtender.getQuestSucessList(item);
+                if(successList.size() >= maxScuess){
+                    //실패 처리
+                    item.setReadingcheck(1);
+                    item.setScuesscheck(0);
+                    item.setJudgmenttime(new Date());
+                    if(cubequestsuccessExtender.updateQuestReq(item)>0){
+                        emitter.send(2);
                     }else {
-                        item.setJudgmenttime(new Date());
-                        item.setReadingcheck(1);
-                        //큐브 완료 처리 해줌.
-                        var findfcube = fcubeMapper.selectByPrimaryKey(item.getCubeuuid());
-                        findfcube.setCubestate(2);
-                        fcubeExtenderMapper.updateCubeState(findfcube);
-                        emitter.send(cubequestsuccessExtender.updateQuestReq(item));
+                        emitter.send(0);
                     }
-                    emitter.complete();
+                }else if((successList.size()+1) == maxScuess){
+                    item.setJudgmenttime(new Date());
+                    item.setReadingcheck(1);
+                    //큐브 완전 완료 처리 해줌.
+                    var findfcube = fcubeMapper.selectByPrimaryKey(item.getCubeuuid());
+                    findfcube.setCubestate(2);
+                    fcubeExtenderMapper.updateCubeState(findfcube);
+                    emitter.send(cubequestsuccessExtender.updateQuestReq(item));
                 }else {
-                    emitter.complete();
+                    //완료 처리 해줌
+                    item.setJudgmenttime(new Date());
+                    item.setReadingcheck(1);
+                    emitter.send(cubequestsuccessExtender.updateQuestReq(item));
                 }
-            }
+                emitter.complete();
+         }else {
+             emitter.complete();
+         }
+
         }catch (Exception ex){
             ex.printStackTrace();
             emitter.complete();

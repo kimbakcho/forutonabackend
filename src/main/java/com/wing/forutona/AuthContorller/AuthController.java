@@ -80,4 +80,15 @@ public class AuthController {
             return 0;
         }
     }
+
+    @PostMapping(value = "/api/v1/Auth/updateFCMtoken")
+    int updateFCMtoken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody UserInfoMain userinfo ){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(userinfo.getUid())) {
+            return userInfoDao.updateFCMtoken(userinfo);
+        }else {
+            return 0;
+        }
+    }
 }
