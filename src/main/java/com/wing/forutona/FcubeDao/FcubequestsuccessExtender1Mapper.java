@@ -12,4 +12,5 @@ public interface FcubequestsuccessExtender1Mapper extends  FcubequestsuccessMapp
     int updateQuestReq(FcubequestsuccessExtender1 item);
     int updateQuesttoplayercomment(FcubequestsuccessExtender1 item);
     List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(FcubequestsuccessExtender1 item);
+
 }

@@ -292,6 +292,17 @@ public class FcubeController {
         }
         return 0;
     }
+    @PostMapping(value="/api/v1/Fcube/insertFcubeReview")
+    int insertFcubeReview(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                   @RequestBody Fcubereview item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
+            return fcubeDao.insertFcubeReview(item);
+        }
+        return 0;
+    }
+
     @PostMapping(value="/api/v1/Fcube/getPlayerQuestSuccessList")
     List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                    @RequestBody FcubequestsuccessExtender1 item){
@@ -312,5 +323,10 @@ public class FcubeController {
             return fcubeDao.insertFcubeQuestSuccessCheck(item);
         }
         return 0;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getFcubestate")
+    Fcube getFcubestate(@RequestParam String cubeuuid){
+        return fcubeDao.getFcubestate(cubeuuid);
     }
 }

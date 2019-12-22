@@ -315,6 +315,11 @@ public class FcubeDao {
         return mapper.updateQuesttoplayercomment(item);
     }
 
+    public int insertFcubeReview(Fcubereview item){
+        FcubereviewMapper mapper = sqlSession.getMapper(FcubereviewMapper.class);
+        return mapper.insert(item);
+    }
+
     public List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(FcubequestsuccessExtender1 item){
         FcubequestsuccessExtender1Mapper mapper = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
         return mapper.getPlayerQuestSuccessList(item);
@@ -323,5 +328,10 @@ public class FcubeDao {
     public int insertFcubeQuestSuccessCheck(Fcubequestsuccesscheck item){
         FcubequestsuccesscheckMapper mapper = sqlSession.getMapper(FcubequestsuccesscheckMapper.class);
         return mapper.insert(item);
+    }
+
+    public Fcube getFcubestate(String cubeuuid){
+      FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
+      return mapper.selectByPrimaryKey(cubeuuid);
     }
 }
