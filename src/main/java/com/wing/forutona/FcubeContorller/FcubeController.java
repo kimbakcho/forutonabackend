@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -329,4 +330,37 @@ public class FcubeController {
     Fcube getFcubestate(@RequestParam String cubeuuid){
         return fcubeDao.getFcubestate(cubeuuid);
     }
+
+    @GetMapping(value = "/api/v1/Fcube/getPlayerJoinList")
+    ResponseBodyEmitter getPlayerJoinList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                                HttpServletResponse response,
+                                                 @RequestParam String uid,@RequestParam int offset,@RequestParam int limit){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(uid)) {
+            response.addHeader("content-type","application/json;charset=UTF-8");
+            FcubeplayerSearch item = new FcubeplayerSearch();
+            item.setUid(uid);
+            item.setOffset(offset);
+            item.setLimit(limit);
+            fcubeDao.getPlayerJoinList(emitter,item);
+        }
+        return emitter;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getFcubeExtender1")
+    ResponseBodyEmitter getFcubeExtender1(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                          HttpServletResponse response,
+                                          @RequestParam String uid,@RequestParam String cubeuuid){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(uid)) {
+            response.addHeader("content-type","application/json;charset=UTF-8");
+            fcubeDao.getPlayerJoinList(emitter,cubeuuid);
+        }
+        return emitter;
+    }
+
 }

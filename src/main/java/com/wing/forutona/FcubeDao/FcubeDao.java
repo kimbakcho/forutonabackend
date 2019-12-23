@@ -26,13 +26,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Future;
 
 @Component
@@ -272,14 +270,20 @@ public class FcubeDao {
                 JsonElement etcCubemoderoot = JsonParser.parseString(etcCubemode.getContentvalue());
                 var etcCubemoderootobj= etcCubemoderoot.getAsJsonObject();
                 int maxScuess = etcCubemoderootobj.get("maxSuccess").getAsInt();
-                //single Sucess 모드에서는 1명만 성공 할수 있다.
                 List<FcubequestsuccessExtender1> successList=  cubequestsuccessExtender.getQuestSucessList(item);
                 if(successList.size() >= maxScuess){
                     //실패 처리
                     item.setReadingcheck(1);
                     item.setScuesscheck(0);
                     item.setJudgmenttime(new Date());
-                    if(cubequestsuccessExtender.updateQuestReq(item)>0){
+                    int updateresult1 = cubequestsuccessExtender.updateQuestReq(item);
+                    FcubeplayerExtender1Mapper fcubeplayerExtender1Mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+                    Fcubeplayer player = new Fcubeplayer();
+                    player.setUid(item.getFromuid());
+                    player.setCubeuuid(item.getCubeuuid());
+                    player.setPlaystate(2);
+                    int updateresult2 = fcubeplayerExtender1Mapper.updatePlayerplaystate(player);
+                    if((updateresult1>0) && (updateresult2>0)){
                         emitter.send(2);
                     }else {
                         emitter.send(0);
@@ -291,12 +295,35 @@ public class FcubeDao {
                     var findfcube = fcubeMapper.selectByPrimaryKey(item.getCubeuuid());
                     findfcube.setCubestate(2);
                     fcubeExtenderMapper.updateCubeState(findfcube);
-                    emitter.send(cubequestsuccessExtender.updateQuestReq(item));
+                    int updateresult1 = cubequestsuccessExtender.updateQuestReq(item);
+                    FcubeplayerExtender1Mapper fcubeplayerExtender1Mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+                    Fcubeplayer player = new Fcubeplayer();
+                    player.setUid(item.getFromuid());
+                    player.setCubeuuid(item.getCubeuuid());
+                    player.setPlaystate(2);
+                    int updateresult2 = fcubeplayerExtender1Mapper.updatePlayerplaystate(player);
+                    if((updateresult1>0) && (updateresult2>0)){
+                        emitter.send(1);
+                    }else {
+                        emitter.send(0);
+                    }
+
                 }else {
                     //완료 처리 해줌
                     item.setJudgmenttime(new Date());
                     item.setReadingcheck(1);
-                    emitter.send(cubequestsuccessExtender.updateQuestReq(item));
+                    int updateresult1 = cubequestsuccessExtender.updateQuestReq(item);
+                    FcubeplayerExtender1Mapper fcubeplayerExtender1Mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+                    Fcubeplayer player = new Fcubeplayer();
+                    player.setUid(item.getFromuid());
+                    player.setCubeuuid(item.getCubeuuid());
+                    player.setPlaystate(2);
+                    int updateresult2 = fcubeplayerExtender1Mapper.updatePlayerplaystate(player);
+                    if((updateresult1>0) && (updateresult2>0)){
+                        emitter.send(1);
+                    }else {
+                        emitter.send(0);
+                    }
                 }
                 emitter.complete();
          }else {
@@ -334,4 +361,36 @@ public class FcubeDao {
       FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
       return mapper.selectByPrimaryKey(cubeuuid);
     }
+
+    public int updatePlayerplaystate(Fcubeplayer item){
+        FcubeplayerExtender1Mapper mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
+        return mapper.insert(item);
+    }
+
+    @Async
+    public void getPlayerJoinList(ResponseBodyEmitter emitter,FcubeplayerSearch item)  {
+
+        FcubeplayerExtender2Mapper mapper = sqlSession.getMapper(FcubeplayerExtender2Mapper.class);
+        try{
+            emitter.send(mapper.selectPlayerJoinList(item));
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        emitter.complete();
+
+    }
+
+    @Async
+    public void getPlayerJoinList(ResponseBodyEmitter emitter,String cubeuuid)  {
+
+        FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
+        try{
+            emitter.send(mapper.getFcubeExtender1(cubeuuid));
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        emitter.complete();
+
+    }
+
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FcubeplayerExtender1Mapper extends FcubeplayerMapper{
     List<FcubeplayerExtender1> selectPlayers(Fcubeplayer player);
+    int updatePlayerplaystate(Fcubeplayer player);
 }

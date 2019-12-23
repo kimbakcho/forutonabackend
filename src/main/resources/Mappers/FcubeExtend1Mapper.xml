@@ -34,6 +34,15 @@
       A.Uid = #{uid}
     </where>
   </select>
+  
+  <select id="getFcubeExtender1" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
+    A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
+    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,
+    A.MaximumPlayers,A.StarPoints,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    WHERE A.Cubeuuid = #{cubeuuid}
+  </select>
+  
   <update id="updateCubeState" parameterType="com.wing.forutona.FcubeDto.Fcube">
     UPDATE Fcube SET CubeState = #{cubestate,jdbcType=INTEGER},ActivationTime = #{activationtime,jdbcType=TIMESTAMP}
     where Cubeuuid =  #{cubeuuid,jdbcType=VARCHAR}
