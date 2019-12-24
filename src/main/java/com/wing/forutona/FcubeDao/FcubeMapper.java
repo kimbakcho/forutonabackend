@@ -43,4 +43,6 @@ public interface FcubeMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Fcube record);
+
+
 }

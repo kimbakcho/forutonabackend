@@ -43,4 +43,6 @@ public interface FcubereviewMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Fcubereview record);
+
+    List<Fcubereview> selectFcubeReview(Fcubereview item);
 }

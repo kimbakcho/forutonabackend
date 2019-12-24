@@ -393,4 +393,15 @@ public class FcubeDao {
 
     }
 
+    @Async
+    public void selectFcubeReview(ResponseBodyEmitter emitter,Fcubereview item){
+        FcubereviewMapper mapper = sqlSession.getMapper(FcubereviewMapper.class);
+        try{
+            emitter.send(mapper.selectFcubeReview(item));
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        emitter.complete();
+    }
+
 }

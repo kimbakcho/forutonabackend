@@ -359,6 +359,28 @@ public class FcubeController {
         if(ftoken !=null && ftoken.getUid().equals(uid)) {
             response.addHeader("content-type","application/json;charset=UTF-8");
             fcubeDao.getPlayerJoinList(emitter,cubeuuid);
+        }else {
+            emitter.complete();
+        }
+        return emitter;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getFcubeReview")
+    ResponseBodyEmitter getFcubeReview(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                          HttpServletResponse response,
+                                          @RequestParam String cubeuuid,@RequestParam String uid)
+    {
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(uid)) {
+            response.addHeader("content-type","application/json;charset=UTF-8");
+            Fcubereview item = new Fcubereview();
+            item.setCubeuuid(cubeuuid);
+            item.setUid(uid);
+            fcubeDao.selectFcubeReview(emitter,item);
+        }else {
+            emitter.complete();
         }
         return emitter;
     }

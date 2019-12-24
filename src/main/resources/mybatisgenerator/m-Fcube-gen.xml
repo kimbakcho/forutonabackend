@@ -4,7 +4,6 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
 
-
     <classPathEntry
             location="C:\Users\backho\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
 
@@ -20,41 +19,34 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.wing.forutona.FcubeDto" targetProject=".">
+        <javaModelGenerator targetPackage="com.wing.forutona.FcubeDto" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="Mappers" targetProject=".">
+        <sqlMapGenerator targetPackage="Mappers" targetProject="src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator targetPackage="com.wing.forutona.FcubeDao" type="XMLMAPPER" targetProject=".">
+        <javaClientGenerator targetPackage="com.wing.forutona.FcubeDao" type="XMLMAPPER" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
         <table schema="forutona" tableName="Fcube" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true"/>
-
         <table schema="forutona" tableName="FcubeContent" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
         <table schema="forutona" tableName="FcubeReply" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
         <table schema="forutona" tableName="FcubePlayer" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
         <table schema="forutona" tableName="FcubeQuestSuccess" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
         <table schema="forutona" tableName="FcubePlayerContent" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
         <table schema="forutona" tableName="FcubeQuestSuccessCheck" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
         <table schema="forutona" tableName="FcubeReview" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
-
     </context>
 </generatorConfiguration>

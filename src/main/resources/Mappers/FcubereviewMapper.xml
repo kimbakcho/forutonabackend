@@ -59,4 +59,8 @@
     select idx, Cubeuuid, Uid, toMakerComment, StarPoint
     from FcubeReview
   </select>
+  <select id="selectFcubeReview" parameterType="com.wing.forutona.FcubeDto.Fcubereview" resultMap="BaseResultMap">
+    SELECT idx, Cubeuuid, Uid, toMakerComment, StarPoint FROM  FcubeReview
+    where Cubeuuid = #{cubeuuid} AND Uid = #{uid}
+  </select>
 </mapper>

@@ -67,4 +67,8 @@
     select CommntNo, Cubeuuid, Uid, Bgroup, Sorts, Depth, CommntText, CommntTime
     from FcubeReply
   </select>
+  <select id="testmarge" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select CommntNo, Cubeuuid, Uid, Bgroup, Sorts, Depth, CommntText, CommntTime
+    from FcubeReply
+  </select>
 </mapper>
