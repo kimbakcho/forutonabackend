@@ -9,6 +9,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
+import com.wing.forutona.AuthDao.UserexppointhistroyMapper;
+import com.wing.forutona.AuthDao.UserinfoMapper;
+import com.wing.forutona.AuthDto.Userexppointhistroy;
+import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.FcubeDto.*;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.apache.ibatis.session.SqlSession;
@@ -174,9 +178,15 @@ public class FcubeDao {
         return mapper.findNearDistanceCube(searchItem);
     }
 
+    @Transactional
     public int insertFcubePlayer(Fcubeplayer fcubeplayer){
-        FcubeplayerMapper mapper = sqlSession.getMapper(FcubeplayerMapper.class);
-        return mapper.insert(fcubeplayer);
+        FcubeMapper fcubemapper = sqlSession.getMapper(FcubeMapper.class);
+        Fcube cube = fcubemapper.selectforupdate(fcubeplayer.getCubeuuid());
+        FcubeplayerMapper playerMapper = sqlSession.getMapper(FcubeplayerMapper.class);
+        playerMapper.insert(fcubeplayer);
+        int playerCount = playerMapper.selectPlayercount(fcubeplayer);
+        cube.setJoinplayer(playerCount);
+        return fcubemapper.updatejoinplayerscount(cube);
     }
 
     public List<FcubeplayercontentExtender1> selectwithFcubeplayercontentSelector(FcubeplayercontentSelector selectitem){
@@ -343,8 +353,45 @@ public class FcubeDao {
     }
 
     public int insertFcubeReview(Fcubereview item){
+        //별점 포인트 해킹 방지
+        if(item.getStarpoint() > 5.0) {
+            item.setStarpoint(5.0);
+        }
         FcubereviewMapper mapper = sqlSession.getMapper(FcubereviewMapper.class);
         return mapper.insert(item);
+    }
+
+    @Async
+    @Transactional
+    public void insertFcubeReviewExpPoint(ResponseBodyEmitter emitter,Fcubereview item) throws IOException {
+        //별점 포인트 해킹 방지
+        if(item.getStarpoint() > 5.0) {
+            item.setStarpoint(5.0);
+        }
+        FcubereviewMapper reviewmapper = sqlSession.getMapper(FcubereviewMapper.class);
+        UserexppointhistroyMapper exphistorymapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
+        FcubeMapper cubeMapper =  sqlSession.getMapper(FcubeMapper.class);
+        UserinfoMapper userinfoMapper =  sqlSession.getMapper(UserinfoMapper.class);
+        List<Fcubereview> finditem = reviewmapper.selectFcubeReview(item);
+        if(finditem.size()==1){
+            Fcube fcube = cubeMapper.selectByPrimaryKey(item.getCubeuuid());
+            Userexppointhistroy userexppointhistroy = new Userexppointhistroy();
+            userexppointhistroy.setCubeuuid(item.getCubeuuid());
+            userexppointhistroy.setUid(fcube.getUid());
+            userexppointhistroy.setFromuid(item.getUid());
+            userexppointhistroy.setExplains("ReviewPoint");
+            userexppointhistroy.setPoints(10+item.getStarpoint());
+            userexppointhistroy.setGettime(new Date());
+            exphistorymapper.insert(userexppointhistroy);
+            Userinfo userinfo = userinfoMapper.selectforupdate(fcube.getUid());
+            userinfo.setExppoint(userinfo.getExppoint() + userexppointhistroy.getPoints());
+            userinfoMapper.updateUserExpPoint(userinfo);
+            emitter.send(1);
+            emitter.complete();
+            return ;
+        }
+        emitter.send(1);
+        emitter.complete();
     }
 
     public List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(FcubequestsuccessExtender1 item){
@@ -404,4 +451,22 @@ public class FcubeDao {
         emitter.complete();
     }
 
+    @Async
+    @Transactional
+    public void updateCubeHitPoint(ResponseBodyEmitter emitter,String cubeuuid) throws IOException {
+        FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
+        Fcube cube = mapper.selectforupdate(cubeuuid);
+        cube.setCubehits(cube.getCubehits() == null ? 0:cube.getCubehits());
+        cube.setCubehits(cube.getCubehits() + 1 );
+        mapper.updateCubeHitPoint(cube);
+        emitter.send(cube.getCubehits());
+        emitter.complete();
+    }
+
+    @Async
+    public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,String cubeuuid) throws IOException{
+        UserexppointhistroyMapper mapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
+        emitter.send(mapper.getCubeuuidGetPoint(cubeuuid));
+        emitter.complete();
+    }
 }

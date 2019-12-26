@@ -1,6 +1,7 @@
 package com.wing.forutona.AuthDao;
 
 import com.wing.forutona.AuthDto.Userinfo;
+
 import java.util.List;
 
 public interface UserinfoMapper {
@@ -43,4 +44,8 @@ public interface UserinfoMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Userinfo record);
+
+    Userinfo selectforupdate(String uid);
+
+    int updateUserExpPoint(Userinfo record);
 }

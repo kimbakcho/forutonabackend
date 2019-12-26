@@ -127,10 +127,10 @@
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<configurationFile>src/main/resources/mybatisgenerator/m-Fcube-gen.xml</configurationFile>
+					<configurationFile>src/main/resources/mybatisgenerator/m-Auth-mybatis-generator.xml</configurationFile>
 					<overwrite>false</overwrite>
 					<tableNames>
-						forutona.FcubeQuestSuccessCheck
+						forutona.UserExpPointHistroy
 					</tableNames>
 				</configuration>
 				<dependencies>

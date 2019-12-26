@@ -293,6 +293,7 @@ public class FcubeController {
         }
         return 0;
     }
+
     @PostMapping(value="/api/v1/Fcube/insertFcubeReview")
     int insertFcubeReview(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                    @RequestBody Fcubereview item){
@@ -303,6 +304,24 @@ public class FcubeController {
         }
         return 0;
     }
+
+    @PostMapping(value = "/api/v1/Fcube/insertFcubeReviewExpPoint")
+    ResponseBodyEmitter insertFcubeReviewExpPoint(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                  @RequestBody Fcubereview item){
+        token = token.replace("Bearer ","");
+        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        if(ftoken !=null && ftoken.getUid().equals(item.getUid())) {
+           try {
+               fcubeDao.insertFcubeReviewExpPoint(emitter,item);
+           }catch (Exception ex){
+               ex.printStackTrace();
+               emitter.complete();
+           }
+        }
+        return emitter;
+    }
+
 
     @PostMapping(value="/api/v1/Fcube/getPlayerQuestSuccessList")
     List<FcubequestsuccessExtender1> getPlayerQuestSuccessList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
@@ -385,4 +404,27 @@ public class FcubeController {
         return emitter;
     }
 
+    @PostMapping(value = "/api/v1/Fcube/updateCubeHitPoint")
+    ResponseBodyEmitter updateCubeHitPoint(@RequestParam String cubeuuid){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        try {
+            fcubeDao.updateCubeHitPoint(emitter,cubeuuid);
+        } catch (IOException e) {
+            emitter.complete();
+            e.printStackTrace();
+        }
+        return emitter;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getCubeuuidGetPoint")
+    ResponseBodyEmitter getCubeuuidGetPoint(@RequestParam String cubeuuid) {
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        try {
+            fcubeDao.getCubeuuidGetPoint(emitter,cubeuuid);
+        } catch (IOException e) {
+            emitter.complete();
+            e.printStackTrace();
+        }
+        return emitter;
+    }
 }

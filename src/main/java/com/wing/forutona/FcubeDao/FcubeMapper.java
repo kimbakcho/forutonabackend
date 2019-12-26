@@ -44,5 +44,9 @@ public interface FcubeMapper {
      */
     int updateByPrimaryKey(Fcube record);
 
+    Fcube selectforupdate(String cubeuuid);
 
+    int updatejoinplayerscount(Fcube item);
+
+    int updateCubeHitPoint(Fcube item);
 }

@@ -1,8 +1,6 @@
 package com.wing.forutona.AuthContorller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.UserInfo;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.AuthDao.UserInfoDao;
 import com.wing.forutona.AuthDto.Phoneauthtable;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -45,7 +42,7 @@ public class AuthController {
     }
 
     @GetMapping(value="/api/v1/Auth/GetUserInfoMain")
-    Userinfo GetUserInfoMain(@RequestHeader(value = "authorization") String Authtoken,@RequestParam(value = "uid")String uid )
+    Userinfo GetUserInfoMain(@RequestHeader(value = "authorization") String Authtoken, @RequestParam(value = "uid")String uid )
     {
         return userInfoDao.GetUserInfoMain(Authtoken,uid);
     }

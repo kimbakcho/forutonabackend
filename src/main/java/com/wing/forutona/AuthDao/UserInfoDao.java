@@ -1,21 +1,14 @@
 package com.wing.forutona.AuthDao;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.client.util.Lists;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
-import com.google.gson.JsonObject;
 import com.wing.forutona.AuthDto.Phoneauthtable;
 import com.wing.forutona.AuthDto.PhoneauthtableCustom;
 import com.wing.forutona.AuthDto.UserInfoMain;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import com.wing.forutona.Prefrerance;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,19 +20,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import static java.nio.charset.StandardCharsets.UTF_8;
+
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -160,7 +147,7 @@ public class UserInfoDao {
         return "https://storage.googleapis.com/publicforutona/profileimage/"+savefilename;
      }
 
-    public Userinfo GetUserInfoMain(String Authtoken,String uid ){
+    public Userinfo GetUserInfoMain(String Authtoken, String uid ){
         String requesttoken = Authtoken.replace("Bearer ","");
         FirebaseToken firebasetoken  = fireBaseAdmin.VerifyIdToken(requesttoken);
         UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);

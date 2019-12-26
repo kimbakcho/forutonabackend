@@ -43,4 +43,6 @@ public interface FcubeplayerMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Fcubeplayer record);
+
+    int selectPlayercount(Fcubeplayer record);
 }

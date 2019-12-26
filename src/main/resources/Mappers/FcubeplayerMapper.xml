@@ -71,4 +71,8 @@
     select idx, Cubeuuid, Uid, HasLike, HasDisLike, HasGiveup, HasExit, StartTime, PlayState
     from FcubePlayer
   </select>
+
+  <select id="selectPlayercount" parameterType="com.wing.forutona.FcubeDto.Fcubeplayer" resultType="java.lang.Integer">
+    select count(*) AS palyerscount from  FcubePlayer where Cubeuuid = #{cubeuuid}
+  </select>
 </mapper>

@@ -24,6 +24,7 @@
     <result column="longitude" jdbcType="DOUBLE" property="longitude" />
     <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
+    <result column="ExpPoint" jdbcType="DOUBLE" property="exppoint" />
     <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -44,15 +45,15 @@
       PrivateAgree, PositionAgree, MartketingAgree, 
       AgeLimitAgree, SnsService, Phonenumber, 
       IsoCode, latitude, longitude, 
-      PositionUpdateTime, UserLevel, FCMtoken
-      )
+      PositionUpdateTime, UserLevel, ExpPoint, 
+      FCMtoken)
     values (#{uid,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{profilepicktureurl,jdbcType=VARCHAR}, 
       #{sex,jdbcType=INTEGER}, #{agedate,jdbcType=DATE}, #{email,jdbcType=VARCHAR}, #{forutonaagree,jdbcType=TINYINT}, 
       #{privateagree,jdbcType=TINYINT}, #{positionagree,jdbcType=TINYINT}, #{martketingagree,jdbcType=TINYINT}, 
       #{agelimitagree,jdbcType=TINYINT}, #{snsservice,jdbcType=VARCHAR}, #{phonenumber,jdbcType=VARCHAR}, 
       #{isocode,jdbcType=VARCHAR}, #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, 
-      #{positionupdatetime,jdbcType=TIMESTAMP}, #{userlevel,jdbcType=DOUBLE}, #{fcmtoken,jdbcType=VARCHAR}
-      )
+      #{positionupdatetime,jdbcType=TIMESTAMP}, #{userlevel,jdbcType=DOUBLE}, #{exppoint,jdbcType=DOUBLE}, 
+      #{fcmtoken,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.wing.forutona.AuthDto.Userinfo">
     <!--
@@ -77,6 +78,7 @@
       longitude = #{longitude,jdbcType=DOUBLE},
       PositionUpdateTime = #{positionupdatetime,jdbcType=TIMESTAMP},
       UserLevel = #{userlevel,jdbcType=DOUBLE},
+      ExpPoint = #{exppoint,jdbcType=DOUBLE},
       FCMtoken = #{fcmtoken,jdbcType=VARCHAR}
     where Uid = #{uid,jdbcType=VARCHAR}
   </update>
@@ -87,7 +89,7 @@
     -->
     select Uid, NickName, ProfilePicktureUrl, Sex, AgeDate, Email, ForutonaAgree, PrivateAgree, 
     PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode, 
-    latitude, longitude, PositionUpdateTime, UserLevel, FCMtoken
+    latitude, longitude, PositionUpdateTime, UserLevel, ExpPoint, FCMtoken
     from UserInfo
     where Uid = #{uid,jdbcType=VARCHAR}
   </select>
@@ -98,7 +100,20 @@
     -->
     select Uid, NickName, ProfilePicktureUrl, Sex, AgeDate, Email, ForutonaAgree, PrivateAgree, 
     PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode, 
-    latitude, longitude, PositionUpdateTime, UserLevel, FCMtoken
+    latitude, longitude, PositionUpdateTime, UserLevel, ExpPoint, FCMtoken
     from UserInfo
   </select>
+
+  <select id="selectforupdate" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select Uid, NickName, ProfilePicktureUrl, Sex, AgeDate, Email, ForutonaAgree, PrivateAgree,
+    PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode,
+    latitude, longitude, PositionUpdateTime, UserLevel, ExpPoint, FCMtoken
+    from UserInfo
+    Where Uid = #{uid}
+  </select>
+
+  <update id="updateUserExpPoint" parameterType="com.wing.forutona.AuthDto.Userinfo">
+    update UserInfo set ExpPoint = #{exppoint}
+    where Uid=#{uid};
+  </update>
 </mapper>

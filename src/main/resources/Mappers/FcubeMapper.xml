@@ -119,4 +119,24 @@
     CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
     from Fcube
   </select>
+
+  <select id="selectforupdate" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT  Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence,
+    CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward,
+    ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes,
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
+    FROM Fcube
+    WHERE Cubeuuid = #{cubeuuid}
+    FOR UPDATE
+  </select>
+
+  <update id="updatejoinplayerscount" parameterType="com.wing.forutona.FcubeDto.Fcube">
+    UPDATE Fcube SET JoinPlayer = #{joinplayer}
+    where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateCubeHitPoint" parameterType="com.wing.forutona.FcubeDto.Fcube">
+    UPDATE  Fcube SET CubeHits = #{cubehits}
+    Where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
+  </update>
 </mapper>
