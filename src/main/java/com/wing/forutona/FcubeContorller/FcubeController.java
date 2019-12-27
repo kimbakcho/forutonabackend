@@ -2,6 +2,7 @@ package com.wing.forutona.FcubeContorller;
 
 import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
+import com.wing.forutona.AuthDto.Userexppointhistroy;
 import com.wing.forutona.FcubeDao.FcubeDao;
 import com.wing.forutona.FcubeDto.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -417,10 +418,10 @@ public class FcubeController {
     }
 
     @GetMapping(value = "/api/v1/Fcube/getCubeuuidGetPoint")
-    ResponseBodyEmitter getCubeuuidGetPoint(@RequestParam String cubeuuid) {
+    ResponseBodyEmitter getCubeuuidGetPoint(Userexppointhistroy item) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         try {
-            fcubeDao.getCubeuuidGetPoint(emitter,cubeuuid);
+            fcubeDao.getCubeuuidGetPoint(emitter,item);
         } catch (IOException e) {
             emitter.complete();
             e.printStackTrace();

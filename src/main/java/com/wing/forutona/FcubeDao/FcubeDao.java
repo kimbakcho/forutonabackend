@@ -464,9 +464,9 @@ public class FcubeDao {
     }
 
     @Async
-    public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,String cubeuuid) throws IOException{
+    public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,Userexppointhistroy item) throws IOException{
         UserexppointhistroyMapper mapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
-        emitter.send(mapper.getCubeuuidGetPoint(cubeuuid));
+        emitter.send(mapper.getCubeuuidGetPoint(item));
         emitter.complete();
     }
 }

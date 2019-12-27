@@ -68,7 +68,11 @@
     from UserExpPointHistroy
   </select>
 
-  <select id="getCubeuuidGetPoint" parameterType="java.lang.String" resultType="java.lang.Double">
-    select SUM(Points) FROM UserExpPointHistroy WHERE Cubeuuid = #{cubeuuid}
+  <select id="getCubeuuidGetPoint" parameterType="com.wing.forutona.AuthDto.Userexppointhistroy" resultType="java.lang.Double">
+    select SUM(Points) FROM UserExpPointHistroy
+    WHERE Cubeuuid = #{cubeuuid}
+    <if test="explains != null and explains != ''">
+      Explains = #{explains}
+    </if>
   </select>
 </mapper>

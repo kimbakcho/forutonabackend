@@ -44,5 +44,5 @@ public interface UserexppointhistroyMapper {
      */
     int updateByPrimaryKey(Userexppointhistroy record);
 
-    double getCubeuuidGetPoint(String cubeuuid);
+    double getCubeuuidGetPoint(Userexppointhistroy item);
 }
