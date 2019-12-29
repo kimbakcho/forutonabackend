@@ -46,7 +46,13 @@ public interface FcubeMapper {
 
     Fcube selectforupdate(String cubeuuid);
 
+    Fcube miniselectforupdate(String cubeuuid);
+
     int updatejoinplayerscount(Fcube item);
 
     int updateCubeHitPoint(Fcube item);
+
+    int updateCubeState(Fcube item);
+
+    List<Fcube> finddonotfinishcube();
 }

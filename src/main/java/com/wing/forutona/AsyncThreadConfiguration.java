@@ -8,15 +8,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@EnableAsync
 public class AsyncThreadConfiguration {
     @Bean
     public Executor asyncThreadTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(4);
-        threadPoolTaskExecutor.setMaxPoolSize(4);
+        threadPoolTaskExecutor.setMaxPoolSize(10);
         threadPoolTaskExecutor.setThreadNamePrefix("forutona-pro-pool");
-
         return threadPoolTaskExecutor;
     }
+
 }

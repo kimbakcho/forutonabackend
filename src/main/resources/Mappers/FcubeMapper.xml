@@ -31,6 +31,8 @@
     <result column="JoinPlayer" jdbcType="INTEGER" property="joinplayer" />
     <result column="MaximumPlayers" jdbcType="INTEGER" property="maximumplayers" />
     <result column="StarPoints" jdbcType="DOUBLE" property="starpoints" />
+    <result column="ExpGiveFlag" jdbcType="INTEGER" property="expgiveflag" />
+    <result column="MakeExp" jdbcType="DOUBLE" property="makeexp" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
@@ -53,7 +55,8 @@
       CubePassword, HasPassword, CubeScope, 
       InfluenceLevel, CubeHits, CubeLikes, 
       CubeDisLikes, JoinPlayer, MaximumPlayers, 
-      StarPoints)
+      StarPoints, ExpGiveFlag, MakeExp
+      )
     values (#{cubeuuid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{cubename,jdbcType=VARCHAR}, #{cubetype,jdbcType=VARCHAR}, 
       #{maketime,jdbcType=TIMESTAMP}, #{influence,jdbcType=DOUBLE}, #{cubestate,jdbcType=INTEGER}, 
@@ -62,7 +65,8 @@
       #{cubepassword,jdbcType=VARCHAR}, #{haspassword,jdbcType=INTEGER}, #{cubescope,jdbcType=INTEGER}, 
       #{influencelevel,jdbcType=DOUBLE}, #{cubehits,jdbcType=INTEGER}, #{cubelikes,jdbcType=INTEGER}, 
       #{cubedislikes,jdbcType=INTEGER}, #{joinplayer,jdbcType=INTEGER}, #{maximumplayers,jdbcType=INTEGER}, 
-      #{starpoints,jdbcType=DOUBLE})
+      #{starpoints,jdbcType=DOUBLE}, #{expgiveflag,jdbcType=INTEGER}, #{makeexp,jdbcType=DOUBLE}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.wing.forutona.FcubeDto.Fcube">
     <!--
@@ -93,7 +97,9 @@
       CubeDisLikes = #{cubedislikes,jdbcType=INTEGER},
       JoinPlayer = #{joinplayer,jdbcType=INTEGER},
       MaximumPlayers = #{maximumplayers,jdbcType=INTEGER},
-      StarPoints = #{starpoints,jdbcType=DOUBLE}
+      StarPoints = #{starpoints,jdbcType=DOUBLE},
+      ExpGiveFlag = #{expgiveflag,jdbcType=INTEGER},
+      MakeExp = #{makeexp,jdbcType=DOUBLE}
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -104,7 +110,7 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward, 
     ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes, 
-    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints, ExpGiveFlag, MakeExp
     from Fcube
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </select>
@@ -116,7 +122,7 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward, 
     ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes, 
-    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints, ExpGiveFlag, MakeExp
     from Fcube
   </select>
 
@@ -124,7 +130,14 @@
     SELECT  Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence,
     CubeState, PlaceAddress, AdministrativeArea, Country, PointReward, InfluenceReward,
     ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, CubeHits, CubeLikes,
-    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints
+    CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints,ExpGiveFlag,MakeExp
+    FROM Fcube
+    WHERE Cubeuuid = #{cubeuuid}
+    FOR UPDATE
+  </select>
+
+  <select id="miniselectforupdate" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT  Cubeuuid, Uid,CubeState ,ActivationTime,ExpGiveFlag,MakeExp
     FROM Fcube
     WHERE Cubeuuid = #{cubeuuid}
     FOR UPDATE
@@ -139,4 +152,22 @@
     UPDATE  Fcube SET CubeHits = #{cubehits}
     Where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </update>
+
+  <update id="updateCubeState" parameterType="com.wing.forutona.FcubeDto.Fcube">
+    UPDATE Fcube SET CubeState = #{cubestate,jdbcType=INTEGER}
+    <if test="activationtime != null">
+      ,ActivationTime = #{activationtime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="expgiveflag != null">
+      ,ExpGiveFlag = #{expgiveflag,jdbcType=INTEGER}
+    </if>
+
+    where Cubeuuid =  #{cubeuuid,jdbcType=VARCHAR}
+  </update>
+ <select id="finddonotfinishcube" resultMap="BaseResultMap">
+   select Cubeuuid,ActivationTime,CubeState FROM Fcube  WHERE CubeState != 2 AND
+   <![CDATA[
+   ActivationTime < now()
+   ]]>
+ </select>
 </mapper>

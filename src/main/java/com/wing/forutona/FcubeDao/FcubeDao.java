@@ -14,6 +14,7 @@ import com.wing.forutona.AuthDao.UserinfoMapper;
 import com.wing.forutona.AuthDto.Userexppointhistroy;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.FcubeDto.*;
+import com.wing.forutona.FcubeScheduled;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class FcubeDao {
 
     @Autowired
     GoogleStorgeAdmin googlesotrageAdmin;
+
+    @Autowired
+    FcubeScheduled scheduled1;
 
     public List<Fcube> getFcubeMains(){
         FcubeMapper mapper =  sqlSession.getMapper(FcubeMapper.class);
@@ -161,7 +165,7 @@ public class FcubeDao {
     }
 
     public int updateCubeState(Fcube cube){
-        FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
+        FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
         return mapper.updateCubeState(cube);
     };
 
@@ -267,7 +271,6 @@ public class FcubeDao {
         FcubecontentExtend1Mapper contentmapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
         FcubequestsuccessExtender1Mapper cubequestsuccessExtender = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
         FcubeMapper fcubeMapper = sqlSession.getMapper(FcubeMapper.class);
-        FcubeExtend1Mapper fcubeExtenderMapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
         FcubeContentSelector contentselector = new FcubeContentSelector();
         contentselector.setCubeuuid(item.getCubeuuid());
         ArrayList<String> cubetype = new ArrayList<String>();
@@ -302,9 +305,31 @@ public class FcubeDao {
                     item.setJudgmenttime(new Date());
                     item.setReadingcheck(1);
                     //큐브 완전 완료 처리 해줌.
-                    var findfcube = fcubeMapper.selectByPrimaryKey(item.getCubeuuid());
-                    findfcube.setCubestate(2);
-                    fcubeExtenderMapper.updateCubeState(findfcube);
+                    var findfcube = fcubeMapper.selectforupdate(item.getCubeuuid());
+                    findfcube.setCubestate(FcubeState.finish);
+                    findfcube.setActivationtime(new Date());
+                    //Maker 제작 경험치 줬는지 안줬는지에 따라 분기 처리
+                    if(findfcube.getExpgiveflag() == 0){
+                        findfcube.setExpgiveflag(1);
+                        fcubeMapper.updateCubeState(findfcube);
+                    }else {
+                        fcubeMapper.updateCubeState(findfcube);
+                    }
+                    if(findfcube.getExpgiveflag() == 0){
+                        Userexppointhistroy pointhistory = new Userexppointhistroy();
+                        pointhistory.setCubeuuid(findfcube.getCubeuuid());
+                        pointhistory.setUid(findfcube.getUid());
+                        pointhistory.setGettime(new Date());
+                        pointhistory.setPoints(findfcube.getMakeexp());
+                        pointhistory.setExplains("MakeExp");
+                        pointhistory.setFromuid("Forutona");
+                        UserexppointhistroyMapper userexpmapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
+                        userexpmapper.insert(pointhistory);
+                        UserinfoMapper userinfoMapper = sqlSession.getMapper(UserinfoMapper.class);
+                        Userinfo makeruserinfo = userinfoMapper.selectforupdate(findfcube.getUid());
+                        makeruserinfo.setExppoint(makeruserinfo.getExppoint() + findfcube.getMakeexp());
+                        userinfoMapper.updateUserExpPoint(makeruserinfo);
+                    }
                     int updateresult1 = cubequestsuccessExtender.updateQuestReq(item);
                     FcubeplayerExtender1Mapper fcubeplayerExtender1Mapper = sqlSession.getMapper(FcubeplayerExtender1Mapper.class);
                     Fcubeplayer player = new Fcubeplayer();

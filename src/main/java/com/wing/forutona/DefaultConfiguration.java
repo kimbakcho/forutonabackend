@@ -14,4 +14,6 @@ public class DefaultConfiguration {
         multipartResolver.setMaxUploadSize(5242880);
         return multipartResolver;
     }
+
+
 }
