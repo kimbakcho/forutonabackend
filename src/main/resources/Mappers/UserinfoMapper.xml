@@ -109,7 +109,7 @@
     PositionAgree, MartketingAgree, AgeLimitAgree, SnsService, Phonenumber, IsoCode,
     latitude, longitude, PositionUpdateTime, UserLevel, ExpPoint, FCMtoken
     from UserInfo
-    Where Uid = #{uid}
+    Where Uid = #{uid} FOR UPDATE
   </select>
 
   <update id="updateUserExpPoint" parameterType="com.wing.forutona.AuthDto.Userinfo">

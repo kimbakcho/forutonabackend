@@ -44,6 +44,7 @@ public class FcubeScheduled {
         while(listitr.hasNext()){
             Fcube tempcube = listitr.next();
             fcubeScheduledSupport1.FcubeFinishExecute(tempcube);
+
         }
     }
 

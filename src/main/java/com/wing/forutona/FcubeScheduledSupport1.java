@@ -25,9 +25,12 @@ public class FcubeScheduledSupport1 {
     private SqlSession sqlSession;
 
     @Async
-    @Transactional
     public void FcubeFinishExecute(Fcube item){
         logger.info("Thread name = " +  Thread.currentThread().getName());
+        fcubeupdateandhistorysave(item);
+    }
+    @Transactional
+    public void fcubeupdateandhistorysave(Fcube item){
         FcubeMapper fcubeMapper =  sqlSession.getMapper(FcubeMapper.class);
         Fcube executeitem = fcubeMapper.miniselectforupdate(item.getCubeuuid());
         if(executeitem.getCubestate() != FcubeState.finish){
@@ -44,12 +47,17 @@ public class FcubeScheduledSupport1 {
             recode.setGettime(new Date());
             userexppointhistroyMapper.insert(recode);
             UserinfoMapper userinfoMapper = sqlSession.getMapper(UserinfoMapper.class);
-            Userinfo userinfo = userinfoMapper.selectforupdate(recode.getUid());
+            Userinfo userinfo = userinfoMapper.selectforupdate(executeitem.getUid());
             userinfo.setExppoint(userinfo.getExppoint() + executeitem.getMakeexp());
             userinfoMapper.updateUserExpPoint(userinfo);
             executeitem.setExpgiveflag(1);
         }
         fcubeMapper.updateCubeState(executeitem);
+    }
+
+    @Transactional
+    public void Userexppointupdate(Fcube executeitem){
+
     }
 }
 
