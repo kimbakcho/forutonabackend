@@ -1,25 +1,15 @@
 package com.wing.forutona;
 
-import com.wing.forutona.AuthDao.UserexppointhistroyMapper;
-import com.wing.forutona.AuthDao.UserinfoMapper;
-import com.wing.forutona.AuthDto.Userexppointhistroy;
-import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.FcubeDao.FcubeMapper;
 import com.wing.forutona.FcubeDto.Fcube;
-import com.wing.forutona.FcubeDto.FcubeState;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -44,10 +34,6 @@ public class FcubeScheduled {
         while(listitr.hasNext()){
             Fcube tempcube = listitr.next();
             fcubeScheduledSupport1.FcubeFinishExecute(tempcube);
-
         }
     }
-
-
-
 }

@@ -72,7 +72,7 @@
     select SUM(Points) FROM UserExpPointHistroy
     WHERE Cubeuuid = #{cubeuuid}
     <if test="explains != null and explains != ''">
-      Explains = #{explains}
+      AND Explains = #{explains}
     </if>
   </select>
 </mapper>

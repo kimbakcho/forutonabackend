@@ -34,7 +34,6 @@
 
         <table schema="forutona" tableName="Fcube" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true">
-            <columnOverride column="CubeState" javaType="com.wing.forutona.FcubeDto.FcubeState"></columnOverride>
         </table>
         <table schema="forutona" tableName="FcubeContent" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />

@@ -6,7 +6,6 @@ import com.wing.forutona.AuthDto.Userexppointhistroy;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.FcubeDao.FcubeMapper;
 import com.wing.forutona.FcubeDto.Fcube;
-import com.wing.forutona.FcubeDto.FcubeState;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +32,8 @@ public class FcubeScheduledSupport1 {
     public void fcubeupdateandhistorysave(Fcube item){
         FcubeMapper fcubeMapper =  sqlSession.getMapper(FcubeMapper.class);
         Fcube executeitem = fcubeMapper.miniselectforupdate(item.getCubeuuid());
-        if(executeitem.getCubestate() != FcubeState.finish){
-            executeitem.setCubestate(FcubeState.finish);
+        if(executeitem.getCubestate() != 2){
+            executeitem.setCubestate(2);
         }
         if(executeitem.getExpgiveflag() == 0){
             UserexppointhistroyMapper userexppointhistroyMapper =  sqlSession.getMapper(UserexppointhistroyMapper.class);

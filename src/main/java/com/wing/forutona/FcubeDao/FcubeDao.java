@@ -50,8 +50,6 @@ public class FcubeDao {
     @Autowired
     GoogleStorgeAdmin googlesotrageAdmin;
 
-    @Autowired
-    FcubeScheduled scheduled1;
 
     public List<Fcube> getFcubeMains(){
         FcubeMapper mapper =  sqlSession.getMapper(FcubeMapper.class);
@@ -69,7 +67,8 @@ public class FcubeDao {
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(5);
 
         Date date = Date.from( localDateTime.atZone( ZoneId.systemDefault()).toInstant());
-
+        fcube.setExpgiveflag(0);
+        fcube.setMakeexp(300.0);
         fcube.setActivationtime(date);
         return mapper.insert(fcube);
     };
@@ -306,7 +305,7 @@ public class FcubeDao {
                     item.setReadingcheck(1);
                     //큐브 완전 완료 처리 해줌.
                     var findfcube = fcubeMapper.selectforupdate(item.getCubeuuid());
-                    findfcube.setCubestate(FcubeState.finish);
+                    findfcube.setCubestate(2);
                     findfcube.setActivationtime(new Date());
                     //Maker 제작 경험치 줬는지 안줬는지에 따라 분기 처리
                     if(findfcube.getExpgiveflag() == 0){
@@ -491,7 +490,13 @@ public class FcubeDao {
     @Async
     public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,Userexppointhistroy item) throws IOException{
         UserexppointhistroyMapper mapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
-        emitter.send(mapper.getCubeuuidGetPoint(item));
+        double points = 0;
+        try{
+            points =  mapper.getCubeuuidGetPoint(item);
+        }catch (Exception ex) {
+            points = 0;
+        }
+        emitter.send(points);
         emitter.complete();
     }
 }

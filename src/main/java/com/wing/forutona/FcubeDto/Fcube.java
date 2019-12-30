@@ -82,7 +82,7 @@ public class Fcube {
      *
      * @mbg.generated
      */
-    private FcubeState cubestate;
+    private Integer cubestate;
 
     /**
      *
@@ -446,7 +446,7 @@ public class Fcube {
      *
      * @mbg.generated
      */
-    public FcubeState getCubestate() {
+    public Integer getCubestate() {
         return cubestate;
     }
 
@@ -458,7 +458,7 @@ public class Fcube {
      *
      * @mbg.generated
      */
-    public void setCubestate(FcubeState cubestate) {
+    public void setCubestate(Integer cubestate) {
         this.cubestate = cubestate;
     }
 
