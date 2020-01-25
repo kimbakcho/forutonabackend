@@ -1,5 +1,6 @@
 package com.wing.forutona.AuthContorller;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.AuthDao.UserInfoDao;
@@ -36,6 +37,11 @@ public class AuthController {
         return userInfoDao.GetFirebaseUid(Uid);
     }
 
+     @GetMapping(value = "/api/v1/Auth/GetEmailtoUid")
+    String GetEmailtoUid(@RequestParam String email) throws FirebaseAuthException {
+        return userInfoDao.GetEmailtoUid(email);
+    }
+
     @PostMapping(value="/api/v1/Auth/UploadProfileImage")
     String UploadProfileImage(MultipartHttpServletRequest request) throws IOException {
         return userInfoDao.UploadProfileImage(request);
@@ -50,6 +56,11 @@ public class AuthController {
     void requestAuthPhoneNumber(@RequestBody Phoneauthtable body)
     {
         userInfoDao.requestAuthPhoneNumber(body);
+    }
+
+    @PostMapping(value="/api/v1/Auth/requestFindAuthPhoneNumber")
+    int requestFindAuthPhoneNumber(@RequestBody Phoneauthtable phone) {
+        return userInfoDao.requestFindAuthPhoneNumber(phone);
     }
 
     @PostMapping(value="/api/v1/Auth/requestAuthVerificationPhoneNumber")

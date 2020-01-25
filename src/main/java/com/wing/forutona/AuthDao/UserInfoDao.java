@@ -1,6 +1,7 @@
 package com.wing.forutona.AuthDao;
 
 import com.google.cloud.storage.*;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDto.Phoneauthtable;
@@ -57,6 +58,7 @@ public class UserInfoDao {
         }
         if(param.getPhoneauthcheckcode().equals(returncode) ){
             UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+            param.setExppoint(0.0);
             result = mapper.insert(param);
         }else {
             result = 0;
@@ -106,6 +108,7 @@ public class UserInfoDao {
         if(recode == null){
             customtoken = fireBaseAdmin.GetUserInfoCustomToken(param);
             UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+            param.setExppoint(0.0);
             int result =  mapper.insert(param);
             if(result == 0){
                 return "";
@@ -153,6 +156,17 @@ public class UserInfoDao {
         UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
         Userinfo userinfo = mapper.selectByPrimaryKey(firebasetoken.getUid());
         return userinfo;
+    }
+
+    public int requestFindAuthPhoneNumber(Phoneauthtable phone){
+        UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+        Userinfo userinfo = mapper.selectByPrimaryKey(phone.getUuid());
+        if(userinfo.getPhonenumber().equals(phone.getPhonenumber()) ){
+            this.requestAuthPhoneNumber(phone);
+            return 1;
+        }else {
+            return 0;
+        }
     }
 
     public void requestAuthPhoneNumber(Phoneauthtable phone){
@@ -205,6 +219,11 @@ public class UserInfoDao {
         //5분뒤 DB에서 삭제
         mapper1.CreateRemoveEvent(customdata);
     }
+
+    public String GetEmailtoUid(String email) throws FirebaseAuthException {
+        return fireBaseAdmin.getUserByEmail(email).getUid();
+    }
+
     public String requestAuthVerificationPhoneNumber(Phoneauthtable phone){
         PhoneauthtableMapper mapper = sqlSession.getMapper(PhoneauthtableMapper.class);
         Phoneauthtable getphone = mapper.selectByPrimaryKey(phone.getUuid());
@@ -286,9 +305,11 @@ public class UserInfoDao {
      }
 
      public int passwrodChangefromphone(UserInfoMain userinfo){
+         UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
+         Userinfo dbinfo = mapper.selectByPrimaryKey(userinfo.getUid());
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(userinfo.getPhonenumber().getBytes());
+            md.update(dbinfo.getPhonenumber().getBytes());
             String returncode =  bytesToHex(md.digest());
             //번호 위조 체크
             if(returncode.equals(userinfo.getPhoneauthcheckcode())) {
