@@ -75,7 +75,6 @@ public class FireBaseAdmin {
         }
     }
     UserRecord getUser(String uid) throws FirebaseAuthException {
-
         return FirebaseAuth.getInstance().getUser(uid);
     }
 
@@ -83,6 +82,7 @@ public class FireBaseAdmin {
     UserRecord getUserByEmail(String email) throws FirebaseAuthException {
         return FirebaseAuth.getInstance().getUserByEmail(email);
     }
+
 
     int changeEmailUserPassword(String email,String password){
         try{

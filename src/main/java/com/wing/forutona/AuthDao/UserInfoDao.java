@@ -169,6 +169,7 @@ public class UserInfoDao {
         }
     }
 
+
     public void requestAuthPhoneNumber(Phoneauthtable phone){
         System.out.println(phone.getUuid());
         System.out.println(phone.getPhonenumber());
