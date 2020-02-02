@@ -55,12 +55,13 @@ public class FcubeController {
     }
 
     @GetMapping(value = "/api/v1/Fcube/getusercubes")
-    public List<FcubeExtender1> getusercubes(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token){
+    public List<FcubeExtender1> getusercubes(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                             FcubeSearch search){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
         if(ftoken !=null){
-            List<FcubeExtender1> temp1= fcubeDao.GetUserCubes(ftoken.getUid());
-            return fcubeDao.GetUserCubes(ftoken.getUid());
+            search.setUid(ftoken.getUid());
+            return fcubeDao.GetUserCubes(search);
         }else {
             return null;
         }

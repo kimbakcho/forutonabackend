@@ -85,7 +85,10 @@ public class FcubeDao {
         FcubeExtend1Mapper mapper =  sqlSession.getMapper(FcubeExtend1Mapper.class);
         return  mapper.selectUserBoxAll(cube);
     }
-
+    public List<FcubeExtender1> GetUserCubes(FcubeSearch search){
+        FcubeExtend1Mapper mapper =  sqlSession.getMapper(FcubeExtend1Mapper.class);
+        return  mapper.selectUserBox(search);
+    }
     public int deletecube(Fcube cube){
         FcubeMapper mapper =  sqlSession.getMapper(FcubeMapper.class);
         return mapper.deleteByPrimaryKey(cube.getCubeuuid());
