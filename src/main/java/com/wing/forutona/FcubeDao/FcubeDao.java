@@ -179,9 +179,17 @@ public class FcubeDao {
         return mapper.selectPlayers(cube);
     }
 
-    public List<FcubeExtender1> findNearDistanceCube(FCubeGeoSearchUtil searchItem){
+    @Async
+    public void findNearDistanceCube(FCubeGeoSearchUtil searchItem,ResponseBodyEmitter emitter){
+
         FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
-        return mapper.findNearDistanceCube(searchItem);
+        try {
+            emitter.send(mapper.findNearDistanceCube(searchItem));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+        return ;
     }
 
     @Transactional

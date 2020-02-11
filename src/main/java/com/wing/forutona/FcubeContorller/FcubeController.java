@@ -152,13 +152,19 @@ public class FcubeController {
     }
 
     @PostMapping(value="/api/v1/Fcube/findNearDistanceCube")
-    List<FcubeExtender1> findNearDistanceCube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody FCubeGeoSearchUtil searchItem){
+    ResponseBodyEmitter findNearDistanceCube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
+                                             @RequestBody FCubeGeoSearchUtil searchItem,
+                                             HttpServletResponse response){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         if(ftoken !=null){
-            return fcubeDao.findNearDistanceCube(searchItem);
+            response.addHeader("content-type","application/json;charset=UTF-8");
+            fcubeDao.findNearDistanceCube(searchItem,emitter);
+            return emitter;
         }else {
-            return null;
+            emitter.complete();
+            return emitter;
         }
     }
 

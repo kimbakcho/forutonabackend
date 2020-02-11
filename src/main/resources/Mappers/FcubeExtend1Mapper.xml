@@ -89,6 +89,7 @@
       AND A.longitude
       BETWEEN #{longitude} - (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
       AND #{longitude} + (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
+      AND A.ActivationTime <![CDATA[>]]> #{activationtime}
       AND C.ContentType = 'description'
       AND A.CubeState = 1
     </where>
