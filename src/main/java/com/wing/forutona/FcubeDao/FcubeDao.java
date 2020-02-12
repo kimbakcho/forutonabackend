@@ -450,11 +450,11 @@ public class FcubeDao {
     }
 
     @Async
-    public void getPlayerJoinList(ResponseBodyEmitter emitter,FcubeplayerSearch item)  {
+    public void getPlayerJoinCubeList(ResponseBodyEmitter emitter,PlayerjoincubeSearch item)  {
 
-        FcubeplayerExtender2Mapper mapper = sqlSession.getMapper(FcubeplayerExtender2Mapper.class);
+        PleyerjoincubeMapper mapper = sqlSession.getMapper(PleyerjoincubeMapper.class);
         try{
-            emitter.send(mapper.selectPlayerJoinList(item));
+            emitter.send(mapper.getPlayerJoinCubeList(item));
         }catch (Exception ex){
             ex.printStackTrace();
         }

@@ -358,20 +358,18 @@ public class FcubeController {
         return fcubeDao.getFcubestate(cubeuuid);
     }
 
-    @GetMapping(value = "/api/v1/Fcube/getPlayerJoinList")
+    @GetMapping(value = "/api/v1/Fcube/getPlayerJoinCubeList")
     ResponseBodyEmitter getPlayerJoinList(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                                 HttpServletResponse response,
-                                                 @RequestParam String uid,@RequestParam int offset,@RequestParam int limit){
+                                          PlayerjoincubeSearch searchitem){
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        if(ftoken !=null && ftoken.getUid().equals(uid)) {
+        if(ftoken !=null && ftoken.getUid().equals(searchitem.getPlayerUid())) {
             response.addHeader("content-type","application/json;charset=UTF-8");
-            FcubeplayerSearch item = new FcubeplayerSearch();
-            item.setUid(uid);
-            item.setOffset(offset);
-            item.setLimit(limit);
-            fcubeDao.getPlayerJoinList(emitter,item);
+            fcubeDao.getPlayerJoinCubeList(emitter,searchitem);
+        }else {
+            emitter.complete();
         }
         return emitter;
     }

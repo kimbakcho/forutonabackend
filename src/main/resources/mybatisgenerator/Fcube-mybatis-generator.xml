@@ -20,16 +20,16 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.wing.forutona.FcubeDto" targetProject=".">
+        <javaModelGenerator targetPackage="com.wing.forutona.FcubeDto" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="Mappers" targetProject=".">
+        <sqlMapGenerator targetPackage="Mappers" targetProject="src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator targetPackage="com.wing.forutona.FcubeDao" type="XMLMAPPER" targetProject=".">
+        <javaClientGenerator targetPackage="com.wing.forutona.FcubeDao" type="XMLMAPPER" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
@@ -55,6 +55,11 @@
 
         <table schema="forutona" tableName="FcubeReview" enableCountByExample="false" enableDeleteByExample="true"
                enableSelectByExample="true" enableUpdateByExample="true" />
+
+        <table schema="forutona" tableName="PleyerJoinCube" enableCountByExample="false"
+               enableSelectByExample="true" >
+            <property name="useActualColumnNames" value="true"/>
+        </table>
 
     </context>
 </generatorConfiguration>
