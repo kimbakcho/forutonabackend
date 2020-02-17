@@ -29,6 +29,7 @@
     <result column="YouPoint" jdbcType="DOUBLE" property="youpoint" />
     <result column="PointReward" jdbcType="DOUBLE" property="pointreward" />
     <result column="UserExp" jdbcType="DOUBLE" property="userexp" />
+    <result column="FollowCount" jdbcType="INTEGER" property="followcount" />
   </resultMap>
 
   <select id="selectUserBoxAll" parameterType="com.wing.forutona.FcubeDto.Fcube" resultMap="BaseResultMap">
@@ -36,7 +37,7 @@
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
     A.NaPoint,A.YouPoint,A.PointReward,A.UserExp,
-    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken,B.FollowCount FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Uid = #{uid}
     </where>
@@ -46,7 +47,7 @@
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
     A.NaPoint,A.YouPoint,A.PointReward,A.UserExp,
-    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken,B.FollowCount FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Uid = #{uid} order by A.${orderby}
       <if test="isdesc == true">
@@ -63,7 +64,7 @@
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
     A.NaPoint,A.YouPoint,A.PointReward,A.UserExp,
-    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.fcmtoken,B.FollowCount FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     WHERE A.Cubeuuid = #{cubeuuid}
   </select>
   
@@ -76,7 +77,7 @@
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
     A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
     A.NaPoint,A.YouPoint,A.PointReward,A.UserExp,
-    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
+    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken,B.FollowCount,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
                  * COS(RADIANS(A.latitude))
                  * COS(RADIANS(#{longitude}) - RADIANS(A.longitude))
                  + SIN(RADIANS(#{latitude}))

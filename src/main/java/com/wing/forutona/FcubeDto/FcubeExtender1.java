@@ -14,5 +14,6 @@ public class FcubeExtender1 extends Fcube{
     Date positionupdatetime;
     double userlevel;
     String fcmtoken;
+    Integer followcount;
 
 }
