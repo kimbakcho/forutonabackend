@@ -112,20 +112,32 @@ public class FcubeController {
     }
 
     @PostMapping(value = "/api/v1/Fcube/InsertCubeReply")
-    Fcubereply InsertCubeReply(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody
-            Fcubereply reply) throws Exception {
+    ResponseBodyEmitter InsertCubeReply(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody
+            Fcubereply reply,HttpServletResponse response) throws Exception {
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         if(ftoken !=null && ftoken.getUid().equals(reply.getUid())){
-            return fcubeDao.InsertCubeReply(reply);
+            response.addHeader("content-type","application/json;charset=UTF-8");
+            fcubeDao.InsertCubeReply(reply,emitter);
+            return emitter;
         }else {
-            return null;
+            emitter.complete();
+            return emitter;
         }
     }
 
     @GetMapping(value="/api/v1/Fcube/SelectReplyForCube")
     List<FcubereplyExtender1> SelectReplyForCube(@RequestParam String cubeuuid,@RequestParam int offset,@RequestParam int limit){
         return fcubeDao.SelectReplyForCube(cubeuuid,offset,limit);
+    }
+
+    @GetMapping(value="/api/v1/Fcube/SelectReplyForCubeGroup")
+    ResponseBodyEmitter SelectReplyForCubeGroup(FcubereplySearch search, HttpServletResponse response){
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.SelectReplyForCubeGroup(search,emitter);
+        return emitter;
     }
 
     @PostMapping(value="/api/v1/Fcube/updateCubeState")

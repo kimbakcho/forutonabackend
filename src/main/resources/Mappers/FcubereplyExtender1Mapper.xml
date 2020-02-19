@@ -13,6 +13,7 @@
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
     <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
+    <result column="BGroupCount" jdbcType="INTEGER" property="bgroupcount"/>
   </resultMap>
 
   <select id="SelectBgroubReplyMax" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultType="INTEGER">
@@ -48,6 +49,16 @@
     #{sorts,jdbcType=INTEGER}, #{depth,jdbcType=INTEGER},
     #{commnttext,jdbcType=VARCHAR})
   </insert>
+  <select id="SelectReplyForCubeGroup" parameterType="com.wing.forutona.FcubeDto.FcubereplySearch" resultMap="BaseResultMap">
+    SELECT A.CommntNo, A.Cubeuuid,A.BGroup,C.BGroupCount, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
+    FROM FcubeReply A
+	 LEFT JOIN UserInfo B ON A.Uid = B.Uid
+	 LEFT JOIN (SELECT COUNT(*) as BGroupCount,BGRoup FROM FcubeReply WHERE Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}  GROUP BY BGRoup ) C
+    ON A.Bgroup = C.BGRoup
+    WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND Sorts = 0 AND Depth = 0
+    ORDER BY A.Bgroup desc LIMIT #{limit} OFFSET #{offset}
+  </select>
+
   <select id="SelectReplyForCube" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultMap="BaseResultMap" >
     SELECT A.CommntNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
     FROM FcubeReply A LEFT JOIN UserInfo B ON A.Uid = B.Uid

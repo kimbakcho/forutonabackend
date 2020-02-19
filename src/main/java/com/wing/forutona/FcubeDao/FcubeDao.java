@@ -130,33 +130,43 @@ public class FcubeDao {
         return mapper.selectwithFcubeContentSelector(selectitem);
     }
 
+    @Async
     @Transactional
-    public Fcubereply InsertCubeReply(Fcubereply reply) throws  Exception{
+    public void InsertCubeReply(Fcubereply reply,ResponseBodyEmitter emitter) throws  Exception{
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
         reply.setSorts(mapper.SelectStep1ForReply(reply));
         reply.setCommnttime(new Date());
         if(reply.getBgroup() == 0){
             reply.setBgroup(mapper.SelectBgroubReplyMax(reply));
             if(mapper.insert(reply)==1){
-                return reply;
+                emitter.send(reply);
+                emitter.complete();
+                return ;
             }else {
-                return null;
+                emitter.complete();
+                return;
             }
         }
         if(reply.getSorts() == 0){
             reply.setSorts(mapper.SelectStep2ForReply(reply));
             reply.setDepth(reply.getDepth()+1);
             if(mapper.insert(reply)==1){
-                return reply;
+                emitter.send(reply);
+                emitter.complete();
+                return ;
             }else {
-                return null;
+                emitter.complete();
+                return;
             }
         }else {
             mapper.UpdateStep2ForReply(reply);
             if(mapper.insert(reply)==1){
-                return reply;
+                emitter.send(reply);
+                emitter.complete();
+                return ;
             }else {
-                return null;
+                emitter.complete();
+                return;
             }
         }
     }
@@ -164,6 +174,17 @@ public class FcubeDao {
     public List<FcubereplyExtender1> SelectReplyForCube(String cubeuuid,int offset,int limit){
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
         return mapper.SelectReplyForCube(new FcubereplySearch(cubeuuid,offset,limit));
+    }
+
+    @Async
+    public void SelectReplyForCubeGroup(FcubereplySearch search,ResponseBodyEmitter emitter) {
+        FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
+        try {
+            emitter.send(mapper.SelectReplyForCubeGroup(search));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
     }
 
     public int updateCubeState(Fcube cube){
