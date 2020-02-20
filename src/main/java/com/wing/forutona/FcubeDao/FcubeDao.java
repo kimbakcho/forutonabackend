@@ -135,7 +135,7 @@ public class FcubeDao {
     public void InsertCubeReply(Fcubereply reply,ResponseBodyEmitter emitter) throws  Exception{
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
         reply.setSorts(mapper.SelectStep1ForReply(reply));
-        reply.setCommnttime(new Date());
+        reply.setCommenttime(new Date());
         if(reply.getBgroup() == 0){
             reply.setBgroup(mapper.SelectBgroubReplyMax(reply));
             if(mapper.insert(reply)==1){

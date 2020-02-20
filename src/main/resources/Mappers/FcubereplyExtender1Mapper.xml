@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wing.forutona.FcubeDao.FcubereplyExtender1Mapper">
   <resultMap id="BaseResultMap" type="com.wing.forutona.FcubeDto.FcubereplyExtender1">
-    <id column="CommntNo" jdbcType="INTEGER" property="commntno" />
+    <id column="CommentNo" jdbcType="INTEGER" property="commentno" />
     <result column="Cuebuuid" jdbcType="VARCHAR" property="cuebuuid" />
     <result column="Uid" jdbcType="VARCHAR" property="uid" />
     <result column="Bgroup" jdbcType="INTEGER" property="bgroup" />
     <result column="Sorts" jdbcType="INTEGER" property="sorts" />
     <result column="Depth" jdbcType="INTEGER" property="depth" />
-    <result column="CommntText" jdbcType="VARCHAR" property="commnttext" />
-    <result column="CommntTime" jdbcType="TIMESTAMP" property="commnttime" />
+    <result column="CommentText" jdbcType="VARCHAR" property="commenttext" />
+    <result column="CommentTime" jdbcType="TIMESTAMP" property="commenttime" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
     <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
     <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
@@ -44,13 +44,13 @@
   <insert id="insert" parameterType="com.wing.forutona.FcubeDto.Fcubereply">
     insert into FcubeReply (Cubeuuid, Uid,Bgroup,
     Sorts, Depth,
-    CommntText)
+    CommentText,CommentTime)
     values (#{cubeuuid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR},#{bgroup,jdbcType=INTEGER},
     #{sorts,jdbcType=INTEGER}, #{depth,jdbcType=INTEGER},
-    #{commnttext,jdbcType=VARCHAR})
+    #{commenttext,jdbcType=VARCHAR},#{commenttime})
   </insert>
   <select id="SelectReplyForCubeGroup" parameterType="com.wing.forutona.FcubeDto.FcubereplySearch" resultMap="BaseResultMap">
-    SELECT A.CommntNo, A.Cubeuuid,A.BGroup,C.BGroupCount, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
+    SELECT A.CommentNo, A.Cubeuuid,A.BGroup,C.BGroupCount, A.Uid, A.Sorts, A.Depth, A.CommentText, A.CommentTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
     FROM FcubeReply A
 	 LEFT JOIN UserInfo B ON A.Uid = B.Uid
 	 LEFT JOIN (SELECT COUNT(*) as BGroupCount,BGRoup FROM FcubeReply WHERE Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}  GROUP BY BGRoup ) C
@@ -60,7 +60,7 @@
   </select>
 
   <select id="SelectReplyForCube" parameterType="com.wing.forutona.FcubeDto.Fcubereply" resultMap="BaseResultMap" >
-    SELECT A.CommntNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommntText, A.CommntTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
+    SELECT A.CommentNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommentText, A.CommentTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
     FROM FcubeReply A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
     ORDER BY A.Bgroup desc, A.Sorts asc

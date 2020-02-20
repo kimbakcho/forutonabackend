@@ -127,10 +127,10 @@
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<configurationFile>src/main/resources/mybatisgenerator/Auth-mybatis-generator.xml</configurationFile>
+					<configurationFile>src/main/resources/mybatisgenerator/Fcube-mybatis-generator.xml</configurationFile>
 					<overwrite>false</overwrite>
 					<tableNames>
-						forutona.UserInfo
+						forutona.FcubeReply
 					</tableNames>
 				</configuration>
 				<dependencies>
