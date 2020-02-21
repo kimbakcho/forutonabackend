@@ -10,5 +10,6 @@ public class FcubereplySearch {
     String cubeuuid;
     int offset;
     int limit;
+    int bgroup;
 
 }

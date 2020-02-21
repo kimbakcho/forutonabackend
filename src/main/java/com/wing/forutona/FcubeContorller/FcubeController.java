@@ -132,6 +132,14 @@ public class FcubeController {
         return fcubeDao.SelectReplyForCube(cubeuuid,offset,limit);
     }
 
+    @GetMapping(value="/api/v1/Fcube/SelectReplyForCubeWithBgroup")
+    ResponseBodyEmitter SelectReplyForCubeWithBgroup(FcubereplySearch search,HttpServletResponse response){
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.SelectReplyForCubeWithBgroup(search,emitter);
+        return emitter;
+    }
+
     @GetMapping(value="/api/v1/Fcube/SelectReplyForCubeGroup")
     ResponseBodyEmitter SelectReplyForCubeGroup(FcubereplySearch search, HttpServletResponse response){
         response.addHeader("content-type","application/json;charset=UTF-8");

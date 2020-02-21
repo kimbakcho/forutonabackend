@@ -173,7 +173,18 @@ public class FcubeDao {
 
     public List<FcubereplyExtender1> SelectReplyForCube(String cubeuuid,int offset,int limit){
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
-        return mapper.SelectReplyForCube(new FcubereplySearch(cubeuuid,offset,limit));
+        return mapper.SelectReplyForCube(new FcubereplySearch(cubeuuid,offset,limit,0));
+    }
+
+    @Async
+    public void SelectReplyForCubeWithBgroup(FcubereplySearch search,ResponseBodyEmitter emitter){
+        FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
+        try {
+            emitter.send(mapper.SelectReplyForCubeWithBgroup(search));
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
     }
 
     @Async

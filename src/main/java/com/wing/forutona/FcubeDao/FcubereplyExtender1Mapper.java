@@ -14,4 +14,5 @@ public interface FcubereplyExtender1Mapper extends FcubereplyMapper{
     int insert(Fcubereply srcreply);
     List<FcubereplyExtender1> SelectReplyForCube(FcubereplySearch searchitem);
     List<FcubereplyExtender1> SelectReplyForCubeGroup(FcubereplySearch searchitem);
+    List<FcubereplyExtender1> SelectReplyForCubeWithBgroup(FcubereplySearch searchitem);
 }

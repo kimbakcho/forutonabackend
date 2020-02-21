@@ -53,7 +53,7 @@
     SELECT A.CommentNo, A.Cubeuuid,A.BGroup,C.BGroupCount, A.Uid, A.Sorts, A.Depth, A.CommentText, A.CommentTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
     FROM FcubeReply A
 	 LEFT JOIN UserInfo B ON A.Uid = B.Uid
-	 LEFT JOIN (SELECT COUNT(*) as BGroupCount,BGRoup FROM FcubeReply WHERE Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}  GROUP BY BGRoup ) C
+	 LEFT JOIN (SELECT  <![CDATA[ COUNT(*) -1 ]]> as BGroupCount,BGRoup FROM FcubeReply WHERE Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}  GROUP BY BGRoup ) C
     ON A.Bgroup = C.BGRoup
     WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND Sorts = 0 AND Depth = 0
     ORDER BY A.Bgroup desc LIMIT #{limit} OFFSET #{offset}
@@ -66,5 +66,11 @@
     ORDER BY A.Bgroup desc, A.Sorts asc
   </select>
 
+  <select id="SelectReplyForCubeWithBgroup" parameterType="com.wing.forutona.FcubeDto.FcubereplySearch" resultMap="BaseResultMap" >
+    SELECT A.CommentNo, A.Cubeuuid,A.BGroup, A.Uid, A.Sorts, A.Depth, A.CommentText, A.CommentTime,B.NickName,B.ProfilePicktureUrl,B.FCMtoken
+    FROM FcubeReply A LEFT JOIN UserInfo B ON A.Uid = B.Uid
+    WHERE A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR} AND A.BGroup = #{bgroup}
+    ORDER BY  A.Sorts asc  LIMIT #{limit} OFFSET #{offset}
+  </select>
 
 </mapper>
