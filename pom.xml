@@ -130,7 +130,7 @@
 					<configurationFile>src/main/resources/mybatisgenerator/Fcube-mybatis-generator.xml</configurationFile>
 					<overwrite>false</overwrite>
 					<tableNames>
-						forutona.FcubeReply
+						forutona.FcubeSponsorExtender1
 					</tableNames>
 				</configuration>
 				<dependencies>

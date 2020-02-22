@@ -61,5 +61,13 @@
             <property name="useActualColumnNames" value="true"/>
         </table>
 
+        <table schema="forutona" tableName="FcubeSponsor" enableCountByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" enableUpdateByExample="true"  >
+            <property name="useActualColumnNames" value="true"/>
+        </table>
+        <table schema="forutona" tableName="FcubeSponsorExtender1" enableCountByExample="true"
+               enableSelectByExample="true" enableInsert="false" >
+            <property name="useActualColumnNames" value="true"/>
+        </table>
     </context>
 </generatorConfiguration>

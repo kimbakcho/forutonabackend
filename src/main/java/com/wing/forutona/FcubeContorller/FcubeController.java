@@ -453,4 +453,25 @@ public class FcubeController {
         }
         return emitter;
     }
+
+    @GetMapping(value = "/api/v1/Fcube/getSponsorForCubeuuid")
+    ResponseBodyEmitter getSponsorForCubeuuid( HttpServletResponse response,FcubeSponsorSearch search) {
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.selectSponsorForCubeuuid(emitter,search);
+        return emitter;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getCubeSponsorSumPointValue")
+    ResponseBodyEmitter getCubeSponsorSumPointValue(FcubeSponsorSearch search){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.selectCubeSponsorSumPointValue(emitter,search);
+        return emitter;
+    }
+    @GetMapping(value = "/api/v1/Fcube/getCubeSponsorCount")
+    ResponseBodyEmitter getCubeSponsorCount(FcubeSponsorSearch search){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.selectCubeSponsorCount(emitter,search);
+        return emitter;
+    }
 }

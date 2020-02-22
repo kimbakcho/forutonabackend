@@ -542,4 +542,40 @@ public class FcubeDao {
         emitter.send(points);
         emitter.complete();
     }
+
+    @Async
+    public  void selectSponsorForCubeuuid(ResponseBodyEmitter emitter,FcubeSponsorSearch search) {
+        Fcubesponsorextender1Mapper mapper = sqlSession.getMapper(Fcubesponsorextender1Mapper.class);
+        try {
+            emitter.send(mapper.selectSponsorForCubeuuid(search));
+            emitter.complete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+    }
+
+    @Async
+    public void selectCubeSponsorSumPointValue(ResponseBodyEmitter emitter,FcubeSponsorSearch search) {
+        FcubesponsorMapper mapper = sqlSession.getMapper(FcubesponsorMapper.class);
+        try {
+            emitter.send(mapper.selectCubeSponsorSumPointValue(search));
+            emitter.complete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+    }
+
+    @Async
+    public void selectCubeSponsorCount(ResponseBodyEmitter emitter,FcubeSponsorSearch search){
+        FcubesponsorMapper mapper = sqlSession.getMapper(FcubesponsorMapper.class);
+        try {
+            emitter.send(mapper.selectCubeSponsorCount(search));
+            emitter.complete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+    }
 }
