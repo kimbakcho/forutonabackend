@@ -433,24 +433,14 @@ public class FcubeController {
     @PostMapping(value = "/api/v1/Fcube/updateCubeHitPoint")
     ResponseBodyEmitter updateCubeHitPoint(@RequestParam String cubeuuid){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        try {
-            fcubeDao.updateCubeHitPoint(emitter,cubeuuid);
-        } catch (IOException e) {
-            emitter.complete();
-            e.printStackTrace();
-        }
+        fcubeDao.updateCubeHitPoint(emitter,cubeuuid);
         return emitter;
     }
 
     @GetMapping(value = "/api/v1/Fcube/getCubeuuidGetPoint")
     ResponseBodyEmitter getCubeuuidGetPoint(Userexppointhistroy item) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        try {
-            fcubeDao.getCubeuuidGetPoint(emitter,item);
-        } catch (IOException e) {
-            emitter.complete();
-            e.printStackTrace();
-        }
+        fcubeDao.getCubeuuidGetPoint(emitter,item);
         return emitter;
     }
 
@@ -464,6 +454,7 @@ public class FcubeController {
 
     @GetMapping(value = "/api/v1/Fcube/getCubeSponsorSumPointValue")
     ResponseBodyEmitter getCubeSponsorSumPointValue(FcubeSponsorSearch search){
+        System.out.println("getCubeSponsorSumPointValue");
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fcubeDao.selectCubeSponsorSumPointValue(emitter,search);
         return emitter;
@@ -474,4 +465,11 @@ public class FcubeController {
         fcubeDao.selectCubeSponsorCount(emitter,search);
         return emitter;
     }
+    @GetMapping(value = "/api/v1/Fcube/getReplyCount")
+    ResponseBodyEmitter getReplyCount(FcubereplySearch search){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.selectReplyCount(emitter,search);
+        return emitter;
+    }
+
 }

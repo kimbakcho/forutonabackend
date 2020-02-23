@@ -71,4 +71,7 @@
         select CommentNo, Cubeuuid, Uid, Bgroup, Sorts, Depth, CommentText, CommentTime
     from FcubeReply
   </select>
+  <select id="selectReplyCount" parameterType="com.wing.forutona.FcubeDto.FcubereplySearch" resultType="java.lang.Integer">
+    SELECT COUNT(*) AS ReplyCount FROM FcubeReply A WHERE A.cubeuuid = #{cubeuuid} AND A.Sorts = 0 AND A.Depth=0
+  </select>
 </mapper>

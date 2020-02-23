@@ -140,11 +140,6 @@ public class FcubeDao {
             reply.setBgroup(mapper.SelectBgroubReplyMax(reply));
             if(mapper.insert(reply)==1){
                 emitter.send(reply);
-                emitter.complete();
-                return ;
-            }else {
-                emitter.complete();
-                return;
             }
         }
         if(reply.getSorts() == 0){
@@ -152,23 +147,14 @@ public class FcubeDao {
             reply.setDepth(reply.getDepth()+1);
             if(mapper.insert(reply)==1){
                 emitter.send(reply);
-                emitter.complete();
-                return ;
-            }else {
-                emitter.complete();
-                return;
             }
         }else {
             mapper.UpdateStep2ForReply(reply);
             if(mapper.insert(reply)==1){
                 emitter.send(reply);
-                emitter.complete();
-                return ;
-            }else {
-                emitter.complete();
-                return;
             }
         }
+        emitter.complete();
     }
 
     public List<FcubereplyExtender1> SelectReplyForCube(String cubeuuid,int offset,int limit){
@@ -221,7 +207,7 @@ public class FcubeDao {
             e.printStackTrace();
         }
         emitter.complete();
-        return ;
+
     }
 
     @Transactional
@@ -271,10 +257,10 @@ public class FcubeDao {
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
             storage.create(blobInfo, getfile.get(0).getBytes());
             emitter.send("https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename);
-            emitter.complete();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        emitter.complete();
     }
     @Async
     public void deleteAuthForImage (ResponseBodyEmitter emitter,String url){
@@ -289,10 +275,11 @@ public class FcubeDao {
             }else {
                 emitter.send(0);
             }
-            emitter.complete();
+
         }catch (Exception ex){
 
         }
+        emitter.complete();
     }
 
 
@@ -384,7 +371,6 @@ public class FcubeDao {
                     }else {
                         emitter.send(0);
                     }
-
                 }else {
                     //완료 처리 해줌
                     item.setJudgmenttime(new Date());
@@ -402,15 +388,11 @@ public class FcubeDao {
                         emitter.send(0);
                     }
                 }
-                emitter.complete();
-         }else {
-             emitter.complete();
          }
-
         }catch (Exception ex){
             ex.printStackTrace();
-            emitter.complete();
         }
+        emitter.complete();
 
     }
 
@@ -502,8 +484,10 @@ public class FcubeDao {
             emitter.send(mapper.getFcubeExtender1(cubeuuid));
         }catch (Exception ex){
             ex.printStackTrace();
+
         }
         emitter.complete();
+
 
     }
 
@@ -514,32 +498,39 @@ public class FcubeDao {
             emitter.send(mapper.selectFcubeReview(item));
         }catch (Exception ex){
             ex.printStackTrace();
+
         }
         emitter.complete();
+
     }
 
     @Async
     @Transactional
-    public void updateCubeHitPoint(ResponseBodyEmitter emitter,String cubeuuid) throws IOException {
+    public void updateCubeHitPoint(ResponseBodyEmitter emitter,String cubeuuid){
         FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
         Fcube cube = mapper.selectforupdate(cubeuuid);
         cube.setCubehits(cube.getCubehits() == null ? 0:cube.getCubehits());
         cube.setCubehits(cube.getCubehits() + 1 );
         mapper.updateCubeHitPoint(cube);
-        emitter.send(cube.getCubehits());
+        try {
+            emitter.send(cube.getCubehits());
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+
         emitter.complete();
     }
 
     @Async
-    public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,Userexppointhistroy item) throws IOException{
+    public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,Userexppointhistroy item) {
         UserexppointhistroyMapper mapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
         double points = 0;
         try{
+            emitter.send(points);
             points =  mapper.getCubeuuidGetPoint(item);
         }catch (Exception ex) {
             points = 0;
         }
-        emitter.send(points);
         emitter.complete();
     }
 
@@ -548,23 +539,23 @@ public class FcubeDao {
         Fcubesponsorextender1Mapper mapper = sqlSession.getMapper(Fcubesponsorextender1Mapper.class);
         try {
             emitter.send(mapper.selectSponsorForCubeuuid(search));
-            emitter.complete();
         } catch (IOException e) {
             e.printStackTrace();
         }
         emitter.complete();
+
     }
 
     @Async
     public void selectCubeSponsorSumPointValue(ResponseBodyEmitter emitter,FcubeSponsorSearch search) {
         FcubesponsorMapper mapper = sqlSession.getMapper(FcubesponsorMapper.class);
         try {
-            emitter.send(mapper.selectCubeSponsorSumPointValue(search));
-            emitter.complete();
+             emitter.send(mapper.selectCubeSponsorSumPointValue(search));
         } catch (IOException e) {
             e.printStackTrace();
         }
         emitter.complete();
+
     }
 
     @Async
@@ -572,10 +563,21 @@ public class FcubeDao {
         FcubesponsorMapper mapper = sqlSession.getMapper(FcubesponsorMapper.class);
         try {
             emitter.send(mapper.selectCubeSponsorCount(search));
-            emitter.complete();
         } catch (IOException e) {
             e.printStackTrace();
         }
         emitter.complete();
+    }
+
+    @Async
+    public void selectReplyCount(ResponseBodyEmitter emitter,FcubereplySearch search){
+        FcubereplyMapper mapper = sqlSession.getMapper(FcubereplyMapper.class);
+        try {
+            emitter.send(mapper.selectReplyCount(search));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+
     }
 }

@@ -1,6 +1,8 @@
 package com.wing.forutona.FcubeDao;
 
 import com.wing.forutona.FcubeDto.Fcubereply;
+import com.wing.forutona.FcubeDto.FcubereplySearch;
+
 import java.util.List;
 
 public interface FcubereplyMapper {
@@ -43,4 +45,6 @@ public interface FcubereplyMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(Fcubereply record);
+
+    int selectReplyCount(FcubereplySearch search);
 }
