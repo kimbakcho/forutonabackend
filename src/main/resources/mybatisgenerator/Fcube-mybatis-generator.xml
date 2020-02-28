@@ -69,5 +69,9 @@
                enableSelectByExample="true" enableInsert="false" >
             <property name="useActualColumnNames" value="true"/>
         </table>
+        <table schema="forutona" tableName="Fcubetag" enableCountByExample="false"
+               enableSelectByExample="true" enableInsert="false" >
+            <property name="useActualColumnNames" value="true"/>
+        </table>
     </context>
 </generatorConfiguration>

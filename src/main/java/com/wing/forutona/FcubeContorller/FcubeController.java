@@ -78,14 +78,14 @@ public class FcubeController {
         }
     }
     @PostMapping(value="/api/v1/Fcube/cuberelationimageupload")
-    String CubeRelationImageUpload(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,MultipartHttpServletRequest request) throws IOException {
+    ResponseBodyEmitter CubeRelationImageUpload(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,MultipartHttpServletRequest request) throws IOException {
         token = token.replace("Bearer ","");
         FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         if(ftoken !=null){
-            return fcubeDao.CubeRelationImageUpload(request);
-        }else {
-            return "";
+             fcubeDao.CubeRelationImageUpload(emitter,request);
         }
+        return emitter;
     }
 
     @PostMapping(value="/api/v1/Fcube/cuberelationimagedelete")

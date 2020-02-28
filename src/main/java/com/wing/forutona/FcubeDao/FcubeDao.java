@@ -1,5 +1,7 @@
 package com.wing.forutona.FcubeDao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -67,16 +69,41 @@ public class FcubeDao {
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(5);
 
         Date date = Date.from( localDateTime.atZone( ZoneId.systemDefault()).toInstant());
+        fcube.setNapoint(0.0);
+        fcube.setYoupoint(0.0);
         fcube.setExpgiveflag(0);
+        fcube.setPointreward(0.0);
+        fcube.setInfluencereward(0.0);
+        fcube.setCubehits(0);
+        fcube.setCubelikes(0);
+        fcube.setCubedislikes(0);
         fcube.setMakeexp(300.0);
+        fcube.setExpgiveflag(0);
+        fcube.setCommentcount(0);
+        fcube.setUserexp(0.0);
         fcube.setActivationtime(date);
         return mapper.insert(fcube);
     };
 
     public int MakeCubeContent(Fcubecontent fcubecontent){
         fcubecontent.setContentupdatetime(new Date());
+
         FcubecontentExtend1Mapper mapper =  sqlSession.getMapper(FcubecontentExtend1Mapper.class);
-        return mapper.insert(fcubecontent);
+        int result =mapper.insert(fcubecontent);
+        if(fcubecontent.getContenttype().equals("description")){
+            ObjectMapper desciptionmapper = new ObjectMapper();
+            try {
+                //if have tag >> insert db
+                FcubeDescirption descirption = desciptionmapper.readValue(fcubecontent.getContentvalue(),FcubeDescirption.class);
+                if(descirption.getTags().size() > 0){
+                    descirption.setCubeuuid(fcubecontent.getCubeuuid());
+                    inserttags(descirption);
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
     public List<FcubeExtender1> GetUserCubes(String uid){
@@ -106,8 +133,10 @@ public class FcubeDao {
         }
     }
 
-    public String CubeRelationImageUpload(MultipartHttpServletRequest request) throws IOException {
-        System.out.println(request.getFileMap());
+    @Async
+    public void CubeRelationImageUpload(ResponseBodyEmitter emitter,MultipartHttpServletRequest request) {
+//        System.out.println(request.getFileMap());
+        try {
         Storage storage =  googlesotrageAdmin.GetStorageInstance();
         List<MultipartFile> getfile = request.getMultiFileMap().get("CubeRelationImage");
         String OriginalFile = getfile.get(0).getOriginalFilename();
@@ -122,8 +151,13 @@ public class FcubeDao {
         }
         BlobId blobId = BlobId.of("publicforutona", "cuberelationimage/"+savefilename);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
-        storage.create(blobInfo, getfile.get(0).getBytes());
-        return "https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename;
+
+            storage.create(blobInfo, getfile.get(0).getBytes());
+            emitter.send("https://storage.googleapis.com/publicforutona/cuberelationimage/"+savefilename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
     }
     public List<Fcubecontent> selectwithFcubeContentSelector(FcubeContentSelector selectitem){
         FcubecontentExtend1Mapper mapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
@@ -579,5 +613,10 @@ public class FcubeDao {
         }
         emitter.complete();
 
+    }
+
+    int inserttags(FcubeDescirption descirption){
+        FcubetagMapper mapper = sqlSession.getMapper(FcubetagMapper.class);
+        return mapper.inserttags(descirption);
     }
 }
