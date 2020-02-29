@@ -120,11 +120,8 @@ public class FcubeController {
         if(ftoken !=null && ftoken.getUid().equals(reply.getUid())){
             response.addHeader("content-type","application/json;charset=UTF-8");
             fcubeDao.InsertCubeReply(reply,emitter);
-            return emitter;
-        }else {
-            emitter.complete();
-            return emitter;
         }
+        return emitter;
     }
 
     @GetMapping(value="/api/v1/Fcube/SelectReplyForCube")

@@ -175,8 +175,7 @@ public class FcubeDao {
             if(mapper.insert(reply)==1){
                 emitter.send(reply);
             }
-        }
-        if(reply.getSorts() == 0){
+        }else if(reply.getSorts() == 0){
             reply.setSorts(mapper.SelectStep2ForReply(reply));
             reply.setDepth(reply.getDepth()+1);
             if(mapper.insert(reply)==1){
@@ -188,6 +187,7 @@ public class FcubeDao {
                 emitter.send(reply);
             }
         }
+
         emitter.complete();
     }
 
