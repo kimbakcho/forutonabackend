@@ -149,7 +149,7 @@
   </select>
 
   <select id="miniselectforupdate" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT  Cubeuuid, Uid,CubeState ,ActivationTime,ExpGiveFlag,MakeExp
+    SELECT  Cubeuuid, Uid,CubeState ,ActivationTime,ExpGiveFlag,MakeExp,CubeLikes,CubeDisLikes
     FROM Fcube
     WHERE Cubeuuid = #{cubeuuid}
     FOR UPDATE
@@ -182,4 +182,9 @@
    ActivationTime < now()
    ]]>
  </select>
+  <update id="updateCommentCount" parameterType="com.wing.forutona.FcubeDto.Fcube">
+    update Fcube
+    set CommentCount = #{commentcount,jdbcType=INTEGER},
+    where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
+  </update>
 </mapper>

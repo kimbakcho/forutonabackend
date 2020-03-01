@@ -55,4 +55,6 @@ public interface FcubeMapper {
     int updateCubeState(Fcube item);
 
     List<Fcube> finddonotfinishcube();
+
+    int updateCommentCount(Fcube item);
 }

@@ -41,7 +41,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 
 @Component
-public class FcubeDao {
+public class FcubeDao implements FcubeDaoInter{
 
     @Resource(name = "sqlSession")
     private SqlSession sqlSession;
@@ -83,7 +83,7 @@ public class FcubeDao {
         fcube.setUserexp(0.0);
         fcube.setActivationtime(date);
         return mapper.insert(fcube);
-    };
+    }
 
     public int MakeCubeContent(Fcubecontent fcubecontent){
         fcubecontent.setContentupdatetime(new Date());
@@ -166,13 +166,23 @@ public class FcubeDao {
 
     @Async
     @Transactional
+    @Override
     public void InsertCubeReply(Fcubereply reply,ResponseBodyEmitter emitter) throws  Exception{
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
+        FcubereplyMapper mapper1 = sqlSession.getMapper(FcubereplyMapper.class);
         reply.setSorts(mapper.SelectStep1ForReply(reply));
         reply.setCommenttime(new Date());
         if(reply.getBgroup() == 0){
             reply.setBgroup(mapper.SelectBgroubReplyMax(reply));
             if(mapper.insert(reply)==1){
+                FcubereplySearch search = new FcubereplySearch();
+                search.setCubeuuid(reply.getCubeuuid());
+                int replyCount =  mapper1.selectReplyCount(search);
+                Fcube cubeItem = new Fcube();
+                cubeItem.setCubeuuid(reply.getCubeuuid());
+                cubeItem.setCommentcount(replyCount);
+                FcubeMapper mapper2 = sqlSession.getMapper(FcubeMapper.class);
+                mapper2.updateCommentCount(cubeItem);
                 emitter.send(reply);
             }
         }else if(reply.getSorts() == 0){
@@ -245,6 +255,7 @@ public class FcubeDao {
     }
 
     @Transactional
+    @Override
     public int insertFcubePlayer(Fcubeplayer fcubeplayer){
         FcubeMapper fcubemapper = sqlSession.getMapper(FcubeMapper.class);
         Fcube cube = fcubemapper.selectforupdate(fcubeplayer.getCubeuuid());
@@ -330,6 +341,7 @@ public class FcubeDao {
 
     @Async
     @Transactional
+    @Override
     public void updateQuestReq(ResponseBodyEmitter emitter,FcubequestsuccessExtender1 item){
         FcubecontentExtend1Mapper contentmapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
         FcubequestsuccessExtender1Mapper cubequestsuccessExtender = sqlSession.getMapper(FcubequestsuccessExtender1Mapper.class);
@@ -446,6 +458,7 @@ public class FcubeDao {
 
     @Async
     @Transactional
+    @Override
     public void insertFcubeReviewExpPoint(ResponseBodyEmitter emitter,Fcubereview item) throws IOException {
         //별점 포인트 해킹 방지
         if(item.getStarpoint() > 5.0) {
@@ -540,6 +553,7 @@ public class FcubeDao {
 
     @Async
     @Transactional
+    @Override
     public void updateCubeHitPoint(ResponseBodyEmitter emitter,String cubeuuid){
         FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);
         Fcube cube = mapper.selectforupdate(cubeuuid);
