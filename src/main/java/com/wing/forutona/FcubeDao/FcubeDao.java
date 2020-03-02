@@ -573,11 +573,11 @@ public class FcubeDao implements FcubeDaoInter{
     public void getCubeuuidGetPoint(ResponseBodyEmitter emitter,Userexppointhistroy item) {
         UserexppointhistroyMapper mapper = sqlSession.getMapper(UserexppointhistroyMapper.class);
         double points = 0;
+        points = mapper.getCubeuuidGetPoint(item);
         try{
             emitter.send(points);
-            points =  mapper.getCubeuuidGetPoint(item);
         }catch (Exception ex) {
-            points = 0;
+            ex.printStackTrace();
         }
         emitter.complete();
     }
