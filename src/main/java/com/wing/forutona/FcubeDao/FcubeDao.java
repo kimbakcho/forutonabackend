@@ -524,8 +524,7 @@ public class FcubeDao implements FcubeDaoInter{
     }
 
     @Async
-    public void getPlayerJoinList(ResponseBodyEmitter emitter,String cubeuuid)  {
-
+    public void getFcubeExtender1(ResponseBodyEmitter emitter,String cubeuuid)  {
         FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
         try{
             emitter.send(mapper.getFcubeExtender1(cubeuuid));
@@ -534,8 +533,6 @@ public class FcubeDao implements FcubeDaoInter{
 
         }
         emitter.complete();
-
-
     }
 
     @Async
@@ -633,4 +630,16 @@ public class FcubeDao implements FcubeDaoInter{
         FcubetagMapper mapper = sqlSession.getMapper(FcubetagMapper.class);
         return mapper.inserttags(descirption);
     }
+
+    @Async
+    public void selectFcubetagSearch(ResponseBodyEmitter emitter,FcubetagSearch search){
+        Fcubetagextender1Mapper mapper = sqlSession.getMapper(Fcubetagextender1Mapper.class);
+        try {
+            emitter.send(mapper.selectFcubetagSearch(search));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+    }
+
 }

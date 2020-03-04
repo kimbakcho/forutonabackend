@@ -394,16 +394,12 @@ public class FcubeController {
     @GetMapping(value = "/api/v1/Fcube/getFcubeExtender1")
     ResponseBodyEmitter getFcubeExtender1(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
                                           HttpServletResponse response,
-                                          @RequestParam String uid,@RequestParam String cubeuuid){
-        token = token.replace("Bearer ","");
-        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
+                                          @RequestParam String cubeuuid){
+
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        if(ftoken !=null && ftoken.getUid().equals(uid)) {
-            response.addHeader("content-type","application/json;charset=UTF-8");
-            fcubeDao.getPlayerJoinList(emitter,cubeuuid);
-        }else {
-            emitter.complete();
-        }
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        fcubeDao.getFcubeExtender1(emitter,cubeuuid);
+
         return emitter;
     }
 
@@ -466,6 +462,14 @@ public class FcubeController {
     ResponseBodyEmitter getReplyCount(FcubereplySearch search){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fcubeDao.selectReplyCount(emitter,search);
+        return emitter;
+    }
+
+    @GetMapping(value = "/api/v1/Fcube/getFcubetagSearch")
+    ResponseBodyEmitter getFcubetagSearch (HttpServletResponse response,FcubetagSearch search){
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.selectFcubetagSearch(emitter,search);
         return emitter;
     }
 
