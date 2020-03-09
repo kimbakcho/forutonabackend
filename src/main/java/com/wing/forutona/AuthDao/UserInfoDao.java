@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
+import java.time.Duration;
 import java.util.*;
 
 @Component
@@ -59,6 +60,7 @@ public class UserInfoDao {
         if(param.getPhoneauthcheckcode().equals(returncode) ){
             UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
             param.setExppoint(0.0);
+            param.setFollowcount(0);
             result = mapper.insert(param);
         }else {
             result = 0;
@@ -107,8 +109,10 @@ public class UserInfoDao {
 
         if(recode == null){
             customtoken = fireBaseAdmin.GetUserInfoCustomToken(param);
+
             UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
             param.setExppoint(0.0);
+            param.setFollowcount(0);
             int result =  mapper.insert(param);
             if(result == 0){
                 return "";
@@ -162,21 +166,27 @@ public class UserInfoDao {
         UserinfoMapper mapper = sqlSession.getMapper(UserinfoMapper.class);
         Userinfo userinfo = mapper.selectByPrimaryKey(phone.getUuid());
         if(userinfo.getPhonenumber().equals(phone.getPhonenumber()) ){
-            this.requestAuthPhoneNumber(phone);
-            return 1;
+            return this.requestAuthPhoneNumber(phone);
         }else {
-            return 0;
+            return -1;
         }
     }
 
 
-    public void requestAuthPhoneNumber(Phoneauthtable phone){
+    public int requestAuthPhoneNumber(Phoneauthtable phone){
         System.out.println(phone.getUuid());
         System.out.println(phone.getPhonenumber());
         PhoneauthtableCustomMapper mapper1 = sqlSession.getMapper(PhoneauthtableCustomMapper.class);
         PhoneauthtableCustom customdata = new PhoneauthtableCustom();
         customdata.setEventuuid("PHONEPW"+phone.getUuid().replaceAll("-",""));
         customdata.setUuid(phone.getUuid());
+        //어뷰징 방지 목적으로 해당 부분 으로 해당 폰에 요청한 인증이 있는지 검사하여 있으면 남은 시간 리턴
+        Phoneauthtable tempphoneinfo = mapper1.findByPhonNumber(phone.getPhonenumber());
+        if(tempphoneinfo != null){
+            Date now = new Date();
+            int secondsBetween = (int)(now.getTime() - tempphoneinfo.getMaketime().getTime() )/1000;
+            return secondsBetween;
+        }
         try{
             mapper1.DropRemoveEvent(customdata);
         }catch (Exception ex){
@@ -217,8 +227,9 @@ public class UserInfoDao {
         }
 
 
-        //5분뒤 DB에서 삭제
+        //2분뒤 DB에서 삭제
         mapper1.CreateRemoveEvent(customdata);
+        return 0;
     }
 
     public String GetEmailtoUid(String email) throws FirebaseAuthException {
@@ -330,4 +341,6 @@ public class UserInfoDao {
         UserinfoMainMapper mapper  = sqlSession.getMapper(UserinfoMainMapper.class);
         return mapper.updateFCMtoken(userinfo);
     }
+
+
 }

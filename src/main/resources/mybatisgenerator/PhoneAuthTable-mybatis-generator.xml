@@ -19,16 +19,16 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.wing.forutona.AuthDto" targetProject=".">
+        <javaModelGenerator targetPackage="com.wing.forutona.AuthDto" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="Mappers" targetProject=".">
+        <sqlMapGenerator targetPackage="Mappers" targetProject="src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator targetPackage="com.wing.forutona.AuthDao" type="XMLMAPPER" targetProject=".">
+        <javaClientGenerator targetPackage="com.wing.forutona.AuthDao" type="XMLMAPPER" targetProject="src/main/java">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 

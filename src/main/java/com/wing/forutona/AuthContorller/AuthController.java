@@ -53,9 +53,9 @@ public class AuthController {
         return userInfoDao.GetUserInfoMain(Authtoken,uid);
     }
     @PostMapping(value="/api/v1/Auth/requestAuthPhoneNumber")
-    void requestAuthPhoneNumber(@RequestBody Phoneauthtable body)
+    int requestAuthPhoneNumber(@RequestBody Phoneauthtable body)
     {
-        userInfoDao.requestAuthPhoneNumber(body);
+        return userInfoDao.requestAuthPhoneNumber(body);
     }
 
     @PostMapping(value="/api/v1/Auth/requestFindAuthPhoneNumber")

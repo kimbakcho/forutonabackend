@@ -149,7 +149,7 @@
   </select>
 
   <select id="miniselectforupdate" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT  Cubeuuid, Uid,CubeState ,ActivationTime,ExpGiveFlag,MakeExp,CubeLikes,CubeDisLikes
+    SELECT  Cubeuuid, Uid,CubeState ,ActivationTime,ExpGiveFlag,MakeExp,CubeLikes,CubeDisLikes,CubeType
     FROM Fcube
     WHERE Cubeuuid = #{cubeuuid}
     FOR UPDATE

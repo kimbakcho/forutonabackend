@@ -131,10 +131,10 @@
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<configurationFile>src/main/resources/mybatisgenerator/Fcube-mybatis-generator.xml</configurationFile>
+					<configurationFile>src/main/resources/mybatisgenerator/PhoneAuthTable-mybatis-generator.xml</configurationFile>
 					<overwrite>false</overwrite>
 					<tableNames>
-						forutona.FcubetagExtender1
+						forutona.PhoneAuthTable
 					</tableNames>
 				</configuration>
 				<dependencies>
