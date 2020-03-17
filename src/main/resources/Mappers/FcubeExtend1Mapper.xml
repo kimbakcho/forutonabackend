@@ -30,6 +30,7 @@
     <result column="PointReward" jdbcType="DOUBLE" property="pointreward" />
     <result column="UserExp" jdbcType="DOUBLE" property="userexp" />
     <result column="FollowCount" jdbcType="INTEGER" property="followcount" />
+    <result column="distance" jdbcType="DOUBLE" property="distance" />
   </resultMap>
 
   <select id="selectUserBoxAll" parameterType="com.wing.forutona.FcubeDto.Fcube" resultMap="BaseResultMap">
@@ -72,29 +73,28 @@
     UPDATE Fcube SET CubeState = #{cubestate,jdbcType=INTEGER},ActivationTime = #{activationtime,jdbcType=TIMESTAMP}
     where Cubeuuid =  #{cubeuuid,jdbcType=VARCHAR}
   </update>
-  <select id="findNearDistanceCube" parameterType="com.wing.forutona.FcubeDto.FCubeGeoSearchUtil" resultMap="BaseResultMap">
-     SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
+  
+  <select id="findInfluenceFromPositionCount" parameterType="com.wing.forutona.FcubeDto.FCubeGeoSearchUtil" resultType="java.lang.Integer">
+    SELECT count(*) as countplace FROM Fcube
+    WHERE mbrwithin(placePoint,
+        ST_Envelope(ST_GeomFromText("LineString(${southWestlongitude} ${southWestlatitude},
+                    ${northEastlongitude} ${northEastlatitude})",4326)));
+  </select>
+  <select id="findInfluenceFromPosition" parameterType="com.wing.forutona.FcubeDto.FCubeGeoSearchUtil" resultMap="BaseResultMap">
+    SELECT A.Cubeuuid, A.Uid, A.longitude, A.latitude, A.CubeName, A.CubeType, A.MakeTime, A.Influence,
     A.CubeState, A.PlaceAddress, A.AdministrativeArea, A.Country, A.PointReward, A.InfluenceReward,A.HasPassword,
-    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
+    A.ActivationTime, A.CubeScope, A.InfluenceLevel, A.CubeHits, A.CubeLikes,A.ballPower, A.CubeDisLikes,A.JoinPlayer,A.CommentCount,
     A.NaPoint,A.YouPoint,A.PointReward,A.UserExp,
-    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken,B.FollowCount,111.045 * DEGREES(ACOS(COS(RADIANS(#{latitude}))
-                 * COS(RADIANS(A.latitude))
-                 * COS(RADIANS(#{longitude}) - RADIANS(A.longitude))
-                 + SIN(RADIANS(#{latitude}))
-                 * SIN(RADIANS(A.latitude)))) AS distancewithme,C.ContentType,C.ContentValue
+    A.MaximumPlayers,A.StarPoints,A.MakeExp,B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken,B.FollowCount,
+    ST_Distance_Sphere(placePoint,ST_PointFromText("point(${longitude} ${latitude})",4326)) as distance,
+    A.ballPower / ST_Distance_Sphere(placePoint,ST_PointFromText("point(${longitude} ${latitude})",4326))*10000 as InfluencePower
     FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid LEFT JOIN FcubeContent C ON  A.Cubeuuid = C.Cubeuuid
-    <where>
-      A.latitude
-      BETWEEN  #{latitude} - ( #{distance} / 111.045 )
-      AND #{latitude} + ( #{distance} / 111.045 )
-      AND A.longitude
-      BETWEEN #{longitude} - (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
-      AND #{longitude} + (#{distance} / (111.045 * COS(RADIANS(#{latitude}))))
-      AND A.ActivationTime <![CDATA[>]]> #{activationtime}
-      AND C.ContentType = 'description'
-      AND A.CubeState = 1
-    </where>
-    ORDER BY distancewithme
+    WHERE
+    mbrwithin(A.placePoint, ST_Envelope(ST_GeomFromText("LineString(${southWestlongitude} ${southWestlatitude}, ${northEastlongitude} ${northEastlatitude})",4326)))
+    AND A.ActivationTime <![CDATA[>]]> #{activationtime}
+    AND A.CubeState = #{cubestate}
+    AND C.ContentType = 'description'
+    order BY InfluencePower desc
     LIMIT #{limit}
     OFFSET #{offset}
   </select>

@@ -15,5 +15,7 @@ public class FcubeExtender1 extends Fcube{
     double userlevel;
     String fcmtoken;
     Integer followcount;
+    double distance;
+    double InfluencePower;
 
 }

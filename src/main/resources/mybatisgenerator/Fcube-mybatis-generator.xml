@@ -77,5 +77,10 @@
                enableSelectByExample="true" enableInsert="false" >
             <property name="useActualColumnNames" value="true"/>
         </table>
+
+        <table schema="forutona" tableName="MapFindScopeStep" enableCountByExample="false"
+               enableSelectByExample="true" enableInsert="false" >
+            <property name="useActualColumnNames" value="true"/>
+        </table>
     </context>
 </generatorConfiguration>

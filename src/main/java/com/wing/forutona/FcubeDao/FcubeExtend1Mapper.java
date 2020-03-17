@@ -13,4 +13,6 @@ public interface FcubeExtend1Mapper extends FcubeMapper{
     FcubeExtender1 getFcubeExtender1(String cubeuuid);
     List<FcubeExtender1> findNearDistanceCube(FCubeGeoSearchUtil searchItem);
     List<FcubeExtender1> selectUserBox(FcubeSearch search);
+    int findInfluenceFromPositionCount(FCubeGeoSearchUtil searchItem);
+    List<FcubeExtender1> findInfluenceFromPosition(FCubeGeoSearchUtil searchItem);
 }

@@ -30,6 +30,7 @@
     <result column="CubeHits" jdbcType="INTEGER" property="cubehits" />
     <result column="CubeLikes" jdbcType="INTEGER" property="cubelikes" />
     <result column="CubeDisLikes" jdbcType="INTEGER" property="cubedislikes" />
+    <result column="ballPower" jdbcType="INTEGER" property="ballpower" />
     <result column="JoinPlayer" jdbcType="INTEGER" property="joinplayer" />
     <result column="MaximumPlayers" jdbcType="INTEGER" property="maximumplayers" />
     <result column="StarPoints" jdbcType="DOUBLE" property="starpoints" />
@@ -37,6 +38,7 @@
     <result column="MakeExp" jdbcType="DOUBLE" property="makeexp" />
     <result column="CommentCount" jdbcType="INTEGER" property="commentcount" />
     <result column="UserExp" jdbcType="DOUBLE" property="userexp" />
+    <result column="placePoint" jdbcType="BINARY" property="placepoint" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
@@ -59,9 +61,10 @@
       InfluenceReward, ActivationTime, CubePassword, 
       HasPassword, CubeScope, InfluenceLevel, 
       CubeHits, CubeLikes, CubeDisLikes, 
-      JoinPlayer, MaximumPlayers, StarPoints, 
-      ExpGiveFlag, MakeExp, CommentCount, 
-      UserExp)
+      ballPower, JoinPlayer, MaximumPlayers, 
+      StarPoints, ExpGiveFlag, MakeExp, 
+      CommentCount, UserExp, placePoint
+      )
     values (#{cubeuuid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, 
       #{latitude,jdbcType=DOUBLE}, #{cubename,jdbcType=VARCHAR}, #{cubetype,jdbcType=VARCHAR}, 
       #{maketime,jdbcType=TIMESTAMP}, #{influence,jdbcType=DOUBLE}, #{cubestate,jdbcType=INTEGER}, 
@@ -70,9 +73,10 @@
       #{influencereward,jdbcType=DOUBLE}, #{activationtime,jdbcType=TIMESTAMP}, #{cubepassword,jdbcType=VARCHAR}, 
       #{haspassword,jdbcType=INTEGER}, #{cubescope,jdbcType=INTEGER}, #{influencelevel,jdbcType=DOUBLE}, 
       #{cubehits,jdbcType=INTEGER}, #{cubelikes,jdbcType=INTEGER}, #{cubedislikes,jdbcType=INTEGER}, 
-      #{joinplayer,jdbcType=INTEGER}, #{maximumplayers,jdbcType=INTEGER}, #{starpoints,jdbcType=DOUBLE}, 
-      #{expgiveflag,jdbcType=INTEGER}, #{makeexp,jdbcType=DOUBLE}, #{commentcount,jdbcType=INTEGER}, 
-      #{userexp,jdbcType=DOUBLE})
+      #{ballpower,jdbcType=INTEGER}, #{joinplayer,jdbcType=INTEGER}, #{maximumplayers,jdbcType=INTEGER}, 
+      #{starpoints,jdbcType=DOUBLE}, #{expgiveflag,jdbcType=INTEGER}, #{makeexp,jdbcType=DOUBLE}, 
+      #{commentcount,jdbcType=INTEGER}, #{userexp,jdbcType=DOUBLE}, #{placepoint,jdbcType=BINARY}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.wing.forutona.FcubeDto.Fcube">
     <!--
@@ -103,13 +107,15 @@
       CubeHits = #{cubehits,jdbcType=INTEGER},
       CubeLikes = #{cubelikes,jdbcType=INTEGER},
       CubeDisLikes = #{cubedislikes,jdbcType=INTEGER},
+      ballPower = #{ballpower,jdbcType=INTEGER},
       JoinPlayer = #{joinplayer,jdbcType=INTEGER},
       MaximumPlayers = #{maximumplayers,jdbcType=INTEGER},
       StarPoints = #{starpoints,jdbcType=DOUBLE},
       ExpGiveFlag = #{expgiveflag,jdbcType=INTEGER},
       MakeExp = #{makeexp,jdbcType=DOUBLE},
       CommentCount = #{commentcount,jdbcType=INTEGER},
-      UserExp = #{userexp,jdbcType=DOUBLE}
+      UserExp = #{userexp,jdbcType=DOUBLE},
+      placePoint = #{placepoint,jdbcType=BINARY}
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -120,8 +126,8 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, NaPoint, YouPoint, PointReward, 
     InfluenceReward, ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, 
-    CubeHits, CubeLikes, CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints, ExpGiveFlag, 
-    MakeExp, CommentCount, UserExp
+    CubeHits, CubeLikes, CubeDisLikes, ballPower, JoinPlayer, MaximumPlayers, StarPoints, 
+    ExpGiveFlag, MakeExp, CommentCount, UserExp, placePoint
     from Fcube
     where Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}
   </select>
@@ -133,8 +139,8 @@
     select Cubeuuid, Uid, longitude, latitude, CubeName, CubeType, MakeTime, Influence, 
     CubeState, PlaceAddress, AdministrativeArea, Country, NaPoint, YouPoint, PointReward, 
     InfluenceReward, ActivationTime, CubePassword, HasPassword, CubeScope, InfluenceLevel, 
-    CubeHits, CubeLikes, CubeDisLikes, JoinPlayer, MaximumPlayers, StarPoints, ExpGiveFlag, 
-    MakeExp, CommentCount, UserExp
+    CubeHits, CubeLikes, CubeDisLikes, ballPower, JoinPlayer, MaximumPlayers, StarPoints, 
+    ExpGiveFlag, MakeExp, CommentCount, UserExp, placePoint
     from Fcube
   </select>
 

@@ -10,6 +10,10 @@ import com.google.firebase.auth.FirebaseToken;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.grum.geocalc.BoundingArea;
+import com.grum.geocalc.Coordinate;
+import com.grum.geocalc.EarthCalc;
+import com.grum.geocalc.Point;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.AuthDao.UserexppointhistroyMapper;
 import com.wing.forutona.AuthDao.UserinfoMapper;
@@ -241,18 +245,7 @@ public class FcubeDao implements FcubeDaoInter{
         return mapper.selectPlayers(cube);
     }
 
-    @Async
-    public void findNearDistanceCube(FCubeGeoSearchUtil searchItem,ResponseBodyEmitter emitter){
 
-        FcubeExtend1Mapper mapper = sqlSession.getMapper(FcubeExtend1Mapper.class);
-        try {
-            emitter.send(mapper.findNearDistanceCube(searchItem));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        emitter.complete();
-
-    }
 
     @Transactional
     @Override
@@ -515,6 +508,7 @@ public class FcubeDao implements FcubeDaoInter{
 
         PleyerjoincubeMapper mapper = sqlSession.getMapper(PleyerjoincubeMapper.class);
         try{
+
             emitter.send(mapper.getPlayerJoinCubeList(item));
         }catch (Exception ex){
             ex.printStackTrace();
@@ -636,6 +630,43 @@ public class FcubeDao implements FcubeDaoInter{
         Fcubetagextender1Mapper mapper = sqlSession.getMapper(Fcubetagextender1Mapper.class);
         try {
             emitter.send(mapper.selectFcubetagSearch(search));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        emitter.complete();
+    }
+
+    /**
+     * 영향력을기준으로 Order by 해주며  scopeLimit을 통해 점차 검색 범위를 넓혀 최대 Findlimintcount 까지
+     * 찾은후 영향력을 계산한다. 영향력은 ballPower / 위치와 Ball간의 거리
+     * 로 계산 된다. 10000을 곱해주지 않을때 너무 숫자가 적어 일부러 곱해줌.
+     * @param search
+     */
+    @Async
+    public void findInfluenceFromPosition(ResponseBodyEmitter emitter,FCubeGeoSearchUtil search){
+        MapfindscopestepMapper mapfindscopestepMapper =  sqlSession.getMapper(MapfindscopestepMapper.class);
+        List<Mapfindscopestep> scopeLimit = mapfindscopestepMapper.selectAllOrderScopeMeter();
+        FcubeExtend1Mapper fcubeExtend1Mapper =  sqlSession.getMapper(FcubeExtend1Mapper.class);
+        Coordinate lat = Coordinate.fromDegrees(search.getLatitude());
+        Coordinate lng = Coordinate.fromDegrees(search.getLongitude());
+        Point findPosition = Point.at(lat, lng);
+        search.setActivationtime(new Date());
+        search.setCubestate(FcubeState.play.ordinal());
+        search.setFindlimitcout(1000);
+        for(int i=0;i<scopeLimit.size();i++){
+            BoundingArea area = EarthCalc.around(findPosition, scopeLimit.get(i).getScopeMeter()/2);
+            search.setNorthEastlatitude(area.northEast.latitude);
+            search.setNorthEastlongitude(area.northEast.longitude);
+            search.setSouthWestlatitude(area.southWest.latitude);
+            search.setSouthWestlongitude(area.southWest.longitude);
+            int ballCount = fcubeExtend1Mapper.findInfluenceFromPositionCount(search);
+            if(ballCount>search.getFindlimitcout()){
+                break;
+            }
+        }
+        List<FcubeExtender1> fcubeExtender1List = fcubeExtend1Mapper.findInfluenceFromPosition(search);
+        try {
+            emitter.send(fcubeExtender1List);
         } catch (IOException e) {
             e.printStackTrace();
         }

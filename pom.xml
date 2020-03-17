@@ -29,6 +29,12 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -122,6 +128,11 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-storage</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.grumlimited</groupId>
+			<artifactId>geocalc</artifactId>
+			<version>0.5.8</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -131,10 +142,10 @@
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<configurationFile>src/main/resources/mybatisgenerator/PhoneAuthTable-mybatis-generator.xml</configurationFile>
+					<configurationFile>src/main/resources/mybatisgenerator/Fcube-mybatis-generator.xml</configurationFile>
 					<overwrite>false</overwrite>
 					<tableNames>
-						forutona.PhoneAuthTable
+						forutona.Fcube
 					</tableNames>
 				</configuration>
 				<dependencies>

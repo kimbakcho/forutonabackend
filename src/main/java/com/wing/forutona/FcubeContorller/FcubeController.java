@@ -168,22 +168,6 @@ public class FcubeController {
         }
     }
 
-    @PostMapping(value="/api/v1/Fcube/findNearDistanceCube")
-    ResponseBodyEmitter findNearDistanceCube(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,
-                                             @RequestBody FCubeGeoSearchUtil searchItem,
-                                             HttpServletResponse response){
-        token = token.replace("Bearer ","");
-        FirebaseToken ftoken = fireBaseAdmin.VerifyIdToken(token);
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        if(ftoken !=null){
-            response.addHeader("content-type","application/json;charset=UTF-8");
-            fcubeDao.findNearDistanceCube(searchItem,emitter);
-            return emitter;
-        }else {
-            emitter.complete();
-            return emitter;
-        }
-    }
 
     @PostMapping(value = "/api/v1/Fcube/insertFcubePlayer")
     int insertFcubePlayer(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@RequestBody Fcubeplayer fcubeplayer){
@@ -472,5 +456,14 @@ public class FcubeController {
         fcubeDao.selectFcubetagSearch(emitter,search);
         return emitter;
     }
+
+    @GetMapping(value = "/api/v1/Fcube/findInfluenceFromPosition")
+    ResponseBodyEmitter findInfluenceFromPosition(HttpServletResponse response,FCubeGeoSearchUtil search){
+        response.addHeader("content-type","application/json;charset=UTF-8");
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fcubeDao.findInfluenceFromPosition(emitter,search);
+        return emitter;
+    }
+
 
 }
