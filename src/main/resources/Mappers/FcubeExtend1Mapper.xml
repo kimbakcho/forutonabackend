@@ -90,7 +90,7 @@
     A.ballPower / ST_Distance_Sphere(placePoint,ST_PointFromText("point(${longitude} ${latitude})",4326))*10000 as InfluencePower
     FROM Fcube A LEFT JOIN UserInfo B ON A.Uid = B.Uid LEFT JOIN FcubeContent C ON  A.Cubeuuid = C.Cubeuuid
     WHERE
-    mbrwithin(A.placePoint, ST_Envelope(ST_GeomFromText("LineString(${southWestlongitude} ${southWestlatitude}, ${northEastlongitude} ${northEastlatitude})",4326)))
+    st_within(A.placePoint, ST_Envelope(ST_GeomFromText("LineString(${southWestlongitude} ${southWestlatitude}, ${northEastlongitude} ${northEastlatitude})",4326)))
     AND A.ActivationTime <![CDATA[>]]> #{activationtime}
     AND A.CubeState = #{cubestate}
     AND C.ContentType = 'description'

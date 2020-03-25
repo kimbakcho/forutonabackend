@@ -169,7 +169,7 @@ public class FcubeDao implements FcubeDaoInter{
     }
 
     @Async
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public void InsertCubeReply(Fcubereply reply,ResponseBodyEmitter emitter) throws  Exception{
         FcubereplyExtender1Mapper mapper = sqlSession.getMapper(FcubereplyExtender1Mapper.class);
@@ -247,7 +247,7 @@ public class FcubeDao implements FcubeDaoInter{
 
 
 
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public int insertFcubePlayer(Fcubeplayer fcubeplayer){
         FcubeMapper fcubemapper = sqlSession.getMapper(FcubeMapper.class);
@@ -333,7 +333,7 @@ public class FcubeDao implements FcubeDaoInter{
     }
 
     @Async
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public void updateQuestReq(ResponseBodyEmitter emitter,FcubequestsuccessExtender1 item){
         FcubecontentExtend1Mapper contentmapper = sqlSession.getMapper(FcubecontentExtend1Mapper.class);
@@ -450,7 +450,7 @@ public class FcubeDao implements FcubeDaoInter{
     }
 
     @Async
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public void insertFcubeReviewExpPoint(ResponseBodyEmitter emitter,Fcubereview item) throws IOException {
         //별점 포인트 해킹 방지
@@ -543,7 +543,7 @@ public class FcubeDao implements FcubeDaoInter{
     }
 
     @Async
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public void updateCubeHitPoint(ResponseBodyEmitter emitter,String cubeuuid){
         FcubeMapper mapper = sqlSession.getMapper(FcubeMapper.class);

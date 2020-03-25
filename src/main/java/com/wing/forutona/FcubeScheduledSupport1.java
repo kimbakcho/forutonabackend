@@ -28,7 +28,7 @@ public class FcubeScheduledSupport1 implements FcubeScheduledSupport1In {
         fcubeupdateandhistorysave(item);
     }
 
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     @Override
     public void fcubeupdateandhistorysave(Fcube item){
         FcubeMapper fcubeMapper =  sqlSession.getMapper(FcubeMapper.class);
@@ -68,7 +68,7 @@ public class FcubeScheduledSupport1 implements FcubeScheduledSupport1In {
     }
 
 
-    @Transactional
+    @Transactional(value = "mybatisTransactionManager")
     public void Userexppointupdate(Fcube executeitem){
 
     }

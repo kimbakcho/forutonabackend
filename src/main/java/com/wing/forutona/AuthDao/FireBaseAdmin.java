@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDto.UserInfoMain;
-import com.wing.forutona.Prefrerance;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -17,10 +17,15 @@ import java.util.Map;
 
 @Component
 public class FireBaseAdmin {
-    FireBaseAdmin() {
+
+
+    String serviekeypath;
+
+    FireBaseAdmin(    @Value("${forutona.serviekeypath}")  String serviekeypath) {
+        this.serviekeypath = serviekeypath;
         try {
             FileInputStream serviceAccount =
-                    new FileInputStream(Prefrerance.serviekeypath);
+                    new FileInputStream(serviekeypath);
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -30,14 +35,15 @@ public class FireBaseAdmin {
             FirebaseApp.initializeApp(options);
 
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
+
     public FirebaseToken VerifyIdToken(String token) {
         boolean checkRevoked = true;
         try {
-            FirebaseToken token1 = FirebaseAuth.getInstance().verifyIdToken(token,checkRevoked);
+            FirebaseToken token1 = FirebaseAuth.getInstance().verifyIdToken(token, checkRevoked);
             return token1;
         } catch (FirebaseAuthException e) {
             if (e.getErrorCode().equals("id-token-revoked")) {
@@ -50,7 +56,8 @@ public class FireBaseAdmin {
 
         }
     }
-    String GetUserInfoCustomToken(UserInfoMain item){
+
+    String GetUserInfoCustomToken(UserInfoMain item) {
         try {
             Map<String, Object> additionalClaims = new HashMap<String, Object>();
             additionalClaims.put("level", 1);
@@ -58,14 +65,15 @@ public class FireBaseAdmin {
             additionalClaims.put("profilepicktureurl", item.getProfilepicktureurl());
             additionalClaims.put("nickname", item.getNickname());
 
-            String customToken = FirebaseAuth.getInstance().createCustomToken(item.getUid(),additionalClaims);
+            String customToken = FirebaseAuth.getInstance().createCustomToken(item.getUid(), additionalClaims);
             return customToken;
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
             return "";
         }
     }
-    String GetUserInfoCustomToken(String uid){
+
+    String GetUserInfoCustomToken(String uid) {
         try {
             String customToken = FirebaseAuth.getInstance().createCustomToken(uid);
             return customToken;
@@ -74,6 +82,7 @@ public class FireBaseAdmin {
             return "";
         }
     }
+
     UserRecord getUser(String uid) throws FirebaseAuthException {
         return FirebaseAuth.getInstance().getUser(uid);
     }
@@ -84,21 +93,20 @@ public class FireBaseAdmin {
     }
 
 
-    int changeEmailUserPassword(String email,String password){
-        try{
+    int changeEmailUserPassword(String email, String password) {
+        try {
             UserRecord record = FirebaseAuth.getInstance().getUserByEmail(email);
             UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(record.getUid());
             request.setPassword(password);
-            UserRecord userRecord  = FirebaseAuth.getInstance().updateUser(request);
-            if(userRecord.getEmail().equals(email) ){
+            UserRecord userRecord = FirebaseAuth.getInstance().updateUser(request);
+            if (userRecord.getEmail().equals(email)) {
                 return 1;
             }
             return 0;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return 0;
         }
     }
-
 
 
 }

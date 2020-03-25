@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 
 import java.io.IOException;
 
-@Transactional
+@Transactional(value = "mybatisTransactionManager")
 public interface FcubeDaoInter {
     void InsertCubeReply(Fcubereply reply, ResponseBodyEmitter emitter) throws  Exception;
     int insertFcubePlayer(Fcubeplayer fcubeplayer);
