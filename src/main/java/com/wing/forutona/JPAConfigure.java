@@ -24,7 +24,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JPAConfigure {
 
-
     @Bean
     @Profile("local")
     public DataSource localDataSource() {
@@ -32,7 +31,7 @@ public class JPAConfigure {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("neoforutonatester");
         dataSource.setPassword("forutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?useSSL=true&amp;verifyServerCertificate=false");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?useSSL=true&verifyServerCertificate=false");
 
         return dataSource;
     }
@@ -43,7 +42,7 @@ public class JPAConfigure {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("neoforutona");
         dataSource.setPassword("neoforutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona?useSSL=true&amp;verifyServerCertificate=false");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona?useSSL=true&verifyServerCertificate=false");
 
         return dataSource;
     }
@@ -53,7 +52,7 @@ public class JPAConfigure {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-    @Bean
+    @Bean(name = "entityManagerFactory")
     @Profile("local")
     public LocalContainerEntityManagerFactoryBean localEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em
@@ -72,7 +71,7 @@ public class JPAConfigure {
         return em;
     }
 
-    @Bean
+    @Bean(name = "entityManagerFactory")
     @Profile("remote")
     public LocalContainerEntityManagerFactoryBean remoteEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em

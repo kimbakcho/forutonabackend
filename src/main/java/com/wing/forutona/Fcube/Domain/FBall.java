@@ -1,34 +1,34 @@
 package com.wing.forutona.Fcube.Domain;
 
-
-import com.wing.forutona.ForutonaUser.Domain.JUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
 @Setter
-public class JFcube {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class FBall {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long idx;
   @Column(unique = true)
-  private String cubeuuid;
-
+  private String ballUuid;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "uid")
-  private JUserInfo Fcubeuid;
-
+  private FUserInfo fBallUid;
   private double longitude;
   private double latitude;
   private long placePoint;
-  private String cubeName;
-  private String cubeType;
+  private String ballName;
+  private String ballType;
   private LocalDateTime makeTime;
   private double influence;
-  private long cubeState;
+  private long ballState;
   private String placeAddress;
   private String administrativeArea;
   private String country;
@@ -37,20 +37,20 @@ public class JFcube {
   private double pointReward;
   private double influenceReward;
   private LocalDateTime activationTime;
-  private String cubePassword;
+  private String ballPassword;
   private long hasPassword;
-  private long cubeScope;
+  private long ballScope;
   private double influenceLevel;
-  private long cubeHits;
-  private long cubeLikes;
-  private long cubeDisLikes;
+  private long ballHits;
+  private long ballLikes;
+  private long ballDisLikes;
   private long ballPower;
   private long joinPlayer;
   private long maximumPlayers;
   private double starPoints;
   private long expGiveFlag;
   private double makeExp;
-  private long commentCount;
+  private long ccmmentCount;
   private double userExp;
   private String description;
 
