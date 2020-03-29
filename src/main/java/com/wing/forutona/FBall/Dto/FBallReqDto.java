@@ -1,4 +1,4 @@
-package com.wing.forutona.Fcube.Dto;
+package com.wing.forutona.FBall.Dto;
 
 import lombok.Data;
 import org.springframework.data.domain.Pageable;

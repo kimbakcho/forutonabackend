@@ -1,5 +1,9 @@
-package com.wing.forutona.Fcube.Domain;
+package com.wing.forutona.FBall.Domain;
 
+import com.querydsl.core.annotations.QueryEntity;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,14 +12,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FBall {
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long idx;
+  @Id
   @Column(unique = true)
   private String ballUuid;
   @ManyToOne(fetch = FetchType.LAZY)
@@ -23,7 +27,8 @@ public class FBall {
   private FUserInfo fBallUid;
   private double longitude;
   private double latitude;
-  private long placePoint;
+  @Column(columnDefinition="geometry(Point,4326)")
+  private Point placePoint;
   private String ballName;
   private String ballType;
   private LocalDateTime makeTime;
@@ -54,7 +59,8 @@ public class FBall {
   private double userExp;
   private String description;
 
-
+  @OneToMany(mappedBy = "ballUuid")
+  List<FBalltag> tags;
 
 
 }

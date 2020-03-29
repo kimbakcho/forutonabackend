@@ -1,6 +1,7 @@
 package com.wing.forutona.ForutonaUser.Domain;
 
-import com.wing.forutona.Fcube.Domain.FBall;
+
+import com.wing.forutona.FBall.Domain.FBall;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

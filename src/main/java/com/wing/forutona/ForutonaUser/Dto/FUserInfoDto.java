@@ -1,8 +1,5 @@
 package com.wing.forutona.ForutonaUser.Dto;
 
-import com.querydsl.core.types.dsl.DateTimePath;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,8 @@
 package com.wing.forutona;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.MySQL57Dialect;
+import org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,9 +64,11 @@ public class JPAConfigure {
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         Properties jpaProperties = new Properties();
+
+
 //        jpaProperties.put("hibernate.hbm2ddl.auto", "create");
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
-//        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
+        jpaProperties.put("hibernate.show_sql", "true");
         jpaProperties.put("hibernate.format_sql", "true");
         jpaProperties.put("hibernate.use_sql_comment", "true");
         em.setJpaProperties(jpaProperties);
@@ -82,7 +86,7 @@ public class JPAConfigure {
         em.setJpaVendorAdapter(vendorAdapter);
         Properties jpaProperties = new Properties();
 
-        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        jpaProperties.put("hibernate.dialect", "org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect");
 //        jpaProperties.put("hibernate.show_sql", "true");
 //        jpaProperties.put("hibernate.format_sql", "true");
 //        jpaProperties.put("hibernate.use_sql_comment", "true");
