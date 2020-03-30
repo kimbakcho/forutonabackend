@@ -76,22 +76,22 @@ class ForutonaApplicationTests {
     }
 
     //일정 범위내에 Ball들의 거리 계산
-    @Test
-    public void getFindBallInDistanceForQueryDsl() {
-        NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
-        reqDto.setLatitude(37.51368824280154);
-        reqDto.setLongitude(126.8985465914011);
-        reqDto.setDistance(1000);
-        Geometry mapCenterCircle = makeCenterPoint(reqDto);
-        List<FBallResDto> balls = fBallQueryRepository.getFindBallInDistanceForQueryDsl(mapCenterCircle,
-                createRect(reqDto.getLatitude(), reqDto.getLongitude(), reqDto.getDistance()));
-        for (FBallResDto ball : balls) {
-            System.out.println("distance = " + ball.getDistance());
-        }
-        //아래는 혹시 모를 Geometry 조건등에서 Expressions 을 생성하는 방법 예시이다.
-        //Distance Spear 같은 곳에서 QueryDSL 이 요구 한다.
-        Expression<Geometry> expressions = Expressions.constant(mapCenterCircle);
-    }
+//    @Test
+//    public void getFindBallInDistanceForQueryDsl() {
+//        NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
+//        reqDto.setLatitude(37.51368824280154);
+//        reqDto.setLongitude(126.8985465914011);
+//        reqDto.setDistance(1000);
+//        Geometry mapCenterCircle = makeCenterPoint(reqDto);
+//        List<FBallResDto> balls = fBallQueryRepository.getFindBallInDistanceForQueryDsl(mapCenterCircle,
+//                createRect(reqDto.getLatitude(), reqDto.getLongitude(), reqDto.getDistance()));
+//        for (FBallResDto ball : balls) {
+//            System.out.println("distance = " + ball.getDistance());
+//        }
+//        //아래는 혹시 모를 Geometry 조건등에서 Expressions 을 생성하는 방법 예시이다.
+//        //Distance Spear 같은 곳에서 QueryDSL 이 요구 한다.
+//        Expression<Geometry> expressions = Expressions.constant(mapCenterCircle);
+//    }
 
     @Test
     public void findTagRankingInDistanceOfInfluencePower() {

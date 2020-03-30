@@ -1,5 +1,6 @@
 package com.wing.forutona.FTag.Repository;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -27,10 +28,9 @@ public class FBallTagQueryRepository {
     @PersistenceContext
     EntityManager em;
 
-
     /*
     1.centerPoint 으로부터 rect 범위 안의 Ball 들의 파워을 구함
-    2.파워와 centerPoint 와 rect 범위 안의 Ball의 거리를 구해서 영향력을 구함.
+    2.파워와 centerPoint 와 rect 범위 안의 Ball의 거리를 구해서 영향력을 구함.(살아 있는 Ball만 구성 )
     3.해당 영향력을 기준으로 정렬
      */
     public TagRankingWrapdto getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit){
@@ -39,7 +39,7 @@ public class FBallTagQueryRepository {
         List<TagRankingDto> tagRankingDtos = queryFactory.select(
                 new QTagRankingDto(fBalltag.tagItem, influence))
                 .from(fBall).join(fBall.tags,fBalltag)
-                .where(fBall.placePoint.within(rect))
+                .where(fBall.placePoint.within(rect).and(fBall.activationTime.after(LocalDateTime.now())))
                 .groupBy(fBalltag.tagItem)
                 .orderBy(influence.desc())
                 .limit(limit)

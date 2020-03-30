@@ -18,8 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "UserInfo")
 public class FUserInfo {
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long idx;
+  @Id
   @Column(unique = true)
   private String uid;
   private String nickName;

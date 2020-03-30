@@ -3,6 +3,7 @@ package com.wing.forutona.FBall.Domain;
 import com.querydsl.core.annotations.QueryEntity;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import com.wing.forutona.FBall.Dto.FBallState;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.AccessLevel;
@@ -32,8 +33,8 @@ public class FBall {
   private String ballName;
   private String ballType;
   private LocalDateTime makeTime;
-  private double influence;
-  private long ballState;
+  @Enumerated(EnumType.STRING)
+  private FBallState ballState;
   private String placeAddress;
   private String administrativeArea;
   private String country;
@@ -55,7 +56,7 @@ public class FBall {
   private double starPoints;
   private long expGiveFlag;
   private double makeExp;
-  private long ccmmentCount;
+  private long commentCount;
   private double userExp;
   private String description;
 
