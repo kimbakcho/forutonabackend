@@ -1,6 +1,7 @@
 package com.wing.forutona.FBall.Dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.wing.forutona.FBall.Domain.FBall;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class FBallResDto {
     private double longitude;
     private String ballUuid;
     private String ballName;
+    private FBallType ballType;
     private FBallState ballState;
     private String placeAddress;
     private long ballLikes;
@@ -28,26 +30,26 @@ public class FBallResDto {
     private double influencePower;
 
     @QueryProjection
-    public FBallResDto(double latitude, double longitude, String ballUuid, String ballName, FBallState ballState, String placeAddress,
-                       long ballLikes, long ballDisLikes, long commentCount, long ballPower, LocalDateTime activationTime, LocalDateTime makeTime,
-                       String description, String nickName, String profilePicktureUrl, String uid, Double userLevel, double influencePower) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.ballUuid = ballUuid;
-        this.ballName = ballName;
-        this.ballState = ballState;
-        this.placeAddress = placeAddress;
-        this.ballLikes = ballLikes;
-        this.ballDisLikes = ballDisLikes;
-        this.commentCount = commentCount;
-        this.ballPower = ballPower;
-        this.activationTime = activationTime;
-        this.makeTime = makeTime;
-        this.description = description;
-        this.nickName = nickName;
-        this.profilePicktureUrl = profilePicktureUrl;
-        this.uid = uid;
-        this.userLevel = userLevel;
+    public FBallResDto(FBall fball, double influencePower) {
+        this.latitude = fball.getLatitude();
+        this.longitude = fball.getLongitude();
+        this.ballUuid = fball.getBallUuid();
+        this.ballName = fball.getBallName();
+        this.ballType = fball.getBallType();
+        this.ballState = fball.getBallState();
+        this.placeAddress = fball.getPlaceAddress();
+        this.ballLikes = fball.getBallLikes();
+        this.ballDisLikes = fball.getBallDisLikes();
+        this.commentCount = fball.getCommentCount();
+        this.ballPower = fball.getBallPower();
+        this.activationTime = fball.getActivationTime();
+        this.makeTime = fball.getMakeTime();
+        this.description = fball.getDescription();
+        this.nickName = fball.getFBallUid().getNickName();
+        this.profilePicktureUrl = fball.getFBallUid().getProfilePicktureUrl();
+        this.uid = fball.getFBallUid().getUid();
+        this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
     }
+
 }

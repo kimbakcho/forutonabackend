@@ -33,21 +33,20 @@ public class JPAConfigure {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("neoforutonatester");
         dataSource.setPassword("forutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?useSSL=true&verifyServerCertificate=false");
-
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?useSSL=yes&verifyServerCertificate=false");
         return dataSource;
     }
     @Bean
-    @Profile("remote")
-    public DataSource remoteDataSource() {
+    @Profile("real")
+    public DataSource realDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUsername("neoforutona");
+        dataSource.setUsername("neoforutonabeta");
         dataSource.setPassword("neoforutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona?useSSL=true&verifyServerCertificate=false");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_beta?useSSL=yes&verifyServerCertificate=false");
 
         return dataSource;
-    }
+}
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
@@ -76,17 +75,17 @@ public class JPAConfigure {
     }
 
     @Bean(name = "entityManagerFactory")
-    @Profile("remote")
-    public LocalContainerEntityManagerFactoryBean remoteEntityManagerFactory() {
+    @Profile("real")
+    public LocalContainerEntityManagerFactoryBean realEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(remoteDataSource());
+        em.setDataSource(realDataSource());
         em.setPackagesToScan(new String[]{"com.wing.forutona"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         Properties jpaProperties = new Properties();
 
-        jpaProperties.put("hibernate.dialect", "org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect");
+        jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
 //        jpaProperties.put("hibernate.show_sql", "true");
 //        jpaProperties.put("hibernate.format_sql", "true");
 //        jpaProperties.put("hibernate.use_sql_comment", "true");
@@ -101,4 +100,5 @@ public class JPAConfigure {
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
     }
+
 }

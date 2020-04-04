@@ -1,6 +1,7 @@
 package com.wing.forutona.FTag.Service;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Dto.TagRankingDto;
 import com.wing.forutona.FTag.Dto.TagRankingReqDto;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class FTagService {
     Rect가 적정 검색 범위
      */
     @Async
-    public void getFTagRanking(ResponseBodyEmitter emitter, TagRankingReqDto tagRankingReqDto) {
+    public void getFTagRanking(ResponseBodyEmitter emitter, TagRankingReqDto tagRankingReqDto) throws ParseException {
         int searchDistance = fBallService.diatanceOfBallCountToLimit(tagRankingReqDto.getLatitude(),
                 tagRankingReqDto.getLongitude(), 1000);
         Geometry rect = fBallService.createRect(tagRankingReqDto.getLatitude(), tagRankingReqDto.getLongitude(), searchDistance);

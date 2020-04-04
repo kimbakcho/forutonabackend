@@ -1,4 +1,4 @@
-package com.wing.forutona.FBall.Repository;
+package com.wing.forutona.FBall.Repository.FBall;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.wing.forutona.FBall.Domain.FBall;

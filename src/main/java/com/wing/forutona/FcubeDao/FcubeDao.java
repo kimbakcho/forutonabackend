@@ -2,13 +2,10 @@ package com.wing.forutona.FcubeDao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.grum.geocalc.BoundingArea;
 import com.grum.geocalc.Coordinate;
@@ -20,29 +17,21 @@ import com.wing.forutona.AuthDao.UserinfoMapper;
 import com.wing.forutona.AuthDto.Userexppointhistroy;
 import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.FcubeDto.*;
-import com.wing.forutona.FcubeScheduled;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.Future;
 
 @Component
 public class FcubeDao implements FcubeDaoInter{

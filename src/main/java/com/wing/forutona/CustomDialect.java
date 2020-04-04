@@ -1,10 +1,12 @@
 package com.wing.forutona;
 
+import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect;
 import org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect;
 import org.hibernate.type.StandardBasicTypes;
+
 
 public class CustomDialect extends MySQL56SpatialDialect {
     private MySQLSpatialDialect dialectDelegate = new MySQLSpatialDialect();
@@ -12,6 +14,7 @@ public class CustomDialect extends MySQL56SpatialDialect {
     public CustomDialect() {
         super();
         this.registerFunction("distance",new StandardSQLFunction("ST_Distance", StandardBasicTypes.DOUBLE));
+
 
     }
 

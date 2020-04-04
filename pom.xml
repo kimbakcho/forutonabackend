@@ -25,7 +25,25 @@
 	<packaging>war</packaging>
 	<name>forutona</name>
 	<description>Backend 작업</description>
-
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<tomcat.publish.path>/forutonatest</tomcat.publish.path>
+				<spring.profiles.active>local</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>real</id>
+			<properties>
+				<tomcat.publish.path>/forutonabeta</tomcat.publish.path>
+				<spring.profiles.active>real</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 	<properties>
 		<java.version>11</java.version>
 		<querydsl.version>4.1.3</querydsl.version>
@@ -157,6 +175,12 @@
 			<artifactId>querydsl-jpa</artifactId>
 			<version>${querydsl.version}</version>
 		</dependency>
+		<!--해당 라이브러리로 Query DSL Inject 에러를 막을수 있습니다.  -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -195,6 +219,7 @@
 						<goals>
 							<goal>process</goal>
 						</goals>
+
 						<configuration>
 							<outputDirectory>target/generated-sources/java</outputDirectory>
 							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
@@ -208,12 +233,27 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-help-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>show-profiles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>active-profiles</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
+
 					<url>https://forutona.thkomeet.com:8443/manager/text</url>
-					<path>/forutona</path>
+					<path>${tomcat.publish.path}</path>
 					<username>forutona</username>
 					<password>forutona</password>
 				</configuration>

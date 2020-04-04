@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryEntity;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.wing.forutona.FBall.Dto.FBallState;
+import com.wing.forutona.FBall.Dto.FBallType;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.AccessLevel;
@@ -31,7 +32,8 @@ public class FBall {
   @Column(columnDefinition="geometry(Point,4326)")
   private Point placePoint;
   private String ballName;
-  private String ballType;
+  @Enumerated(EnumType.STRING)
+  private FBallType ballType;
   private LocalDateTime makeTime;
   @Enumerated(EnumType.STRING)
   private FBallState ballState;
