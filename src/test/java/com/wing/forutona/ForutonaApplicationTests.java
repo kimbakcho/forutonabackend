@@ -4,12 +4,20 @@ import com.grum.geocalc.BoundingArea;
 import com.grum.geocalc.EarthCalc;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.*;
 
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
+import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Dto.NearBallFindDistanceReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
@@ -52,6 +60,22 @@ class ForutonaApplicationTests {
 
     @PersistenceContext
     EntityManager em;
+
+
+    @Test
+    public  void MysqlFullTextMatch(){
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        String text = "test";
+
+        BooleanTemplate booleanTemplate = Expressions.booleanTemplate("function('match',{0},{1})", QFBall.fBall.ballName, "+ret*");
+
+
+        List<FBall> fetch = queryFactory.select(QFBall.fBall).from(QFBall.fBall).where(booleanTemplate.isTrue()).fetch();
+        for (FBall fBall : fetch) {
+            System.out.println(fBall.getBallName());
+        }
+
+    }
 
     //https://www.baeldung.com/hibernate-spatial
     @Test

@@ -1,6 +1,7 @@
 package com.wing.forutona;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.MySQL55Dialect;
 import org.hibernate.dialect.MySQL57Dialect;
 import org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;

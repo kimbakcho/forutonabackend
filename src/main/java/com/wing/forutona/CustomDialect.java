@@ -5,18 +5,20 @@ import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect;
 import org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect;
+import org.hibernate.type.DoubleType;
 import org.hibernate.type.StandardBasicTypes;
 
 
 public class CustomDialect extends MySQL56SpatialDialect {
-    private MySQLSpatialDialect dialectDelegate = new MySQLSpatialDialect();
+        private MySQLSpatialDialect dialectDelegate = new MySQLSpatialDialect();
 
-    public CustomDialect() {
-        super();
-        this.registerFunction("distance",new StandardSQLFunction("ST_Distance", StandardBasicTypes.DOUBLE));
+        public CustomDialect() {
+            super();
+            this.registerFunction("distance",new StandardSQLFunction("ST_Distance", StandardBasicTypes.DOUBLE));
+            this.registerFunction("match", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "match(?1) against  (?2 in boolean mode)"));
 
 
-    }
+        }
 
     public String getSpatialRelateSQL(String columnName, int spatialRelation) {
         switch(spatialRelation) {

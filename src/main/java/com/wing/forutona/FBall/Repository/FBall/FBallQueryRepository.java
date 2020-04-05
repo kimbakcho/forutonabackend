@@ -42,8 +42,12 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         super(FBall.class);
     }
 
-    /*
-     ** 해당 Rect 내에 포함된 Ball의 갯수
+    /**
+     * 범위내 Ball 갯수 카운터
+     * 주 사용은 목적은 지도 기반 검색에 BallListUp 최적화
+     * example 최대 1000개의 볼 까지의 거리 까지만 Sort
+     * @param rect
+     * @return
      */
     public Long getFindBallCountInDistance(Geometry rect) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
@@ -52,8 +56,12 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         return count;
     }
 
-    /*
-        Ball을 리스트 업 할때 영향력만 예외처리하여 계산 해줌.
+    /**
+     * Ball을 ListUp 할때 Map 중심 위치를 기준으로 검색
+     * @param centerPoint Map중심 위치
+     * @param rect 검색 범위
+     * @param pageable
+     * @return
      */
     public FBallListUpWrapDto getBallListUp(Geometry centerPoint, Geometry rect, Pageable pageable) {
         List<String> sortProperty = pageable.getSort().get()
@@ -61,7 +69,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         List<Sort.Direction> sortOrders = pageable.getSort().get()
                 .map(x -> x.getDirection()).collect(Collectors.toList());
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
 
         if (sortProperty.size() > 0 && sortProperty.contains("Influence")) {
             NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
@@ -93,6 +100,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
             return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
         }
     }
+
+
 
     public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
                                                            MultiSorts sorts, Pageable pageable){
