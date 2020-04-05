@@ -7,24 +7,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UserToMakerBallResDto {
-    String fBalluuid;
-    FBallType fBallType;
-    double longitude;
-    double latitude;
-    String ballName;
-    String ballPlaceAddress;
-    //ball의 Like
-    long ballLikes;
-    //ball의 DisLike
-    long ballDisLikes;
-    long commentCount;
-    LocalDateTime activationTime;
-    LocalDateTime makeTime;
+public class UserToMakerBallResDto extends UserBallResDto{
 
     @QueryProjection
     public UserToMakerBallResDto(FBall fBall){
-        this.fBalluuid = fBall.getBallUuid();
+        this.fBallUuid = fBall.getBallUuid();
         this.fBallType = fBall.getBallType();
         this.longitude = fBall.getLongitude();
         this.latitude = fBall.getLatitude();

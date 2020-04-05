@@ -1,6 +1,7 @@
 package com.wing.forutona.FBall.Service;
 
 import com.querydsl.core.QueryResults;
+import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResDto;
@@ -28,9 +29,9 @@ public class FBallPlayerService {
 
     @Async
     @Transactional
-    public void UserToPlayBallList(ResponseBodyEmitter emitter,UserToPlayBallReqDto reqDto, Pageable pageable){
+    public void UserToPlayBallList(ResponseBodyEmitter emitter, UserToPlayBallReqDto reqDto, MultiSorts sorts, Pageable pageable){
         try {
-            List<UserToPlayBallResDto> fBallPlayerByPlayer = fBallPlayerQueryRepository.findFBallPlayerByPlayer(reqDto, pageable);
+            List<UserToPlayBallResDto> fBallPlayerByPlayer = fBallPlayerQueryRepository.getUserToPlayBallList(reqDto,sorts, pageable);
             UserToPlayBallResWrapDto userToPlayBallResWrapDto = new UserToPlayBallResWrapDto(LocalDateTime.now(),fBallPlayerByPlayer);
             emitter.send(userToPlayBallResWrapDto);
         } catch (IOException e) {

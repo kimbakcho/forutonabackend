@@ -1,6 +1,9 @@
 package com.wing.forutona;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Order;
+import com.wing.forutona.CustomUtil.MultiSort;
+import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.FBall.Dto.UserToMakerBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToMakerBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -37,11 +41,17 @@ public class FBallPlayerTests {
 
         Pageable pageable = PageRequest.of(0, 20, Sort.by("Alive").descending().and(Sort.by("startTime").descending()));
 
-        List<UserToPlayBallResDto> fBallPlayerByPlayer = fBallPlayerQueryRepository.findFBallPlayerByPlayer(dto, pageable);
+        MultiSorts sorts = new MultiSorts();
+        List<MultiSort> sort = new ArrayList<>();
+        sort.add(new MultiSort("Alive", Order.DESC));
+        sort.add(new MultiSort("startTime", Order.DESC));
+        sorts.setSorts(sort);
+
+        List<UserToPlayBallResDto> fBallPlayerByPlayer = fBallPlayerQueryRepository.getUserToPlayBallList(dto,sorts, pageable);
 
 
         for (UserToPlayBallResDto result : fBallPlayerByPlayer) {
-            System.out.println(result.getFBalluuid());
+            System.out.println(result.getFBallUuid());
         }
 
     }
@@ -51,9 +61,14 @@ public class FBallPlayerTests {
         UserToMakerBallReqDto dto = new UserToMakerBallReqDto();
         dto.setMakerUid("h2q2jl3nRPXZ8809Uvi9KdzSss83");
 
-        Pageable pageable = PageRequest.of(0, 20, Sort.by("Alive").descending().and(Sort.by("makeTime").descending()));
+        Pageable pageable = PageRequest.of(0, 20);
+        MultiSorts sorts = new MultiSorts();
+        List<MultiSort> sort = new ArrayList<>();
+        sort.add(new MultiSort("Alive", Order.DESC));
+        sort.add(new MultiSort("startTime", Order.DESC));
+        sorts.setSorts(sort);
 
-        List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, pageable);
+        List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, sorts,pageable);
         for (UserToMakerBallResDto userToMakerBall : userToMakerBalls) {
             System.out.println(userToMakerBall.getBallName());
             System.out.println(userToMakerBall.getMakeTime());

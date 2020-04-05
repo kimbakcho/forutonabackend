@@ -5,7 +5,11 @@ import com.grum.geocalc.EarthCalc;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.FBall.Dto.FBallListUpReqDto;
+import com.wing.forutona.FBall.Dto.UserToMakerBallReqDto;
+import com.wing.forutona.FBall.Dto.UserToMakerBallResWrapDto;
+import com.wing.forutona.FBall.Dto.UserToMakerBallResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.MapFindScopeStep.Domain.FMapFindScopeStep;
@@ -15,9 +19,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +39,23 @@ public class FBallService {
     @Autowired
     MapFindScopeStepRepository mapFindScopeStepRepository;
 
+
     @Async
+    @Transactional
+    public void getUserToMakerBalls(ResponseBodyEmitter emitter, UserToMakerBallReqDto reqDto, MultiSorts sorts, Pageable pageable){
+        try {
+            List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(reqDto,sorts ,pageable);
+            UserToMakerBallResWrapDto resWrapDto = new UserToMakerBallResWrapDto(LocalDateTime.now(),userToMakerBalls);
+            emitter.send(resWrapDto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
+    @Async
+    @Transactional
     public void BallListUp(ResponseBodyEmitter emitter,FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
         int findDistanceRange = this.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
                 reqDto.getBallLimit());

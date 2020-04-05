@@ -1,4 +1,5 @@
 package com.wing.forutona.FBall.Repository.FBall;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
@@ -9,6 +10,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
+import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.PageableUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
@@ -57,6 +59,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         List<Sort.Direction> sortOrders = pageable.getSort().get()
                 .map(x -> x.getDirection()).collect(Collectors.toList());
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+
         if (sortProperty.size() > 0 && sortProperty.contains("Influence")) {
             NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
             List<FBallResDto> fBallResDtos = queryFactory.select(
@@ -71,34 +75,44 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                     .fetch();
             return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
         } else {
-            return null;
+            List<OrderSpecifier> orderSpecifiers = PageableUtil.pageAbleToOrders(pageable, fBall);
+            List<FBallResDto> fBallResDtos = queryFactory.select(
+                    new QFBallResDto(fBall))
+                    .from(fBall).join(fBall.fBallUid, fUserInfo)
+                    .where(fBall.placePoint.within(rect)
+                            , fBall.activationTime.after(LocalDateTime.now())
+                            , fBall.ballState.eq(FBallState.Play))
+                    .orderBy(PageableUtil.getDynamicOrderSpecifier(orderSpecifiers,0),
+                            PageableUtil.getDynamicOrderSpecifier(orderSpecifiers,1),
+                            PageableUtil.getDynamicOrderSpecifier(orderSpecifiers,2))
+                    .limit(pageable.getPageSize())
+                    .offset(pageable.getOffset())
+                    .fetch();
+            return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
         }
     }
 
-    public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,Pageable pageable){
+    public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto, MultiSorts sorts, Pageable pageable){
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        List<String> sortProperty = pageable.getSort().get()
-                .map(x -> x.getProperty()).collect(Collectors.toList());
         NumberExpression<Integer> Alive = new CaseBuilder()
                 .when(fBall.activationTime.after(LocalDateTime.now()))
                 .then(1)
                 .otherwise(0);
-        List<OrderSpecifier> orderBys = new LinkedList<>();
 
-        orderBys = PageableUtil.pageAbleToOrders(orderBys, pageable, fBall);
+        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
 
         List<UserToMakerBallResDto> userToMakerBallResDtos = null;
-        if (sortProperty.size() > 0 && sortProperty.contains("Alive")) {
+        if (sorts.getSorts().size() > 0 && sorts.isContain("Alive")) {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
                     .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
-                    .orderBy(Alive.desc()).orderBy(orderBys.get(1))
+                    .orderBy(Alive.desc()).orderBy(orderSpecifiers.get(1))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         }else {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
                     .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
-                    .orderBy(orderBys.get(1))
+                    .orderBy(orderSpecifiers.get(0))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         }
 

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class UserToPlayBallResWrapDto {
+public class UserToMakerBallResWrapDto {
     LocalDateTime searchTime;
-    List<UserToPlayBallResDto> contents = new ArrayList<>();
+    List<UserToMakerBallResDto> contents = new ArrayList<>();
 
-    public UserToPlayBallResWrapDto(LocalDateTime searchTime, List<UserToPlayBallResDto> contents) {
+    public UserToMakerBallResWrapDto(LocalDateTime searchTime, List<UserToMakerBallResDto> contents) {
         this.searchTime = searchTime;
         this.contents = contents;
     }
