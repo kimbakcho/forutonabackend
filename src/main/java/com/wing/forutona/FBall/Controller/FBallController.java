@@ -33,7 +33,8 @@ public class FBallController {
     }
 
     @GetMapping(value = "/v1/FBall/UserToMakerBalls")
-    public ResponseBodyEmitter getUserToMakerBalls(HttpServletResponse response, UserToMakerBallReqDto reqDto, @RequestParam MultiSorts sorts, Pageable pageable){
+    public ResponseBodyEmitter getUserToMakerBalls(HttpServletResponse response, UserToMakerBallReqDto reqDto,
+                                                   @RequestParam MultiSorts sorts, Pageable pageable){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");

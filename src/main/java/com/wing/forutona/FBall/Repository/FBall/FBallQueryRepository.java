@@ -19,6 +19,8 @@ import com.wing.forutona.Querydsl4RepositorySupport;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
@@ -92,7 +94,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         }
     }
 
-    public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto, MultiSorts sorts, Pageable pageable){
+    public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
+                                                           MultiSorts sorts, Pageable pageable){
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberExpression<Integer> Alive = new CaseBuilder()
                 .when(fBall.activationTime.after(LocalDateTime.now()))
