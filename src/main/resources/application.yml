@@ -1,0 +1,64 @@
+# #The format used for the keystore. It could be set to JKS in case it is a JKS file
+#server.ssl.key-store-type=PKCS12
+## The path to the keystore containing the certificate
+#server.ssl.key-store=classpath:keystore/baeldung.p12
+## The password used to generate the certificate
+#server.ssl.key-store-password=123456
+## The alias mapped to the certificate
+#server.ssl.key-alias=baeldung
+spring:
+  profiles:
+    active: '@spring.profiles.active@'
+---
+spring:
+  profiles: local
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  jpa:
+    open-in-view: false
+server:
+  port: 8443
+forutona:
+  serviekeypath: C:\\Users\\backho\\Desktop\\forutonadata\\adminsdkservicekey\\forutona-firebase-adminsdk-p6ho6-ab85124646.json
+  storgeserviekeypath: C:\\Users\\backho\\Desktop\\forutonadata\\adminsdkservicekey\\Forutona-3539edf2b36d.json
+  smssretrieverappsign: hVwMMiFZJlz
+  sureMID: forutona1020
+  sureMdeptcode: P8-ECX-6T
+  sureMFrom: 01067107004
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+---
+spring:
+  profiles: real
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  jpa:
+    open-in-view: false
+server:
+  port: 8443
+forutona:
+  serviekeypath: /home/forutona/servicekeys/forutona-firebase-adminsdk-p6ho6-ab85124646.json
+  storgeserviekeypath: /home/forutona/servicekeys/Forutona-3539edf2b36d.json
+  smssretrieverappsign: DnCuZoNCCGH
+  sureMID: forutona1020
+  sureMdeptcode: P8-ECX-6T
+  sureMFrom: 01067107004
+---
