@@ -31,6 +31,7 @@ public class FBall {
   private double latitude;
   @Column(columnDefinition="geometry(Point,4326)")
   private Point placePoint;
+  //ALTER TABLE `Fball` ADD FULLTEXT INDEX `BallNameindex` (`ballName`) WITH PARSER ngram; ngram index 사용
   private String ballName;
   @Enumerated(EnumType.STRING)
   private FBallType ballType;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FBalltag {
@@ -20,6 +21,7 @@ public class FBalltag {
   @JoinColumn(name = "ballUuid")
   private FBall ballUuid;
 
+  //ALTER TABLE `FBalltag` ADD FULLTEXT INDEX `tagindex` (`tagItem`) WITH PARSER ngram;  ngram index 사용
   private String tagItem;
 
   public FBall getBallUuid() {

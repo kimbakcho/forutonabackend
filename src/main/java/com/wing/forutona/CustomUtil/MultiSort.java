@@ -20,7 +20,7 @@ public class MultiSort{
         this.order = order;
     }
     boolean isAsc(){
-        return this.order.equals("ASC");
+        return this.order.equals(Order.ASC);
     }
 
 

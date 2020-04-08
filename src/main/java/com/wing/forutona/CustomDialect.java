@@ -15,9 +15,8 @@ public class CustomDialect extends MySQL56SpatialDialect {
         public CustomDialect() {
             super();
             this.registerFunction("distance",new StandardSQLFunction("ST_Distance", StandardBasicTypes.DOUBLE));
-            this.registerFunction("match", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "match(?1) against  (?2 in boolean mode)"));
-
-
+            this.registerFunction("st_within",new SQLFunctionTemplate(StandardBasicTypes.INTEGER,"st_within(?1,?2) and 1"));
+            this.registerFunction("match", new SQLFunctionTemplate(StandardBasicTypes.INTEGER, "match(?1) against (?2 in boolean mode) and 1"));
         }
 
     public String getSpatialRelateSQL(String columnName, int spatialRelation) {

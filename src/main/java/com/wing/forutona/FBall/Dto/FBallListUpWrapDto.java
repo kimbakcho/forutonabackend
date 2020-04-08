@@ -13,4 +13,10 @@ import java.util.List;
 public class FBallListUpWrapDto {
     LocalDateTime searchTime;
     List<FBallResDto> balls;
+    Long searchBallCount = 0L;
+
+    public FBallListUpWrapDto(LocalDateTime searchTime, List<FBallResDto> balls) {
+        this.searchTime = searchTime;
+        this.balls = balls;
+    }
 }

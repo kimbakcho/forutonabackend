@@ -2,10 +2,7 @@ package com.wing.forutona.FBall.Controller;
 
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.MultiSorts;
-import com.wing.forutona.FBall.Dto.FBallListUpReqDto;
-import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
-import com.wing.forutona.FBall.Dto.QFBallResDto;
-import com.wing.forutona.FBall.Dto.UserToMakerBallReqDto;
+import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.FBallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +19,17 @@ public class FBallController {
 
     @Autowired
     FBallService fBallService;
+
+
+    @GetMapping(value = "/v1/FBall/BallListUpFromSearchText")
+    public ResponseBodyEmitter getListUpBallFromSearchText(HttpServletResponse response, BallNameSearchReqDto reqDto
+            ,@RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+        fBallService.getListUpBallFromSearchText(emitter,reqDto,sorts,pageable);
+        return emitter;
+    }
 
     @GetMapping(value = "/v1/FBall/BallListUp")
     public ResponseBodyEmitter ListUpBall(HttpServletResponse response, FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
@@ -41,4 +49,6 @@ public class FBallController {
         fBallService.getUserToMakerBalls(emitter,reqDto,sorts,pageable);
         return emitter;
     }
+
+
 }

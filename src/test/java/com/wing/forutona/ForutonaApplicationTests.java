@@ -6,16 +6,14 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.BooleanTemplate;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.*;
 
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
+import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.FBallResDto;
@@ -67,25 +65,25 @@ class ForutonaApplicationTests {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         String text = "test";
 
-        BooleanTemplate booleanTemplate = Expressions.booleanTemplate("function('match',{0},{1})", QFBall.fBall.ballName, "+ret*");
+        NumberTemplate booleanTemplate = Expressions.numberTemplate(Integer.class,"function('match',{0},{1})", QFBall.fBall.ballName, "+ret*");
 
-
-        List<FBall> fetch = queryFactory.select(QFBall.fBall).from(QFBall.fBall).where(booleanTemplate.isTrue()).fetch();
+        Expression<Integer> test = ExpressionUtils.as(Expressions.constant(1), "test");
+        List<FBall> fetch = queryFactory.select(QFBall.fBall).from(QFBall.fBall).where(booleanTemplate.eq(1)).fetch();
         for (FBall fBall : fetch) {
             System.out.println(fBall.getBallName());
         }
 
     }
 
-    //https://www.baeldung.com/hibernate-spatial
-    @Test
-    public void getFindBallCountInDistanceForJpaData() {
-        NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
-        reqDto.setLatitude(37.51368824280154);
-        reqDto.setLongitude(126.8985465914011);
-        reqDto.setDistance(100);
-        Long count = fBallDataRepository.getFindLocationWithin(createRect(reqDto.getLatitude(), reqDto.getLongitude(), 1000));
-    }
+//    //https://www.baeldung.com/hibernate-spatial
+//    @Test
+//    public void getFindBallCountInDistanceForJpaData() {
+//        NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
+//        reqDto.setLatitude(37.51368824280154);
+//        reqDto.setLongitude(126.8985465914011);
+//        reqDto.setDistance(100);
+//        Long count = fBallDataRepository.getFindLocationWithin(createRect(reqDto.getLatitude(), reqDto.getLongitude(), 1000));
+//    }
 
     //지도 중심 위치로 부터 주번 볼 검색
     @Test
@@ -101,7 +99,7 @@ class ForutonaApplicationTests {
         Coordinate southWest = new Coordinate(area.southWest.longitude, area.southWest.latitude);
         Coordinate northEast = new Coordinate(area.northEast.longitude, area.northEast.latitude);
 
-        Geometry rect = new WKTReader().read(fBallService.createRectPOLYGONStr(area.southWest.longitude,area.southWest.latitude,area.northEast.longitude,area.northEast.latitude));
+        Geometry rect = new WKTReader().read(GisGeometryUtil.createRectPOLYGONStr(area.southWest.longitude,area.southWest.latitude,area.northEast.longitude,area.northEast.latitude));
         rect.setSRID(4326);
 
 
@@ -121,8 +119,8 @@ class ForutonaApplicationTests {
         reqDto.setDistance(1000);
         Geometry mapCenterCircle = makeCenterPoint(reqDto);
         List<Tuple> balls = fBallQueryRepository.getFindBallInDistanceForQueryDsl(
-                fBallService.createCenterPoint(37.4402052,126.79369789999998),
-                fBallService.createRect(37.4402052,126.79369789999998,1000)
+                GisGeometryUtil.createCenterPoint(37.4402052,126.79369789999998),
+                GisGeometryUtil.createRect(37.4402052,126.79369789999998,1000)
         );
         for (Tuple ball : balls) {
             System.out.println(ball.get(1,Double.class));
