@@ -1,7 +1,6 @@
 package com.wing.forutona.FTag.Repository;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -15,7 +14,6 @@ import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.PageableUtil;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FTag.Dto.QTagRankingDto;
@@ -47,7 +45,8 @@ public class FBallTagQueryRepository {
      */
     public TagRankingWrapdto getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberExpression influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint)).sum();
+        NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class, "function('st_distance_sphere',{0},{1})", fBall.placePoint, centerPoint);
+        NumberExpression influence = fBall.ballPower.divide(st_distance_sphere).sum();
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
         List<TagRankingDto> tagRankingDtos = queryFactory.select(
                 new QTagRankingDto(fBalltag.tagItem, influence))
@@ -68,6 +67,7 @@ public class FBallTagQueryRepository {
 
     /**
      * 검색된 Tag을 사용하여 Ball을 찾을때 사용
+     *
      * @param reqDto
      * @param sorts
      * @param pageable
@@ -80,20 +80,23 @@ public class FBallTagQueryRepository {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         JPAQuery<FBall> query = queryFactory.select(fBall)
                 .from(fBalltag)
-                .join(fBalltag.ballUuid,fBall )
+                .join(fBalltag.ballUuid, fBall)
                 .where(fBalltag.tagItem.eq(reqDto.getSearchText())
                         .and(fBall.activationTime.after(LocalDateTime.now())));
         for (var orderSpecifier : orderSpecifiers) {
             String[] split = orderSpecifier.getTarget().toString().split("\\.");
             //거리순일때만 분기 처리
-            if(split.length > 1 && split[1].equals("distance")){
-                var distance = fBall.placePoint.distance(GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
-                if(orderSpecifier.getOrder().toString().equals("DESC")){
-                    query = query.orderBy(distance.desc());
-                }else {
-                    query = query.orderBy(distance.asc());
+            if (split.length > 1 && split[1].equals("distance")) {
+                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
+                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
+                        GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
+
+                if (orderSpecifier.getOrder().toString().equals("DESC")) {
+                    query = query.orderBy(st_distance_sphere.desc());
+                } else {
+                    query = query.orderBy(st_distance_sphere.asc());
                 }
-            }else {
+            } else {
                 query = query.orderBy(orderSpecifier);
             }
         }
@@ -110,11 +113,11 @@ public class FBallTagQueryRepository {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
                 "function('match',{0},{1})",
-                fBalltag.tagItem, "+"+reqDto.getSearchText()+"*");
+                fBalltag.tagItem, "+" + reqDto.getSearchText() + "*");
         List<TagRankingDto> fetchlists = queryFactory.select(
                 Projections.bean(TagRankingDto.class,
-                        fBalltag.tagItem.as("tagName"),fBall.ballPower.sum().as("tagBallPower"))
-                )
+                        fBalltag.tagItem.as("tagName"), fBall.ballPower.sum().as("tagBallPower"))
+        )
                 .from(fBalltag)
                 .join(fBalltag.ballUuid, fBall)
                 .where(matchTemplate.eq(1)

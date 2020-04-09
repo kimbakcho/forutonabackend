@@ -21,6 +21,16 @@ public class FBallController {
     FBallService fBallService;
 
 
+    @GetMapping(value = "/v1/FBall/BallListUpFromMapArea")
+    public ResponseBodyEmitter getListUpBallFromMapArea(HttpServletResponse response,BallFromMapAreaReqDto reqDto,
+                                                        @RequestParam MultiSorts sorts, Pageable pageable){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+        fBallService.getListUpBallFromMapArea(emitter,reqDto,sorts,pageable);
+        return emitter;
+    }
+
     @GetMapping(value = "/v1/FBall/BallListUpFromSearchText")
     public ResponseBodyEmitter getListUpBallFromSearchText(HttpServletResponse response, BallNameSearchReqDto reqDto
             ,@RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {

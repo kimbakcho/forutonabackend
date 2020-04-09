@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
@@ -33,6 +34,19 @@ public class FBallService {
     @Autowired
     MapFindScopeStepRepository mapFindScopeStepRepository;
 
+
+    @Async
+    @Transactional
+    public void getListUpBallFromMapArea(ResponseBodyEmitter emitter,BallFromMapAreaReqDto reqDto,
+                                         MultiSorts sorts, Pageable pageable){
+        try {
+            emitter.send(fBallQueryRepository.getListUpBallFromMapArea(reqDto,sorts,pageable));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            emitter.complete();
+        }
+    }
 
     @Async
     @Transactional

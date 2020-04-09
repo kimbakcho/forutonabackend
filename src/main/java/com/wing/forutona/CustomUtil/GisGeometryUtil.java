@@ -20,6 +20,7 @@ public class GisGeometryUtil {
         return rect;
     }
 
+
     /*
     select ST_ASText(ST_Envelope(ST_GeomFromText("LineString(127.2854264529815 37.07021091269403, 127.675837138646 38.70836583519889)",4326)))
     위와 같은 함수를 대신함
