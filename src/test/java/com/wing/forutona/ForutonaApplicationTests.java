@@ -117,7 +117,7 @@ class ForutonaApplicationTests {
         reqDto.setLatitude(37.51368824280154);
         reqDto.setLongitude(126.8985465914011);
         reqDto.setDistance(1000);
-        Geometry mapCenterCircle = makeCenterPoint(reqDto);
+        Geometry mapCenterCircle = GisGeometryUtil.createCenterPoint(reqDto.getLatitude(),reqDto.getLongitude());
         List<Tuple> balls = fBallQueryRepository.getFindBallInDistanceForQueryDsl(
                 GisGeometryUtil.createCenterPoint(37.4402052,126.79369789999998),
                 GisGeometryUtil.createRect(37.4402052,126.79369789999998,1000)
@@ -131,15 +131,14 @@ class ForutonaApplicationTests {
     }
 
     @Test
-    public void findTagRankingInDistanceOfInfluencePower() {
+    public void findTagRankingInDistanceOfInfluencePower() throws ParseException {
         NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
         reqDto.setLatitude(37.51368824280154);
         reqDto.setLongitude(126.8985465914011);
         reqDto.setDistance(10000);
-        Geometry mapCenterCircle = makeCenterPoint(reqDto);
+        Geometry mapCenterCircle = GisGeometryUtil.createCenterPoint(reqDto.getLatitude(),reqDto.getLongitude());
         TagRankingWrapdto findTagRankingInDistanceOfInfluencePower = fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(mapCenterCircle,
-                createRect(reqDto.getLatitude(), reqDto.getLongitude(), reqDto.getDistance()),
-                10);
+                createRect(reqDto.getLatitude(), reqDto.getLongitude(), reqDto.getDistance()), 10);
 
     }
 
@@ -174,15 +173,7 @@ class ForutonaApplicationTests {
 
 
 
-    private Geometry makeCenterPoint(NearBallFindDistanceReqDto reqDto) {
-        GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
-        Coordinate centerPoint1 = new Coordinate(reqDto.getLongitude(),reqDto.getLatitude());
-        shapeFactory.setCentre(centerPoint1);
-        shapeFactory.setSize(0.00000001);
-        Geometry mapCenterCircle = shapeFactory.createCircle();
-        mapCenterCircle.setSRID(4326);
-        return mapCenterCircle;
-    }
+
 
 
 

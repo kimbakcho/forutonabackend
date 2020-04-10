@@ -65,7 +65,7 @@ public class FBallPlayerTests {
         MultiSorts sorts = new MultiSorts();
         List<MultiSort> sort = new ArrayList<>();
         sort.add(new MultiSort("Alive", Order.DESC));
-        sort.add(new MultiSort("startTime", Order.DESC));
+        sort.add(new MultiSort("makeTime", Order.DESC));
         sorts.setSorts(sort);
 
         List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, sorts,pageable);

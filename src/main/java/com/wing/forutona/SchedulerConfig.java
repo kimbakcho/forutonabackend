@@ -35,7 +35,8 @@ public class SchedulerConfig implements SchedulingConfigurer {
         scheduledTaskRegistrar.setTaskScheduler(threadPoolTaskScheduler);
     }
 
-    @Profile("real")
+    //한동안 꺼둠
+    @Profile("none")
     @Component
     public static class FcubeScheduled {
 

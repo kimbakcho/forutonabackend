@@ -68,10 +68,6 @@ public class FcubeScheduledSupport1 implements FcubeScheduledSupport1In {
     }
 
 
-    @Transactional(value = "mybatisTransactionManager")
-    public void Userexppointupdate(Fcube executeitem){
-
-    }
 }
 
 
