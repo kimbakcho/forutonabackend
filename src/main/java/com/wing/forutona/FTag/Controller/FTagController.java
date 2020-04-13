@@ -59,6 +59,4 @@ public class FTagController {
         fTagService.getTagSearchFromTextToTagRankings(emitter,reqDto);
         return emitter;
     }
-
-
 }
