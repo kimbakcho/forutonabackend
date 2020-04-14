@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Repository
-public interface FUserInfoRepository extends JpaRepository<FUserInfo,Long> {
+public interface FUserInfoDataRepository extends JpaRepository<FUserInfo,String> {
 
 
 }

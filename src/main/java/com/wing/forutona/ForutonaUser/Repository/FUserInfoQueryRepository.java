@@ -2,8 +2,9 @@ package com.wing.forutona.ForutonaUser.Repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserInfoDto;
+import com.wing.forutona.ForutonaUser.Dto.QFUserInfoResDto;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +20,10 @@ public class FUserInfoQueryRepository {
     EntityManager em;
 
 
-    public FUserInfoDto getBasicUserInfo(FUserReqDto fUserReqDto) {
+    public FUserInfoResDto getBasicUserInfo(FUserReqDto fUserReqDto) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         return queryFactory
-                .select(Projections.bean(FUserInfoDto.class,
-                        fUserInfo.uid, fUserInfo.nickName, fUserInfo.profilePicktureUrl
-                        , fUserInfo.gender, fUserInfo.ageDate, fUserInfo.email, fUserInfo.snsService,
-                        fUserInfo.userLevel, fUserInfo.expPoint, fUserInfo.followCount))
+                .select(new QFUserInfoResDto(fUserInfo))
                 .from(fUserInfo)
                 .where(fUserInfo.uid.eq(fUserReqDto.getUid()))
                 .fetchOne();
