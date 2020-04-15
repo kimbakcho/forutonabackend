@@ -62,7 +62,7 @@ public class FireBaseAdmin {
             Map<String, Object> additionalClaims = new HashMap<String, Object>();
             additionalClaims.put("level", 1);
             additionalClaims.put("email", item.getEmail());
-            additionalClaims.put("profilepicktureurl", item.getProfilepicktureurl());
+            additionalClaims.put("profilepictureurl", item.getProfilepictureurl());
             additionalClaims.put("nickname", item.getNickname());
 
             String customToken = FirebaseAuth.getInstance().createCustomToken(item.getUid(), additionalClaims);

@@ -13,7 +13,7 @@
     <result column="pointType" jdbcType="VARCHAR" property="pointType" />
     <result column="pointValue" jdbcType="INTEGER" property="pointValue" />
     <result column="NickName" jdbcType="VARCHAR" property="nickName" />
-    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilePicktureUrl" />
+    <result column="ProfilePictureUrl" jdbcType="VARCHAR" property="profilePictureUrl" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userLevel" />
   </resultMap>
   <select id="selectAll" resultMap="BaseResultMap">

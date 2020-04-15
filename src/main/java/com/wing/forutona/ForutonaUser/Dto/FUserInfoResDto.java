@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class FUserInfoResDto {
     private String uid;
     private String nickName;
-    private String profilePicktureUrl;
+    private String profilePictureUrl;
     private long gender;
     private LocalDate ageDate;
     private String email;
@@ -54,7 +54,7 @@ public class FUserInfoResDto {
     public FUserInfoResDto(FUserInfo fUserInfo){
         this.uid = fUserInfo.getUid();
         this.nickName = fUserInfo.getNickName();
-        this.profilePicktureUrl = fUserInfo.getProfilePicktureUrl();
+        this.profilePictureUrl = fUserInfo.getProfilePictureUrl();
         this.gender  = fUserInfo.getGender();
         this.ageDate = fUserInfo.getAgeDate();
         this.email = fUserInfo.getEmail();

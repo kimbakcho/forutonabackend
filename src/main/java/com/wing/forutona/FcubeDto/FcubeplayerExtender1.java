@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class FcubeplayerExtender1 extends Fcubeplayer{
    String nickname;
-   String profilepicktureurl;
+   String profilepictureurl;
    double latitude;
    double longitude;
    Date positionupdatetime;

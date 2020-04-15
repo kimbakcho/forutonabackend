@@ -23,7 +23,7 @@ public class FUserInfo {
   @Column(unique = true)
   private String uid;
   private String nickName;
-  private String profilePicktureUrl;
+  private String profilePictureUrl;
   private long gender;
   private LocalDate ageDate;
   private String email;

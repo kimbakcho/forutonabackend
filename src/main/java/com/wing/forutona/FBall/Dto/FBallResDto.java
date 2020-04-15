@@ -46,7 +46,7 @@ public class FBallResDto {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.nickName = fball.getFBallUid().getNickName();
-        this.profilePicktureUrl = fball.getFBallUid().getProfilePicktureUrl();
+        this.profilePicktureUrl = fball.getFBallUid().getProfilePictureUrl();
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
@@ -69,7 +69,7 @@ public class FBallResDto {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.nickName = fball.getFBallUid().getNickName();
-        this.profilePicktureUrl = fball.getFBallUid().getProfilePicktureUrl();
+        this.profilePicktureUrl = fball.getFBallUid().getProfilePictureUrl();
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;

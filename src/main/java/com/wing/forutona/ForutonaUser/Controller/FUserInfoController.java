@@ -5,10 +5,11 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserReqDto;
+import com.wing.forutona.ForutonaUser.Dto.FuserAccountUpdateReqdto;
 import com.wing.forutona.ForutonaUser.Service.FUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 @RestController
@@ -23,6 +24,33 @@ public class FUserInfoController {
     public ResponseBodyEmitter getMe(FFireBaseToken fFireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fUserInfoService.getMe(emitter,fFireBaseToken);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/ForutonaUser/checkNickNameDuplication")
+    public ResponseBodyEmitter checkNickNameDuplication(@RequestParam  String nickName){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.checkNickNameDuplication(emitter,nickName);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/ForutonaUser/AccountUserInfo")
+    public ResponseBodyEmitter updateAccountUserInfo(FFireBaseToken fFireBaseToken, @RequestBody FuserAccountUpdateReqdto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.updateAccountUserInfo(emitter,fFireBaseToken,reqDto);
+        return emitter;
+    }
+
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/ForutonaUser/ProfileImage")
+    public ResponseBodyEmitter updateUserProfileImage(FFireBaseToken fFireBaseToken,
+                                                      @RequestParam("ProfileImage") MultipartFile file){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+
+        fUserInfoService.updateUserProfileImage(emitter,fFireBaseToken,file);
         return emitter;
     }
 }

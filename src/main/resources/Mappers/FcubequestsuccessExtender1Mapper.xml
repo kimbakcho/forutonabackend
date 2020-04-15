@@ -14,7 +14,7 @@
     <result column="ToPlayerComment" jdbcType="VARCHAR" property="toplayercomment" />
     <result column="Content" jdbcType="LONGVARCHAR" property="content" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
-    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+    <result column="ProfilePictureUrl" jdbcType="VARCHAR" property="profilepictureurl" />
     <result column="UserLevel" jdbcType="DOUBLE" property="userlevel" />
     <result column="ReadUid" jdbcType="VARCHAR" property="readuid" />
     <result column="Confirm" jdbcType="INTEGER" property="confirm" />

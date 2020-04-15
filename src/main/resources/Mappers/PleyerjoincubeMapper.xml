@@ -28,7 +28,7 @@
     <result column="StartTime" jdbcType="TIMESTAMP" property="startTime" />
     <result column="ContentType" jdbcType="VARCHAR" property="contentType" />
     <result column="MakerLevel" jdbcType="DOUBLE" property="makerLevel" />
-    <result column="MakerProfilePicktureUrl" jdbcType="VARCHAR" property="makerProfilePicktureUrl" />
+    <result column="MakerProfilePictureUrl" jdbcType="VARCHAR" property="makerProfilePictureUrl" />
     <result column="MakerNickName" jdbcType="VARCHAR" property="makerNickName" />
     <result column="ContentValue" jdbcType="LONGVARCHAR" property="contentValue" />
   </resultMap>

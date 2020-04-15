@@ -11,7 +11,7 @@
     <result column="CommentText" jdbcType="VARCHAR" property="commenttext" />
     <result column="CommentTime" jdbcType="TIMESTAMP" property="commenttime" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
-    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+    <result column="ProfilePictureUrl" jdbcType="VARCHAR" property="profilepictureurl" />
     <result column="FCMtoken" jdbcType="VARCHAR" property="fcmtoken" />
     <result column="BGroupCount" jdbcType="INTEGER" property="bgroupcount"/>
   </resultMap>

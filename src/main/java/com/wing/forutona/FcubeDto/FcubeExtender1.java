@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class FcubeExtender1 extends Fcube{
     String nickname;
-    String profilepicktureurl;
+    String profilepictureurl;
     String distancewithme;
     String contenttype;
     String contentvalue;

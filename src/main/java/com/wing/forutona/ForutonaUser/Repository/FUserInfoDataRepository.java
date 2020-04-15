@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface FUserInfoDataRepository extends JpaRepository<FUserInfo,String> {
-
+    long countByNickNameEquals(String NickName);
 
 }

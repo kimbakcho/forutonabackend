@@ -73,7 +73,7 @@ public class Fcubesponsorextender1 {
      *
      * @mbg.generated
      */
-    private String profilePicktureUrl;
+    private String profilePictureUrl;
 
     /**
      *
@@ -261,7 +261,7 @@ public class Fcubesponsorextender1 {
      * @mbg.generated
      */
     public String getProfilePicktureUrl() {
-        return profilePicktureUrl;
+        return profilePictureUrl;
     }
 
     /**
@@ -273,7 +273,7 @@ public class Fcubesponsorextender1 {
      * @mbg.generated
      */
     public void setProfilePicktureUrl(String profilePicktureUrl) {
-        this.profilePicktureUrl = profilePicktureUrl == null ? null : profilePicktureUrl.trim();
+        this.profilePictureUrl = profilePicktureUrl == null ? null : profilePicktureUrl.trim();
     }
 
     /**

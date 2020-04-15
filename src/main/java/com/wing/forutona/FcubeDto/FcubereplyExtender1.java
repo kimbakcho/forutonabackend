@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter @Getter @AllArgsConstructor @NoArgsConstructor
 public class FcubereplyExtender1 extends Fcubereply{
     String nickname;
-    String profilepicktureurl;
+    String profilepictureurl;
     int bgroupcount;
     String fcmtoken;
 }

@@ -28,7 +28,7 @@ public class Userinfo {
      *
      * @mbg.generated
      */
-    private String profilepicktureurl;
+    private String profilepictureurl;
 
     /**
      *
@@ -257,8 +257,8 @@ public class Userinfo {
      *
      * @mbg.generated
      */
-    public String getProfilepicktureurl() {
-        return profilepicktureurl;
+    public String getProfilepictureurl() {
+        return profilepictureurl;
     }
 
     /**
@@ -270,7 +270,7 @@ public class Userinfo {
      * @mbg.generated
      */
     public void setProfilepicktureurl(String profilepicktureurl) {
-        this.profilepicktureurl = profilepicktureurl == null ? null : profilepicktureurl.trim();
+        this.profilepictureurl = profilepicktureurl == null ? null : profilepictureurl.trim();
     }
 
     /**

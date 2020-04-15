@@ -8,7 +8,7 @@
     -->
     <id column="Uid" jdbcType="VARCHAR" property="uid" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
-    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+    <result column="profilePictureUrl" jdbcType="VARCHAR" property="profilePictureUrl" />
     <result column="Sex" jdbcType="INTEGER" property="sex" />
     <result column="AgeDate" jdbcType="DATE" property="agedate" />
     <result column="Email" jdbcType="VARCHAR" property="email" />

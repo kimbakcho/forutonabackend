@@ -16,7 +16,7 @@
     <result column="Country" jdbcType="VARCHAR" property="country" />
     <result column="HasPassword" jdbcType="INTEGER" property="haspassword" />
     <result column="NickName" jdbcType="VARCHAR" property="nickname" />
-    <result column="ProfilePicktureUrl" jdbcType="VARCHAR" property="profilepicktureurl" />
+    <result column="ProfilePictureUrl" jdbcType="VARCHAR" property="profilepictureurl" />
     <result column="ContentType" jdbcType="VARCHAR" property="contenttype" />
     <result column="ContentValue" jdbcType="LONGVARCHAR" property="contentvalue" />
     <result column="PositionUpdateTime" jdbcType="TIMESTAMP" property="positionupdatetime" />

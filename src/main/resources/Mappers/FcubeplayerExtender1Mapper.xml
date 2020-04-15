@@ -20,7 +20,7 @@
   <select id="selectPlayers" parameterType="com.wing.forutona.FcubeDto.Fcubeplayer" resultMap="BaseResultMap">
     SELECT A.idx, A.Cubeuuid, A.Uid,A.HasLike,A.HasDisLike,
     A.HasGiveup,A.StartTime,A.PlayState ,B.latitude,B.longitude,
-    B.NickName,B.ProfilePicktureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken
+    B.NickName,B.ProfilePictureUrl,B.PositionUpdateTime,B.UserLevel,B.FCMtoken
      FROM FcubePlayer A LEFT JOIN UserInfo B ON A.Uid = B.Uid
     <where>
       A.Cubeuuid = #{cubeuuid,jdbcType=VARCHAR}

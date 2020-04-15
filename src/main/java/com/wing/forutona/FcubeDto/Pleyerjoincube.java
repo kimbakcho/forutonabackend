@@ -208,7 +208,7 @@ public class Pleyerjoincube {
      *
      * @mbg.generated
      */
-    private String makerProfilePicktureUrl;
+    private String makerProfilePictureUrl;
 
     /**
      *
@@ -765,7 +765,7 @@ public class Pleyerjoincube {
      * @mbg.generated
      */
     public String getMakerProfilePicktureUrl() {
-        return makerProfilePicktureUrl;
+        return makerProfilePictureUrl;
     }
 
     /**
@@ -777,7 +777,7 @@ public class Pleyerjoincube {
      * @mbg.generated
      */
     public void setMakerProfilePicktureUrl(String makerProfilePicktureUrl) {
-        this.makerProfilePicktureUrl = makerProfilePicktureUrl == null ? null : makerProfilePicktureUrl.trim();
+        this.makerProfilePictureUrl = makerProfilePicktureUrl == null ? null : makerProfilePicktureUrl.trim();
     }
 
     /**
