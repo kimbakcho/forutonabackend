@@ -3,6 +3,7 @@ package com.wing.forutona.ForutonaUser.Controller;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoPwChangeReqDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserReqDto;
 import com.wing.forutona.ForutonaUser.Dto.FuserAccountUpdateReqdto;
@@ -51,6 +52,14 @@ public class FUserInfoController {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
 
         fUserInfoService.updateUserProfileImage(emitter,fFireBaseToken,file);
+        return emitter;
+    }
+
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/ForutonaUser/PwChange")
+    public ResponseBodyEmitter userPwChange(FFireBaseToken fFireBaseToken, @RequestBody  FUserInfoPwChangeReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.userPwChange(emitter,fFireBaseToken,reqDto);
         return emitter;
     }
 }

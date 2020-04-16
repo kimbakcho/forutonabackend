@@ -4,12 +4,13 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FuserAccountUpdateReqdto;
-import com.wing.forutona.ForutonaUser.Dto.NickNameDuplicationCheckResDto;
+import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -57,6 +58,20 @@ public class FUserInfoService {
             emitter.complete();
         }
     }
+    @Async
+    public void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto){
+        UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(fFireBaseToken.getFireBaseToken().getUid());
+        updateRequest.setPassword(reqDto.getPw());
+        try {
+            UserRecord userRecord = FirebaseAuth.getInstance().updateUser(updateRequest);
+            emitter.send(1);
+        } catch (FirebaseAuthException | IOException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
     @Async
     @Transactional
     public void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken){
