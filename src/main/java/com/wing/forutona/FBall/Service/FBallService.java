@@ -7,15 +7,14 @@ import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
-import com.wing.forutona.MapFindScopeStep.Domain.FMapFindScopeStep;
-import com.wing.forutona.MapFindScopeStep.Repository.MapFindScopeStepRepository;
+import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
+import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;

@@ -1,9 +1,10 @@
-package com.wing.forutona.PersonaSettingNotice.Service;
+package com.wing.forutona.ForutonaUser.Service;
 
-import com.wing.forutona.PersonaSettingNotice.Domain.PersonaSettingNotice;
-import com.wing.forutona.PersonaSettingNotice.Dto.PersonaSettingNoticeInsertReqDto;
-import com.wing.forutona.PersonaSettingNotice.Dto.PersonaSettingNoticeResDto;
-import com.wing.forutona.PersonaSettingNotice.Repository.PersonaSettingNoticeDataRepository;
+
+import com.wing.forutona.ForutonaUser.Domain.PersonaSettingNotice;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeInsertReqDto;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeResDto;
+import com.wing.forutona.ForutonaUser.Repository.PersonaSettingNoticeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

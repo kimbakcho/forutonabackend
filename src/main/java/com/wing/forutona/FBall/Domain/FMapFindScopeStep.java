@@ -1,4 +1,4 @@
-package com.wing.forutona.MapFindScopeStep.Domain;
+package com.wing.forutona.FBall.Domain;
 
 import javax.persistence.*;
 

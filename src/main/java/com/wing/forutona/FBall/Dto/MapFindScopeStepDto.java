@@ -1,4 +1,4 @@
-package com.wing.forutona.MapFindScopeStep.Dto;
+package com.wing.forutona.FBall.Dto;
 
 public class MapFindScopeStepDto {
     int idx;

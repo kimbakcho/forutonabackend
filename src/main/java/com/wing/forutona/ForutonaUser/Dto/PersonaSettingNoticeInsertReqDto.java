@@ -1,4 +1,4 @@
-package com.wing.forutona.PersonaSettingNotice.Dto;
+package com.wing.forutona.ForutonaUser.Dto;
 
 import lombok.Data;
 

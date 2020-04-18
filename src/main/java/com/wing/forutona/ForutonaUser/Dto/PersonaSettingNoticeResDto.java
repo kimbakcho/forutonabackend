@@ -1,6 +1,7 @@
-package com.wing.forutona.PersonaSettingNotice.Dto;
+package com.wing.forutona.ForutonaUser.Dto;
 
-import com.wing.forutona.PersonaSettingNotice.Domain.PersonaSettingNotice;
+
+import com.wing.forutona.ForutonaUser.Domain.PersonaSettingNotice;
 import lombok.Data;
 
 import java.time.LocalDateTime;

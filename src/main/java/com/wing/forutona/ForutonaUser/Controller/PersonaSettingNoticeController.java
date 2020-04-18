@@ -1,8 +1,7 @@
-package com.wing.forutona.PersonaSettingNotice.Controller;
+package com.wing.forutona.ForutonaUser.Controller;
 
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
-import com.wing.forutona.PersonaSettingNotice.Dto.PersonaSettingNoticeInsertReqDto;
-import com.wing.forutona.PersonaSettingNotice.Service.PersonaSettingNoticeService;
+import com.wing.forutona.ForutonaUser.Service.PersonaSettingNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ public class PersonaSettingNoticeController {
     PersonaSettingNoticeService personaSettingNoticeService;
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/PersonaSettingNotice")
+    @GetMapping(value = "/v1/ForutonaUser/PersonaSettingNotice")
     ResponseBodyEmitter getPersonaSettingNotice(Pageable pageable){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         personaSettingNoticeService.getPersonaSettingNotice(emitter,pageable);
@@ -25,7 +24,7 @@ public class PersonaSettingNoticeController {
     }
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/PersonaSettingNotice/{idx}")
+    @GetMapping(value = "/v1/ForutonaUser/PersonaSettingNotice/{idx}")
     ResponseBodyEmitter getPersonaSettingNoticePage(@PathVariable("idx") long idx){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         personaSettingNoticeService.getPersonaSettingNoticePage(emitter,idx);

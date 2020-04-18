@@ -1,6 +1,6 @@
-package com.wing.forutona.PersonaSettingNotice.Domain;
+package com.wing.forutona.ForutonaUser.Domain;
 
-import com.wing.forutona.PersonaSettingNotice.Dto.PersonaSettingNoticeInsertReqDto;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeInsertReqDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
