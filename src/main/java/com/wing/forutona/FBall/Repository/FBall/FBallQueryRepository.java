@@ -45,6 +45,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
+
+
     /**
      * Front 로 부터 화면의 검색 범위를 좌표로 받음 다음 검색 해줌.
      * @param reqDto
@@ -200,6 +202,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
+    /**
+     * Maker가 만들 Ball 검색
+     * @param reqDto
+     * @param sorts
+     * @param pageable
+     * @return
+     */
     public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
                                                            MultiSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);

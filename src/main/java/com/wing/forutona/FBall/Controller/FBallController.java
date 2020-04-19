@@ -1,15 +1,15 @@
 package com.wing.forutona.FBall.Controller;
 
 import com.vividsolutions.jts.io.ParseException;
+import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
+import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.FBallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,5 +56,26 @@ public class FBallController {
         fBallService.getUserToMakerBalls(emitter,reqDto,sorts,pageable);
         return emitter;
     }
+
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PostMapping(value = "/v1/FBall/Insert")
+    public ResponseBodyEmitter insertBalls(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.insertBalls(emitter,reqDto,fireBaseToken);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/FBall/Update")
+    public ResponseBodyEmitter updateBalls(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.updateBalls(emitter,reqDto,fireBaseToken);
+        return emitter;
+    }
+
+
 
 }
