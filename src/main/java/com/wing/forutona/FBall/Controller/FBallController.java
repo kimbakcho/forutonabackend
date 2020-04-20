@@ -10,10 +10,11 @@ import com.wing.forutona.FBall.Service.FBallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FBallController {
@@ -58,24 +59,29 @@ public class FBallController {
     }
 
 
-    @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/Insert")
-    public ResponseBodyEmitter insertBalls(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+    public ResponseBodyEmitter insertBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.insertBalls(emitter,reqDto,fireBaseToken);
+        fBallService.insertBall(emitter,reqDto,fireBaseToken);
+        return emitter;
+    }
+
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/FBall/Update")
+    public ResponseBodyEmitter updateBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.updateBall(emitter,reqDto,fireBaseToken);
         return emitter;
     }
 
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
-    @PutMapping(value = "/v1/FBall/Update")
-    public ResponseBodyEmitter updateBalls(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+    @PostMapping(value = "/v1/FBall/BallImageUpload")
+    public ResponseBodyEmitter ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.updateBalls(emitter,reqDto,fireBaseToken);
+        fBallService.ballImageUpload(emitter,files);
         return emitter;
     }
-
-
 
 }
