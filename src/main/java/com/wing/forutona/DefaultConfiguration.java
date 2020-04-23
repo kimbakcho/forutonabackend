@@ -18,7 +18,7 @@ public class DefaultConfiguration {
     public MultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver
                 = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(5242880);
+        multipartResolver.setMaxUploadSize(10242880);
         return multipartResolver;
     }
 

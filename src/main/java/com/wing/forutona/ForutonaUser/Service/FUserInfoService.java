@@ -135,4 +135,25 @@ public class FUserInfoService {
             emitter.complete();
         }
     }
+
+    /**
+     * 클라이언트 기기에서 개인 정보 해킹을 막기위한 최소한의 정보만 주기 위한 메소드
+     * @param emitter
+     * @param reqDto
+     */
+    public void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto) {
+        try{
+            FUserInfo fUserInfo = fUserInfoDataRepository.findById(reqDto.getUid()).get();
+            FUserInfoResDto fUserInfoResDto = new FUserInfoResDto();
+            fUserInfoResDto.setNickName(fUserInfo.getNickName());
+            fUserInfoResDto.setCumulativeInfluence(fUserInfo.getCumulativeInfluence());
+            fUserInfoResDto.setFollowCount(fUserInfo.getFollowCount());
+            fUserInfoResDto.setProfilePictureUrl(fUserInfo.getProfilePictureUrl());
+            emitter.send(fUserInfoResDto);
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
 }

@@ -55,7 +55,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      * @return
      * @throws ParseException
      */
-    public FBallListUpWrapDto getListUpBallFromMapArea(BallFromMapAreaReqDto reqDto,
+    public FBallListUpWrapDto getBallListUp(BallFromMapAreaReqDto reqDto,
                                                        MultiSorts sorts, Pageable pageable) throws ParseException {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
@@ -102,7 +102,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      *
      * @return
      */
-    public FBallListUpWrapDto getListUpBallFromSearchText(BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) throws ParseException {
+    public FBallListUpWrapDto getBallListUp(BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) throws ParseException {
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,

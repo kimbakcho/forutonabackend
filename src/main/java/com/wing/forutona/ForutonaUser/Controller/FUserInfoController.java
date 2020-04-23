@@ -62,4 +62,19 @@ public class FUserInfoController {
         fUserInfoService.userPwChange(emitter,fFireBaseToken,reqDto);
         return emitter;
     }
+
+    /**
+     * 개인정보 해킹을 방지 해기 위해서 최소한의 정보만 주는 스타일 1번
+     * 클라이언트 에서 다른 사람의 민감한 개인정보를 취득하는 것 막기 위한 API
+     */
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/ForutonaUser/UserInfoSimple1")
+    public ResponseBodyEmitter getUserInfoSimple1(FUserReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.getUserInfoSimple1(emitter,reqDto);
+        return emitter;
+
+
+    }
+
 }

@@ -15,6 +15,7 @@ public class FBallResDto {
     private FBallType ballType;
     private FBallState ballState;
     private String placeAddress;
+    private long ballHits;
     private long ballLikes;
     private long ballDisLikes;
     private long commentCount;
@@ -28,6 +29,7 @@ public class FBallResDto {
     private Double userLevel;
     //해당 부분 BallPower/지도 중심과의 거리로 계산
     private double influencePower;
+    private long contributor;
 
     @QueryProjection
     public FBallResDto(FBall fball, double influencePower) {
@@ -38,6 +40,7 @@ public class FBallResDto {
         this.ballType = fball.getBallType();
         this.ballState = fball.getBallState();
         this.placeAddress = fball.getPlaceAddress();
+        this.ballHits = fball.getBallHits();
         this.ballLikes = fball.getBallLikes();
         this.ballDisLikes = fball.getBallDisLikes();
         this.commentCount = fball.getCommentCount();
@@ -50,6 +53,7 @@ public class FBallResDto {
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
+        this.contributor = fball.getContributor();
     }
 
     @QueryProjection
@@ -61,6 +65,7 @@ public class FBallResDto {
         this.ballType = fball.getBallType();
         this.ballState = fball.getBallState();
         this.placeAddress = fball.getPlaceAddress();
+        this.ballHits = fball.getBallHits();
         this.ballLikes = fball.getBallLikes();
         this.ballDisLikes = fball.getBallDisLikes();
         this.commentCount = fball.getCommentCount();
@@ -73,6 +78,7 @@ public class FBallResDto {
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
+        this.contributor = fball.getContributor();
     }
 
 }

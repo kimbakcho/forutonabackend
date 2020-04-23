@@ -64,6 +64,7 @@ public class FBall {
   private long commentCount;
   private double userExp;
   private String description;
+  private long contributor;
 
   @OneToMany(mappedBy = "ballUuid",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<FBalltag> tags;

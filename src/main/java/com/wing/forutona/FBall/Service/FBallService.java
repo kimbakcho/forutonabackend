@@ -55,7 +55,8 @@ public class FBallService {
     @Autowired
     GoogleStorgeAdmin googleStorgeAdmin;
 
-
+    @Async
+    @Transactional
     public void ballImageUpload(ResponseBodyEmitter emitter,List<MultipartFile> files){
         Storage storage = googleStorgeAdmin.GetStorageInstance();
         FBallImageUploadResDto fBallImageUploadResDto = new FBallImageUploadResDto();
@@ -87,12 +88,19 @@ public class FBallService {
         }
     }
 
+    /**
+     * 특정 범위안에 볼 찾기
+     * @param emitter
+     * @param reqDto
+     * @param sorts
+     * @param pageable
+     */
     @Async
     @Transactional
-    public void getListUpBallFromMapArea(ResponseBodyEmitter emitter,BallFromMapAreaReqDto reqDto,
+    public void BallListUp(ResponseBodyEmitter emitter,BallFromMapAreaReqDto reqDto,
                                          MultiSorts sorts, Pageable pageable){
         try {
-            emitter.send(fBallQueryRepository.getListUpBallFromMapArea(reqDto,sorts,pageable));
+            emitter.send(fBallQueryRepository.getBallListUp(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {
@@ -100,14 +108,45 @@ public class FBallService {
         }
     }
 
+    /**
+     * 볼이름으로 찾기
+     * @param emitter
+     * @param reqDto
+     * @param sorts
+     * @param pageable
+     */
     @Async
     @Transactional
-    public void getListUpBallFromSearchText(ResponseBodyEmitter emitter, BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public void BallListUp(ResponseBodyEmitter emitter, BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) {
         try {
-            emitter.send(fBallQueryRepository.getListUpBallFromSearchText(reqDto,sorts,pageable));
+            emitter.send(fBallQueryRepository.getBallListUp(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }finally {
+            emitter.complete();
+        }
+    }
+
+    /**
+     * 중심 위치로부터 찾기
+     * @param emitter
+     * @param reqDto
+     * @param pageable
+     * @throws ParseException
+     */
+    @Async
+    @Transactional
+    public void BallListUp(ResponseBodyEmitter emitter, FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
+        int findDistanceRange = this.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
+                reqDto.getBallLimit());
+        try {
+            emitter.send(fBallQueryRepository.getBallListUp(
+                    GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude())
+                    , GisGeometryUtil.createRect(reqDto.getLatitude(), reqDto.getLongitude(), findDistanceRange)
+                    , pageable));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             emitter.complete();
         }
     }
@@ -126,22 +165,7 @@ public class FBallService {
         }
     }
 
-    @Async
-    @Transactional
-    public void BallListUp(ResponseBodyEmitter emitter, FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
-        int findDistanceRange = this.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
-                reqDto.getBallLimit());
-        try {
-            emitter.send(fBallQueryRepository.getBallListUp(
-                    GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude())
-                    , GisGeometryUtil.createRect(reqDto.getLatitude(), reqDto.getLongitude(), findDistanceRange)
-                    , pageable));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
+
 
 
     /*

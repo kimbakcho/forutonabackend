@@ -28,7 +28,7 @@ public class FBallController {
     public ResponseBodyEmitter getListUpBallFromMapArea(BallFromMapAreaReqDto reqDto,
                                                         @RequestParam MultiSorts sorts, Pageable pageable){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.getListUpBallFromMapArea(emitter,reqDto,sorts,pageable);
+        fBallService.BallListUp(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 
@@ -37,7 +37,7 @@ public class FBallController {
     public ResponseBodyEmitter getListUpBallFromSearchText(BallNameSearchReqDto reqDto
             ,@RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.getListUpBallFromSearchText(emitter,reqDto,sorts,pageable);
+        fBallService.BallListUp(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 
