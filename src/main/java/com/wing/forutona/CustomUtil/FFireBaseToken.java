@@ -1,5 +1,6 @@
 package com.wing.forutona.CustomUtil;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +12,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FFireBaseToken {
+    FirebaseAuth firebaseAuth;
     FirebaseToken fireBaseToken;
 
-    public FFireBaseToken(FirebaseToken fireBaseToken) {
+    public FFireBaseToken(FirebaseToken fireBaseToken,FirebaseAuth firebaseAuth) {
         this.fireBaseToken = fireBaseToken;
+        this.firebaseAuth = firebaseAuth;
     }
 }

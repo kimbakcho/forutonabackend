@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class FBall {
   @Id
   @Column(unique = true)
@@ -65,6 +65,8 @@ public class FBall {
   private double userExp;
   private String description;
   private long contributor;
+
+
 
   @OneToMany(mappedBy = "ballUuid",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<FBalltag> tags;

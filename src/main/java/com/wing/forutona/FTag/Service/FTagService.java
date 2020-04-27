@@ -4,11 +4,12 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.CustomUtil.MultiSorts;
+import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
 import com.wing.forutona.FBall.Service.FBallService;
-import com.wing.forutona.FTag.Dto.TagRankingReqDto;
-import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
-import com.wing.forutona.FTag.Dto.TagSearchFromTextReqDto;
+import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.FTag.Dto.*;
+import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FTagService {
     @Autowired
     FBallTagQueryRepository fBallTagQueryRepository;
+
+    @Autowired
+    FBallTagDataRepository fBallTagDataRepository;
 
     @Autowired
     FBallService fBallService;
@@ -71,6 +77,24 @@ public class FTagService {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            emitter.complete();
+        }
+    }
+    @Async
+    @Transactional
+    public void getTagFromBallUuid(ResponseBodyEmitter emitter, TagFromBallReqDto reqDto) {
+        FBall fBall = new FBall();
+        fBall.setBallUuid(reqDto.getBallUuid());
+        List<FBalltag> fBalltagByBallUuidIs = fBallTagDataRepository.findFBalltagByBallUuidIs(fBall);
+        List<TagResDto> collect = fBalltagByBallUuidIs.stream().map(x -> new TagResDto(x)).collect(Collectors.toList());
+        TagResDtoWrap dtoWrap = new TagResDtoWrap();
+        dtoWrap.setTotalCount(collect.size());
+        dtoWrap.setTags(collect);
+        try {
+            emitter.send(dtoWrap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
             emitter.complete();
         }
     }

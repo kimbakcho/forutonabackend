@@ -31,8 +31,9 @@ public class FireBaseHandlerMethodArgumentResolver implements HandlerMethodArgum
         String header = nativeWebRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if(!StringUtil.isNullOrEmpty(header)){
             String token = header.replace("Bearer ", "");
-            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(token, true);
-            return new FFireBaseToken(firebaseToken);
+            FirebaseAuth instance = FirebaseAuth.getInstance();
+            FirebaseToken firebaseToken = instance.verifyIdToken(token, true);
+            return new FFireBaseToken(firebaseToken,instance);
         }
         return null;
     }

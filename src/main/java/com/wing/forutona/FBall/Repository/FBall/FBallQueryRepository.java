@@ -45,8 +45,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-
-
     /**
      * Front 로 부터 화면의 검색 범위를 좌표로 받음 다음 검색 해줌.
      * @param reqDto

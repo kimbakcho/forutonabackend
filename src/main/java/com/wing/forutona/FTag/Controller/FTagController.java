@@ -4,6 +4,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
+import com.wing.forutona.FTag.Dto.TagFromBallReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingReqDto;
 import com.wing.forutona.FTag.Dto.TagSearchFromTextReqDto;
 import com.wing.forutona.FTag.Service.FTagService;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
-
-import javax.servlet.http.HttpServletResponse;
 
 //해당 콘트롤러는 RankingSystem을 책임 진다/
 @RestController
@@ -49,6 +48,14 @@ public class FTagController {
     public ResponseBodyEmitter getTagSearchFromTextToTagRankings(TagSearchFromTextReqDto reqDto) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fTagService.getTagSearchFromTextToTagRankings(emitter, reqDto);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/FTag/tagFromBallUuid")
+    public ResponseBodyEmitter getTagFromBallUuid(TagFromBallReqDto reqDto) {
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fTagService.getTagFromBallUuid(emitter,reqDto);
         return emitter;
     }
 }
