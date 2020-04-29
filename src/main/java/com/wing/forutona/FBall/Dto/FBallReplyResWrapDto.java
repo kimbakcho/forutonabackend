@@ -7,5 +7,6 @@ import java.util.List;
 @Data
 public class FBallReplyResWrapDto {
     int count;
+    Long replyTotalCount;
     List<FBallReplyResDto> contents;
 }

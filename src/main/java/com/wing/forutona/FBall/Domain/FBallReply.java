@@ -29,5 +29,7 @@ public class FBallReply {
     Long replyDepth;
     String replyText;
     LocalDateTime replyUploadDateTime;
+    LocalDateTime replyUpdateDateTime;
+    Boolean deleteFlag;
 
 }

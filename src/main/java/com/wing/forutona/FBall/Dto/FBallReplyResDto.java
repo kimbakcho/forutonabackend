@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class FBallReplyResDto {
+    Long idx;
     String ballUuid;
     String uid;
     Long replyNumber;
@@ -19,11 +20,14 @@ public class FBallReplyResDto {
     Long replyDepth;
     String replyText;
     LocalDateTime replyUploadDateTime;
+    LocalDateTime replyUpdateDateTime;
     String userNickName;
     String userProfilePictureUrl;
+    Boolean deleteFlag;
 
     @QueryProjection
     public FBallReplyResDto(FBallReply fBallReply){
+        this.idx = fBallReply.getIdx();
         this.ballUuid = fBallReply.getReplyBallUuid().getBallUuid();
         this.uid = fBallReply.getReplyUid().getUid();
         this.replyNumber = fBallReply.getReplyNumber();
@@ -33,6 +37,8 @@ public class FBallReplyResDto {
         this.replyUploadDateTime = fBallReply.getReplyUploadDateTime();
         this.userNickName = fBallReply.getReplyUid().getNickName();
         this.userProfilePictureUrl = fBallReply.getReplyUid().getProfilePictureUrl();
+        this.replyUpdateDateTime = fBallReply.getReplyUpdateDateTime();
+        this.deleteFlag = fBallReply.getDeleteFlag();
     }
 
 }

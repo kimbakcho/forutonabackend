@@ -8,10 +8,7 @@ import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Service.FBallReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 @RestController
@@ -34,8 +31,16 @@ public class FBallReplyController {
         if(!reqDto.isDetail()){
             fBallReplyService.getFBallReply(emitter,reqDto,pageable);
         }else {
-            fBallReplyService.getFBallDetailReply(emitter,reqDto);
+            fBallReplyService.getFBallDetailReply(emitter,reqDto,pageable);
         }
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/FBallSubReply")
+    public ResponseBodyEmitter getFBallSubReply(FBallReplyReqDto reqDto ){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallReplyService.getFBallSubReply(emitter,reqDto);
         return emitter;
     }
 
@@ -49,6 +54,23 @@ public class FBallReplyController {
         return emitter;
     }
 
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/FBallReply")
+    public ResponseBodyEmitter updateFBallReply(@RequestBody FBallReplyInsertReqDto reqDto,FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallReplyService.updateFBallReply(emitter,fireBaseToken,reqDto);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @DeleteMapping(value = "/v1/FBallReply/{idx}")
+    public ResponseBodyEmitter updateFBallReply(@PathVariable Long idx,FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallReplyService.deleteFBallReply(emitter,fireBaseToken,idx);
+        return emitter;
+    }
 
 
 }
