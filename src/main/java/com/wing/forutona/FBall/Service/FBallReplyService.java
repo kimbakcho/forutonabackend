@@ -42,6 +42,7 @@ public class FBallReplyService {
         FBallReply fBallReply = new FBallReply();
         FBall fBall = new FBall();
         fBall.setBallUuid(reqDto.getBallUuid());
+        fBallReply.setDeleteFlag(false);
         fBallReply.setReplyBallUuid(fBall);
         //대댓글이 아닌 처음 댓글
         if (reqDto.getReplyNumber() == -1) {

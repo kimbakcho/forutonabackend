@@ -39,6 +39,7 @@ public class FBallReplyResDto {
         this.userProfilePictureUrl = fBallReply.getReplyUid().getProfilePictureUrl();
         this.replyUpdateDateTime = fBallReply.getReplyUpdateDateTime();
         this.deleteFlag = fBallReply.getDeleteFlag();
+
     }
 
 }
