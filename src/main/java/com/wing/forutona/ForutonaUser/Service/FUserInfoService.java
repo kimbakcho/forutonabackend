@@ -1,18 +1,19 @@
 package com.wing.forutona.ForutonaUser.Service;
 
-import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.FaceBookLoginService;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginService;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsSupportService;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -151,6 +152,25 @@ public class FUserInfoService {
             fUserInfoResDto.setProfilePictureUrl(fUserInfo.getProfilePictureUrl());
             emitter.send(fUserInfoResDto);
         }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
+    /**
+     * SNS 로그인 할때 회원 가입 여부 판단
+     * @param emitter
+     * @param snSLoginReqDto
+     */
+    public void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto) {
+        SnsLoginService snsLoginService = null;
+        if(snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook){
+            snsLoginService = new FaceBookLoginService();
+        }
+        try {
+            emitter.send(snsLoginService.getInfoFromToken(snSLoginReqDto));
+        } catch (IOException e) {
             e.printStackTrace();
         }finally {
             emitter.complete();

@@ -3,10 +3,7 @@ package com.wing.forutona.ForutonaUser.Controller;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
-import com.wing.forutona.ForutonaUser.Dto.FUserInfoPwChangeReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FuserAccountUpdateReqdto;
+import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Service.FUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -73,8 +70,16 @@ public class FUserInfoController {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fUserInfoService.getUserInfoSimple1(emitter,reqDto);
         return emitter;
-
-
     }
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/ForutonaUser/SnsUserJoinCheckInfo")
+    public ResponseBodyEmitter getSnsUserJoinCheckInfo(FUserSnSLoginReqDto snSLoginReqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.getSnsUserJoinCheckInfo(emitter,snSLoginReqDto);
+        return emitter;
+    }
+
+
 
 }
