@@ -11,9 +11,7 @@ import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
-import com.wing.forutona.ForutonaUser.Service.SnsLogin.FaceBookLoginService;
-import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginService;
-import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsSupportService;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.*;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -142,6 +140,8 @@ public class FUserInfoService {
      * @param emitter
      * @param reqDto
      */
+    @Async
+    @Transactional
     public void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto) {
         try{
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(reqDto.getUid()).get();
@@ -163,16 +163,27 @@ public class FUserInfoService {
      * @param emitter
      * @param snSLoginReqDto
      */
+    @Async
+    @Transactional
     public void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto) {
-        SnsLoginService snsLoginService = null;
-        if(snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook){
-            snsLoginService = new FaceBookLoginService();
-        }
+
         try {
+            SnsLoginService snsLoginService = null;
+            if(snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook){
+                snsLoginService = new FaceBookLoginService();
+            }else if (snSLoginReqDto.getSnsService() == SnsSupportService.Kakao){
+                snsLoginService = new KakaoLoginService();
+            }else if (snSLoginReqDto.getSnsService() == SnsSupportService.Naver){
+                snsLoginService = new NaverLoginService();
+            }else {
+                throw new Exception("dont'have service");
+            }
             emitter.send(snsLoginService.getInfoFromToken(snSLoginReqDto));
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             emitter.complete();
         }
     }

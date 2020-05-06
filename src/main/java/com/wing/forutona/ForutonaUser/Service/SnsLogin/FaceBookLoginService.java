@@ -43,5 +43,4 @@ public class FaceBookLoginService implements SnsLoginService {
         }
         return fUserSnsGetMeResDto;
     }
-
 }
