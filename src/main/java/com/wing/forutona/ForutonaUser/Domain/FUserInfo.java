@@ -27,11 +27,12 @@ public class FUserInfo {
   private long gender;
   private LocalDate ageDate;
   private String email;
-  private long forutonaAgree;
-  private long privateAgree;
-  private long positionAgree;
-  private long martketingAgree;
-  private long ageLimitAgree;
+  private boolean forutonaAgree;
+  private boolean forutonaManagementAgree;
+  private boolean privateAgree;
+  private boolean positionAgree;
+  private boolean martketingAgree;
+  private boolean ageLimitAgree;
   private String snsService;
   private String phoneNumber;
   private String isoCode;

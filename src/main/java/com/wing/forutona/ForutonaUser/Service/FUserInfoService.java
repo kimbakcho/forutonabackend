@@ -187,4 +187,30 @@ public class FUserInfoService {
             emitter.complete();
         }
     }
+
+    @Async
+    public void joinUserProfileImage(ResponseBodyEmitter emitter, MultipartFile file) {
+        Storage storage = googleStorgeAdmin.GetStorageInstance();
+        try {
+            String OriginalFile = file.getOriginalFilename();
+            int extentIndex = OriginalFile.lastIndexOf(".");
+            UUID uuid = UUID.randomUUID();
+            String saveFileName = "";
+            if (extentIndex > 0) {
+                String extent = OriginalFile.substring(extentIndex);
+                saveFileName = uuid.toString() + extent;
+            } else {
+                saveFileName = uuid.toString();
+            }
+            BlobId blobId = BlobId.of("publicforutona", "profileimage/"+saveFileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
+            storage.create(blobInfo, file.getBytes());
+            String imageUrl = "https://storage.googleapis.com/publicforutona/profileimage/"+saveFileName;
+            emitter.send(imageUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
 }
