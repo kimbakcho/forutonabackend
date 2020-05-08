@@ -52,14 +52,6 @@ public class FUserInfoController {
         return emitter;
     }
 
-    @PostMapping(value = "/v1/ForutonaUser/JoinProfileImage")
-    public ResponseBodyEmitter joinUserProfileImage(
-                                                      @RequestParam("ProfileImage") MultipartFile file){
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-
-        fUserInfoService.joinUserProfileImage(emitter,file);
-        return emitter;
-    }
 
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/ForutonaUser/PwChange")
@@ -89,6 +81,14 @@ public class FUserInfoController {
         return emitter;
     }
 
+
+    @ResponseAddJsonHeader
+    @PostMapping(value = "/v1/ForutonaUser/JoinUser")
+    public ResponseBodyEmitter joinUser(@RequestBody FUserInfoJoinReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fUserInfoService.joinUser(emitter,reqDto);
+        return emitter;
+    }
 
 
 }
