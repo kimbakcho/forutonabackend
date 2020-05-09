@@ -8,4 +8,6 @@ public class PhoneAuthNumberResDto {
     String phoneAuthToken;
     String phoneNumber;
     String internationalizedPhoneNumber;
+    boolean errorFlag;
+    String errorCause;
 }

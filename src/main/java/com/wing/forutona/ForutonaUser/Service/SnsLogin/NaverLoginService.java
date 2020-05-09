@@ -1,6 +1,7 @@
 package com.wing.forutona.ForutonaUser.Service.SnsLogin;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.ForutonaUser.Dto.FUserSnSLoginReqDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
@@ -22,13 +23,20 @@ public class NaverLoginService implements SnsLoginService {
         FUserSnsCheckJoinResDto fUserSnsGetMeResDto = new FUserSnsCheckJoinResDto();
         UserRecord recode;
         try {
-            recode = FirebaseAuth.getInstance().getUser("Facebook"+response.getBody().getResponse().getId());
+            recode = FirebaseAuth.getInstance().getUser(reqDto.getSnsService().name()+response.getBody().getResponse().getId());
         } catch (Exception ex) {
             recode = null;
         }
         if(recode != null){
             fUserSnsGetMeResDto.setJoin(true);
             fUserSnsGetMeResDto.setSnsUid(String.valueOf(response.getBody().getResponse().getId()));
+            String customToken = null;
+            try {
+                customToken = FirebaseAuth.getInstance().createCustomToken(recode.getUid());
+            } catch (FirebaseAuthException e) {
+                e.printStackTrace();
+            }
+            fUserSnsGetMeResDto.setFirebaseCustomToken(customToken);
         }else {
             fUserSnsGetMeResDto.setJoin(false);
             fUserSnsGetMeResDto.setSnsUid(String.valueOf(response.getBody().getResponse().getId()));

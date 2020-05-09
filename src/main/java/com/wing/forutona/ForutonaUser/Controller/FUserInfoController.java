@@ -90,5 +90,12 @@ public class FUserInfoController {
         return emitter;
     }
 
+//    @ResponseAddJsonHeader
+//    @GetMapping(value = "/v1/ForutonaUser/snsCustomToken")
+//    public ResponseBodyEmitter getSnsCustomToken(@RequestBody FUserInfoJoinReqDto reqDto){
+//        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+//        fUserInfoService.getSnsCustomToken(emitter,reqDto);
+//        return emitter;
+//    }
 
 }

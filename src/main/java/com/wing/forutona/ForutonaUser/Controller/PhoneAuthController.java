@@ -1,6 +1,7 @@
 package com.wing.forutona.ForutonaUser.Controller;
 
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
+import com.wing.forutona.ForutonaUser.Dto.PhoneAuthNumberReqDto;
 import com.wing.forutona.ForutonaUser.Dto.PhoneAuthReqDto;
 import com.wing.forutona.ForutonaUser.Service.PhoneAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,4 +23,13 @@ public class PhoneAuthController {
         phoneAuthService.reqPhoneAuth(emitter,reqDto);
         return emitter;
     }
+
+    @ResponseAddJsonHeader
+    @PostMapping(value = "/v1/PhoneAuth/NumberAuthReq")
+    public ResponseBodyEmitter reqNumberAuthReq(@RequestBody PhoneAuthNumberReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        phoneAuthService.reqNumberAuthReq(emitter,reqDto);
+        return emitter;
+    }
+
 }
