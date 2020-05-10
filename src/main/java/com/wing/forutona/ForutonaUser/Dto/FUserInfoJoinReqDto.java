@@ -18,4 +18,9 @@ public class FUserInfoJoinReqDto {
     String countryCode;
     String snsToken;
     String userIntroduce;
+    String internationalizedPhoneNumber;
+    //해당 토큰으로 최종 가입 절차에서 인증 받은 폰인지 체크한다.
+    String phoneAuthToken;
+    String password;
+    String emailUserUid;
 }

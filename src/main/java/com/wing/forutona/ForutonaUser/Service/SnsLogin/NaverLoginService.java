@@ -3,17 +3,26 @@ package com.wing.forutona.ForutonaUser.Service.SnsLogin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.wing.forutona.ForutonaUser.Dto.FUserSnSLoginReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
-import com.wing.forutona.ForutonaUser.Dto.NaverGetMeResDto;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Dto.*;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-public class NaverLoginService implements SnsLoginService {
+@Component
+public class NaverLoginService extends SnsLoginService {
+
+    public NaverLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
+        super(fUserInfoDataRepository);
+    }
+
     @Override
     public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
         HttpHeaders header = new HttpHeaders();
@@ -48,4 +57,6 @@ public class NaverLoginService implements SnsLoginService {
         }
         return fUserSnsGetMeResDto;
     }
+
+
 }

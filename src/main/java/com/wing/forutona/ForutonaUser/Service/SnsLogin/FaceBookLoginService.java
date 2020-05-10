@@ -4,20 +4,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.AuthDao.FireBaseAdmin;
-import com.wing.forutona.ForutonaUser.Dto.FUserSnSLoginReqDto;
-import com.wing.forutona.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
-import com.wing.forutona.ForutonaUser.Dto.FaceBookGetMeResDto;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Dto.*;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-public class FaceBookLoginService implements SnsLoginService {
+@Component
+public class FaceBookLoginService extends SnsLoginService {
 
     @Autowired
     FireBaseAdmin fireBaseAdmin;
 
-    public FaceBookLoginService() {
+    public FaceBookLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
+        super(fUserInfoDataRepository);
     }
+
 
     @Override
     public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
@@ -51,4 +56,6 @@ public class FaceBookLoginService implements SnsLoginService {
         }
         return fUserSnsGetMeResDto;
     }
+
+
 }

@@ -1,15 +1,68 @@
 package com.wing.forutona.ForutonaUser.Service.SnsLogin;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.wing.forutona.AuthDao.FireBaseAdmin;
+import com.wing.forutona.CustomUtil.SHA256Util;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoJoinReqDto;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoJoinResDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserSnSLoginReqDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-public class ForutonaLoginService implements SnsLoginService {
+@Component
+public class ForutonaLoginService extends SnsLoginService {
 
-    //여기서는 다른 SNS 와 같이 인증 매체가 핸드폰이기 때문에 핸드폰 인증 토큰을 목적으로 한다.
+    private FUserInfoDataRepository fUserInfoDataRepository;
+
+    @Autowired
+    public ForutonaLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
+        super(fUserInfoDataRepository);
+        this.fUserInfoDataRepository = fUserInfoDataRepository;
+    }
+
     @Override
     public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
-
         return null;
+    }
+
+    @Override
+    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) {
+        FUserInfo fUserInfo = new FUserInfo(reqDto);
+        fUserInfo.setUid(reqDto.getEmailUserUid());
+        fUserInfo.setSnsService(reqDto.getSnsSupportService().name());
+        String encSHA256 = "";
+        FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
+        try {
+            encSHA256 = SHA256Util.getEncSHA256(reqDto.getInternationalizedPhoneNumber() + "Forutona123");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(encSHA256.equals(reqDto.getPhoneAuthToken())){
+            UserRecord user = null;
+            try {
+                user = FirebaseAuth.getInstance().getUser(reqDto.getEmailUserUid());
+            } catch (FirebaseAuthException e) {
+                e.printStackTrace();
+            }
+            if(user == null){
+                resDto.setCustomToken("");
+                resDto.setJoinComplete(false);
+            }else {
+                fUserInfoDataRepository.save(fUserInfo);
+                resDto.setCustomToken("");
+                resDto.setJoinComplete(true);
+            }
+        }else {
+            resDto.setCustomToken("");
+            resDto.setJoinComplete(false);
+        }
+        return resDto;
     }
 
 }

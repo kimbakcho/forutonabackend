@@ -92,5 +92,6 @@ public class FUserInfo {
     GeometryFactory geomFactory = new GeometryFactory();
     this.placePoint = geomFactory.createPoint(new Coordinate(37.4402052,126.79369789999998));
     this.placePoint.setSRID(4326);
+    this.phoneNumber = reqDto.getInternationalizedPhoneNumber();
   }
 }

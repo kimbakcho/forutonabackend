@@ -173,11 +173,11 @@ public class FUserInfoService {
         try {
             SnsLoginService snsLoginService = null;
             if (snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook) {
-                snsLoginService = new FaceBookLoginService();
+                snsLoginService = new FaceBookLoginService(fUserInfoDataRepository);
             } else if (snSLoginReqDto.getSnsService() == SnsSupportService.Kakao) {
-                snsLoginService = new KakaoLoginService();
+                snsLoginService = new KakaoLoginService(fUserInfoDataRepository);
             } else if (snSLoginReqDto.getSnsService() == SnsSupportService.Naver) {
-                snsLoginService = new NaverLoginService();
+                snsLoginService = new NaverLoginService(fUserInfoDataRepository);
             } else {
                 throw new Exception("dont'have service");
             }
@@ -195,28 +195,20 @@ public class FUserInfoService {
     @Transactional
     public void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto) {
         try {
-            FUserInfo fUserInfo = new FUserInfo(reqDto);
             SnsLoginService snsLoginService = null;
             if (reqDto.getSnsSupportService().equals(SnsSupportService.FaceBook)) {
-                snsLoginService= new FaceBookLoginService();
+                snsLoginService= new FaceBookLoginService(fUserInfoDataRepository);
             } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Naver)) {
-                snsLoginService= new NaverLoginService();
+                snsLoginService= new NaverLoginService(fUserInfoDataRepository);
             } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Kakao)) {
-                snsLoginService= new KakaoLoginService();
+                snsLoginService= new KakaoLoginService(fUserInfoDataRepository);
+            } else if(reqDto.getSnsSupportService().equals(SnsSupportService.Forutona)){
+                snsLoginService= new ForutonaLoginService(fUserInfoDataRepository);
             } else {
                 throw new Exception("Not Support SnsService");
             }
-            FUserSnSLoginReqDto snSLoginReqDto = new FUserSnSLoginReqDto();
-            snSLoginReqDto.setSnsService(reqDto.getSnsSupportService());
-            snSLoginReqDto.setAccessToken(reqDto.getSnsToken());
-            FUserSnsCheckJoinResDto infoFromToken = snsLoginService.getInfoFromToken(snSLoginReqDto);
-            String fireBaseuid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
-            fUserInfo.setUid(fireBaseuid);
-            String customToken = FirebaseAuth.getInstance().createCustomToken(fUserInfo.getUid());
-            fUserInfoDataRepository.save(fUserInfo);
-            FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
-            resDto.setCustomToken(customToken);
-            emitter.send(resDto);
+            FUserInfoJoinResDto join = snsLoginService.join(reqDto);
+            emitter.send(join);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

@@ -9,4 +9,5 @@ public class FUserSnSLoginReqDto {
     String snsUid;
     SnsSupportService snsService;
     String fUserUid;
+    String email;
 }
