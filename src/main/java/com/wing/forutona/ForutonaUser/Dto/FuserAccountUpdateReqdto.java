@@ -7,4 +7,6 @@ public class FuserAccountUpdateReqdto {
     String isoCode;
     String nickName;
     String selfIntroduction;
+    String userProfileImageUrl;
+
 }

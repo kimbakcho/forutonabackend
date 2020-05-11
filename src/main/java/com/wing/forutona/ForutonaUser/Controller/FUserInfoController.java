@@ -47,7 +47,6 @@ public class FUserInfoController {
     public ResponseBodyEmitter updateUserProfileImage(FFireBaseToken fFireBaseToken,
                                                       @RequestParam("ProfileImage") MultipartFile file){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-
         fUserInfoService.updateUserProfileImage(emitter,fFireBaseToken,file);
         return emitter;
     }

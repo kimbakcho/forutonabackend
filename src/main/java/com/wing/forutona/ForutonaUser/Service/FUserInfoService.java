@@ -128,6 +128,9 @@ public class FUserInfoService {
                 }
             }
             fUserInfo.setSelfIntroduction(reqdto.getSelfIntroduction());
+            if(reqdto.getUserProfileImageUrl() != null){
+                fUserInfo.setProfilePictureUrl(reqdto.getUserProfileImageUrl());
+            }
             emitter.send(1);
         } catch (IOException e) {
             e.printStackTrace();
