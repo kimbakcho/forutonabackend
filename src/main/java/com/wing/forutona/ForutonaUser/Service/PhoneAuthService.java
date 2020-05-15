@@ -64,9 +64,11 @@ public class PhoneAuthService {
             } else {
                 if(phoneNumber.size() > 0){
                     phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());
+                    phoneAuthDataRepository.flush();
                 }
                 PhoneAuth phoneAuth = new PhoneAuth(reqDto);
                 phoneAuthDataRepository.save(phoneAuth);
+                phoneAuthDataRepository.flush();
                 SuerMSendsns(phoneAuth.getInternationalizedPhoneNumber(),phoneAuth.getAuthNumber(),phoneAuth.getIsoCode());
                 emitter.send(new PhoneAuthResDto(phoneAuth));
             }
