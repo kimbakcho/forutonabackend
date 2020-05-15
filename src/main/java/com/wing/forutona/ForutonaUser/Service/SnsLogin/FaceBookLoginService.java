@@ -3,14 +3,12 @@ package com.wing.forutona.ForutonaUser.Service.SnsLogin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.wing.forutona.AuthDao.FireBaseAdmin;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.CustomUtil.FireBaseAdmin;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Component

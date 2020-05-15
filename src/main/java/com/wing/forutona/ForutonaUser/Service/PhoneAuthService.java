@@ -84,7 +84,7 @@ public class PhoneAuthService {
         HttpHeaders headers = new HttpHeaders();
         URI SureMuri = null;
         try {
-            SureMuri = new URI("https://rest.surem.com/sms/v1/json");
+            SureMuri = new URI("https://gw.surem.com/sms/v1/json");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

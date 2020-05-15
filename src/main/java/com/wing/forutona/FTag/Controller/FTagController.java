@@ -1,7 +1,7 @@
 package com.wing.forutona.FTag.Controller;
 
 import com.vividsolutions.jts.io.ParseException;
-import com.wing.forutona.AuthDao.FireBaseAdmin;
+import com.wing.forutona.CustomUtil.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FTag.Dto.TagFromBallReqDto;

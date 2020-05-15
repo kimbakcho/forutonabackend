@@ -22,7 +22,6 @@ import java.util.TimeZone;
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication
-@ImportResource({"classpath:applicationContext.xml"})
 public class ForutonaApplication {
 
 	public static void main(String[] args) {

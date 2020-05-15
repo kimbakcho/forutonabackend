@@ -1,4 +1,4 @@
-package com.wing.forutona.AuthDao;
+package com.wing.forutona.CustomUtil;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

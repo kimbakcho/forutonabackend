@@ -3,7 +3,6 @@ package com.wing.forutona.ForutonaUser.Service.SnsLogin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.wing.forutona.AuthDao.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.SHA256Util;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoJoinReqDto;
@@ -13,7 +12,6 @@ import com.wing.forutona.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class ForutonaLoginService extends SnsLoginService {
