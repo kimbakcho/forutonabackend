@@ -34,7 +34,7 @@ public class JPAConfigure {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("neoforutonatester");
         dataSource.setPassword("forutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?useSSL=yes&verifyServerCertificate=false");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
         return dataSource;
     }
     @Bean
@@ -44,7 +44,7 @@ public class JPAConfigure {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("neoforutonabeta");
         dataSource.setPassword("neoforutona1020");
-        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_beta?useSSL=yes&verifyServerCertificate=false");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_beta?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
 
         return dataSource;
 }

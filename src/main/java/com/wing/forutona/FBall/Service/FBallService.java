@@ -17,6 +17,7 @@ import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
+import com.wing.forutona.FBall.Service.BallMaker.FBallMakerFactory;
 import com.wing.forutona.FBall.Service.BallMaker.FBallMakerService;
 import com.wing.forutona.FBall.Service.BallMaker.IssueBallMakerService;
 import com.wing.forutona.FTag.Domain.FBalltag;
@@ -191,12 +192,7 @@ public class FBallService {
     @Async
     @Transactional
     public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService;
-        if(reqDto.getBallType().equals(FBallType.IssueBall)){
-            fBallMakerService = new IssueBallMakerService();
-        }else {
-            fBallMakerService = null;
-        }
+        FBallMakerService fBallMakerService = FBallMakerFactory.createFBallMakerService(reqDto.getBallType());
         try {
             emitter.send(fBallMakerService.insertBall(reqDto,fireBaseToken));
         } catch (IOException e) {
@@ -209,12 +205,7 @@ public class FBallService {
     @Async
     @Transactional
     public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService;
-        if(reqDto.getBallType().equals(FBallType.IssueBall)){
-            fBallMakerService = new IssueBallMakerService();
-        }else {
-            fBallMakerService = null;
-        }
+        FBallMakerService fBallMakerService = FBallMakerFactory.createFBallMakerService(reqDto.getBallType());
         try {
             emitter.send(fBallMakerService.updateBall(reqDto,fireBaseToken));
         } catch (IOException e) {
