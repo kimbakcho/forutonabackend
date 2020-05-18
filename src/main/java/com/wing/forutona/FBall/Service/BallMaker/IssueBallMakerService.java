@@ -12,19 +12,25 @@ import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class IssueBallMakerService implements FBallMakerService{
 
     @Autowired
-    FBallDataRepository fBallDataRepository;
-
+     FBallDataRepository fBallDataRepository;
     @Autowired
-    FUserInfoDataRepository fUserInfoDataRepository;
+     FUserInfoDataRepository fUserInfoDataRepository;
+
+
+    public IssueBallMakerService() {
+    }
 
     @Override
     public int insertBall(FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {

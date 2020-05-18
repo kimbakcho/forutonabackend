@@ -185,8 +185,8 @@ public class PhoneAuthService {
                         PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto(phoneNumber.get(0));
                         resDto.setError(false);
                         resDto.setCause("");
-                        reqDto.setEmail(reqDto.getEmail());
-                        emitter.send(reqDto);
+                        resDto.setEmail(reqDto.getEmail());
+                        emitter.send(resDto);
                     } else {
                         if(phoneNumber.size() > 0){
                             phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());

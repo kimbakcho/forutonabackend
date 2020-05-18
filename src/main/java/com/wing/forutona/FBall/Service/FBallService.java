@@ -53,6 +53,9 @@ public class FBallService {
     @Autowired
     GoogleStorgeAdmin googleStorgeAdmin;
 
+    @Autowired
+    FBallMakerFactory fBallMakerFactory;
+
     @Async
     @Transactional
     public void ballImageUpload(ResponseBodyEmitter emitter,List<MultipartFile> files){
@@ -192,7 +195,7 @@ public class FBallService {
     @Async
     @Transactional
     public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService = FBallMakerFactory.createFBallMakerService(reqDto.getBallType());
+        FBallMakerService fBallMakerService = fBallMakerFactory.getService(reqDto.getBallType());
         try {
             emitter.send(fBallMakerService.insertBall(reqDto,fireBaseToken));
         } catch (IOException e) {
@@ -205,7 +208,7 @@ public class FBallService {
     @Async
     @Transactional
     public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService = FBallMakerFactory.createFBallMakerService(reqDto.getBallType());
+        FBallMakerService fBallMakerService = fBallMakerFactory.getService(reqDto.getBallType());
         try {
             emitter.send(fBallMakerService.updateBall(reqDto,fireBaseToken));
         } catch (IOException e) {
