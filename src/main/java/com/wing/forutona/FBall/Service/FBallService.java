@@ -3,27 +3,15 @@ package com.wing.forutona.FBall.Service;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
-import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.CustomUtil.MultiSorts;
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
-import com.wing.forutona.FBall.Service.BallMaker.FBallMakerFactory;
-import com.wing.forutona.FBall.Service.BallMaker.FBallMakerService;
-import com.wing.forutona.FBall.Service.BallMaker.IssueBallMakerService;
-import com.wing.forutona.FTag.Domain.FBalltag;
-import com.wing.forutona.FTag.Dto.TagInsertReqDto;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.FBall.Service.FBallType.FBallTypeServiceFactory;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +26,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class FBallService {
@@ -54,7 +41,7 @@ public class FBallService {
     GoogleStorgeAdmin googleStorgeAdmin;
 
     @Autowired
-    FBallMakerFactory fBallMakerFactory;
+    FBallTypeServiceFactory fBallMakerFactory;
 
     @Async
     @Transactional
@@ -167,8 +154,6 @@ public class FBallService {
     }
 
 
-
-
     /*
     범위내 목적으로 하는 Ball갯수 까지 Rect(범위)를 확장 시켜 적합한 집계 거리 반환
      */
@@ -186,35 +171,4 @@ public class FBallService {
         return currentScopeMater;
     }
 
-    /**
-     * Ball을 입력하는 부분
-     * @param emitter
-     * @param reqDto
-     * @param fireBaseToken
-     */
-    @Async
-    @Transactional
-    public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService = fBallMakerFactory.getService(reqDto.getBallType());
-        try {
-            emitter.send(fBallMakerService.insertBall(reqDto,fireBaseToken));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
-    }
-
-    @Async
-    @Transactional
-    public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FBallMakerService fBallMakerService = fBallMakerFactory.getService(reqDto.getBallType());
-        try {
-            emitter.send(fBallMakerService.updateBall(reqDto,fireBaseToken));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
-    }
 }

@@ -30,6 +30,7 @@ public class FBallResDto {
     //해당 부분 BallPower/지도 중심과의 거리로 계산
     private double influencePower;
     private long contributor;
+    private boolean ballDeleteFlag;
 
     @QueryProjection
     public FBallResDto(FBall fball, double influencePower) {
@@ -54,6 +55,7 @@ public class FBallResDto {
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
         this.contributor = fball.getContributor();
+        this.ballDeleteFlag = fball.isBallDeleteFlag();
     }
 
     @QueryProjection
@@ -77,8 +79,8 @@ public class FBallResDto {
         this.profilePicktureUrl = fball.getFBallUid().getProfilePictureUrl();
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
-        this.influencePower = influencePower;
         this.contributor = fball.getContributor();
+        this.ballDeleteFlag = fball.isBallDeleteFlag();
     }
 
 }

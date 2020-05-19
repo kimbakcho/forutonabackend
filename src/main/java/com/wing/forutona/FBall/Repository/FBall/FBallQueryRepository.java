@@ -69,9 +69,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .where(stWithin.eq(1)
                         .and(fBall.activationTime.after(LocalDateTime.now())));
         for (var orderSpecifier : orderSpecifiers) {
-            String[] split = orderSpecifier.getTarget().toString().split("\\.");
             //거리순일때만 분기 처리
-            if (split.length > 1 && split[1].equals("distance")) {
+            if (isSpecialOrder(orderSpecifier,"distance")) {
                 NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                         "function('st_distance_sphere',{0},{1})", fBall.placePoint,
                         GisGeometryUtil.createCenterPoint(reqDto.getCenterPointLat(), reqDto.getCenterPointLng()));
@@ -93,6 +92,11 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
     }
 
+    public boolean isSpecialOrder(OrderSpecifier orderSpecifier,String orderType) {
+        String[] split = orderSpecifier.getTarget().toString().split("\\.");
+        return split.length > 1 && split[1].equals(orderType);
+    }
+
 
     /**
      * SerachText 기준으로 BallUp을 한다.
@@ -112,9 +116,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .where(matchTemplate.eq(1)
                         .and(fBall.activationTime.after(LocalDateTime.now())));
         for (var orderSpecifier : orderSpecifiers) {
-            String[] split = orderSpecifier.getTarget().toString().split("\\.");
             //거리순일때만 분기 처리
-            if (split.length > 1 && split[1].equals("distance")) {
+            if (isSpecialOrder(orderSpecifier,"distance")) {
                 NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                         "function('st_distance_sphere',{0},{1})", fBall.placePoint,
                         GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));

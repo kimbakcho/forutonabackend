@@ -7,13 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class FBallReqDto {
-    String uid;
+    FBallType ballType;
     String ballUuid;
-    Double longitude;
-    Double latitude;
-    String matchBallName;
-    FBallType fBallType;
-    LocalDateTime makeTime;
-    FBallState fBallState;
-    Pageable page;
 }

@@ -6,6 +6,7 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
+import com.wing.forutona.FBall.Service.FBallType.FBallTypeServiceFactory;
 import com.wing.forutona.FBall.Service.FBallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class FBallController {
@@ -22,6 +22,8 @@ public class FBallController {
     @Autowired
     FBallService fBallService;
 
+    @Autowired
+    FBallTypeServiceFactory fBallTypeServiceFactory;
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBall/BallListUpFromMapArea")
@@ -58,12 +60,19 @@ public class FBallController {
         return emitter;
     }
 
+    @ResponseAddJsonHeader
+    @PostMapping(value = "/v1/FBall/Select")
+    public ResponseBodyEmitter selectBall(FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallTypeServiceFactory.getService(fBallReqDto.getBallType()).selectBall(emitter,fBallReqDto);
+        return emitter;
+    }
 
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/Insert")
     public ResponseBodyEmitter insertBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.insertBall(emitter,reqDto,fireBaseToken);
+        fBallTypeServiceFactory.getService(reqDto.getBallType()).insertBall(emitter,reqDto,fireBaseToken);
         return emitter;
     }
 
@@ -71,7 +80,7 @@ public class FBallController {
     @PutMapping(value = "/v1/FBall/Update")
     public ResponseBodyEmitter updateBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.updateBall(emitter,reqDto,fireBaseToken);
+        fBallTypeServiceFactory.getService(reqDto.getBallType()).updateBall(emitter,reqDto,fireBaseToken);
         return emitter;
     }
 

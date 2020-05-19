@@ -1,8 +1,6 @@
 package com.wing.forutona.FBall.Domain;
 
-import com.wing.forutona.AuthDto.Userinfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

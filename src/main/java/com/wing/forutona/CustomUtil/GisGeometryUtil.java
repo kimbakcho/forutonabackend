@@ -8,7 +8,7 @@ import com.vividsolutions.jts.io.WKTReader;
 
 public class GisGeometryUtil {
     /*
-    좌표를 받아 정사각형 범위를 구함
+    중심 좌표를 받아 좌표를 중심으로 정사각형 범위를 구함
    */
     public static Geometry createRect(double latitude, double longitude, double distance) throws ParseException {
         com.grum.geocalc.Coordinate lat = com.grum.geocalc.Coordinate.fromDegrees(latitude);

@@ -1,0 +1,129 @@
+package com.wing.forutona.FBall.Service.FBallType;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.wing.forutona.CustomUtil.FFireBaseToken;
+import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Dto.*;
+import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
+import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+@RequiredArgsConstructor
+public class IssueBallTypeServiceFactory implements FBallTypeService<FBallInsertReqDto, FBallResDto> {
+
+    final FBallDataRepository fBallDataRepository;
+    final FUserInfoDataRepository fUserInfoDataRepository;
+
+    @Async
+    @Transactional
+    @Override
+    public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+        try {
+            FBall fBall = new FBall(reqDto);
+            fBall.setMakeTime(LocalDateTime.now());
+            //이슈Ball의 경우는 Wait가 없음
+            fBall.setBallState(FBallState.Play);
+            FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+            fBall.setFBallUid(fUserInfo);
+            //아래 지수는 액션에 의해 변해야 함으로 Client 단순 정보로 변하게 하지 않기 위해서 직접 BackEnd 에서 Defined
+            fBall.setPointReward(0);
+            fBall.setInfluenceReward(0);
+            fBall.setActivationTime(LocalDateTime.now().plusDays(7));
+            fBall.setBallHits(0);
+            fBall.setBallDisLikes(0);
+            fBall.setBallPower(0);
+            fBall.setJoinPlayer(0);
+            fBall.setMaximumPlayers(-1);
+            fBall.setStarPoints(0);
+            fBall.setExpGiveFlag(0);
+            fBall.setMakeExp(300);
+            fBall.setCommentCount(0);
+            fBall.setUserExp(0);
+            FBall save = fBallDataRepository.save(fBall);
+            emitter.send(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            emitter.complete();
+        }
+    }
+
+
+    @Async
+    @Transactional
+    @Override
+    public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+        try {
+            FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+            if(!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())){
+                throw new Exception("don't Have Permisstion");
+            }
+            fBall.setLongitude(reqDto.getLongitude());
+            fBall.setLatitude(reqDto.getLatitude());
+            GeometryFactory geomFactory = new GeometryFactory();
+            Point point = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
+            point.setSRID(4326);
+            fBall.setPlacePoint(point);
+            fBall.setBallName(reqDto.getBallName());
+            fBall.setPlaceAddress(reqDto.getPlaceAddress());
+            fBall.setAdministrativeArea(reqDto.getAdministrativeArea());
+            fBall.setCountry(reqDto.getCountry());
+            fBall.setBallPassword(reqDto.getBallPassword());
+            fBall.setMaximumPlayers(reqDto.getMaximumPlayers());
+            fBall.setDescription(reqDto.getDescription());
+            List<FBalltag> tagCollect = reqDto.getTags().stream().map(x -> new FBalltag(fBall, x)).collect(Collectors.toList());
+            fBall.getTags().clear();
+            fBall.getTags().addAll(tagCollect);
+            emitter.send(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            emitter.complete();
+        }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void selectBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
+        try{
+            FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
+            FBallResDto fBallResDto = new FBallResDto(fBall);
+            emitter.send(fBallResDto);
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            emitter.complete();
+        }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
+        try{
+            fBallDataRepository.deleteById(fBallReqDto.getBallUuid());
+            emitter.send(1);
+        }catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            emitter.complete();
+        }
+    }
+}

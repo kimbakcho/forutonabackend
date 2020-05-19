@@ -65,6 +65,7 @@ public class FBall {
   private double userExp;
   private String description;
   private long contributor;
+  private boolean ballDeleteFlag;
 
 
 
@@ -88,6 +89,7 @@ public class FBall {
     this.description = reqDto.getDescription();
     List<FBalltag> tagCollect = reqDto.getTags().stream().map(x -> new FBalltag(this, x)).collect(Collectors.toList());
     this.tags = tagCollect;
+    this.ballDeleteFlag = false;
   }
 
 }
