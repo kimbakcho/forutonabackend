@@ -1,5 +1,7 @@
 package com.wing.forutona.FBall.Service.FBallType;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.storage.BlobId;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -10,6 +12,7 @@ import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -23,10 +26,11 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class IssueBallTypeServiceFactory implements FBallTypeService<FBallInsertReqDto, FBallResDto> {
+public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto, FBallResDto> {
 
     final FBallDataRepository fBallDataRepository;
     final FUserInfoDataRepository fUserInfoDataRepository;
+    final GoogleStorgeAdmin googleStorgeAdmin;
 
     @Async
     @Transactional
@@ -69,7 +73,7 @@ public class IssueBallTypeServiceFactory implements FBallTypeService<FBallInsert
     public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-            if(!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())){
+            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())) {
                 throw new Exception("don't Have Permisstion");
             }
             fBall.setLongitude(reqDto.getLongitude());
@@ -102,11 +106,11 @@ public class IssueBallTypeServiceFactory implements FBallTypeService<FBallInsert
     @Transactional
     @Override
     public void selectBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
-        try{
+        try {
             FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
             FBallResDto fBallResDto = new FBallResDto(fBall);
             emitter.send(fBallResDto);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             emitter.complete();
@@ -116,14 +120,41 @@ public class IssueBallTypeServiceFactory implements FBallTypeService<FBallInsert
     @Async
     @Transactional
     @Override
-    public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
-        try{
-            fBallDataRepository.deleteById(fBallReqDto.getBallUuid());
+    public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto,FFireBaseToken fireBaseToken) {
+        try {
+            FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
+            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())) {
+                throw new Exception("don't Have Permisstion");
+            }
+            fBall.setBallDeleteFlag(true);
+            ObjectMapper objectMapper = new ObjectMapper();
+            IssueBallDescriptionDto issueBallDescriptionDto = objectMapper.readValue(fBall.getDescription(), IssueBallDescriptionDto.class);
+            if(issueBallDescriptionDto.getDesimages() != null){
+                deleteImageFile(issueBallDescriptionDto);
+            }
+            fBall.setDescription("{}");
+            fBall.setActivationTime(LocalDateTime.now());
+
+            fBall.getTags().clear();
             emitter.send(1);
-        }catch (IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             emitter.complete();
+        }
+    }
+
+    public void deleteImageFile(IssueBallDescriptionDto issueBallDescriptionDto) {
+        for (FBallDesImagesDto item : issueBallDescriptionDto.getDesimages()
+        ) {
+            int index = item.getSrc().lastIndexOf("/");
+            String saveFileName = item.getSrc().substring(index);
+            if (saveFileName.length() > 1) {
+                BlobId blobId = BlobId.of("publicforutona", "profileimage/" + saveFileName);
+                googleStorgeAdmin.GetStorageInstance().delete(blobId);
+            }
         }
     }
 }

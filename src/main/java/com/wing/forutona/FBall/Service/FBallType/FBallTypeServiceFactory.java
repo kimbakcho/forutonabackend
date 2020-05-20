@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class FBallTypeServiceFactory {
 
     @Autowired
-    IssueBallTypeServiceFactory issueBallMakerService;
+    IssueBallTypeService issueBallMakerService;
 
     public  FBallTypeService getService(FBallType fBallType){
         if(fBallType.equals(FBallType.IssueBall)){

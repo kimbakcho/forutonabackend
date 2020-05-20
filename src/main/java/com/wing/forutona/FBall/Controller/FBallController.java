@@ -60,6 +60,16 @@ public class FBallController {
         return emitter;
     }
 
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PostMapping(value = "/v1/FBall/BallImageUpload")
+    public ResponseBodyEmitter ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.ballImageUpload(emitter,files);
+        return emitter;
+    }
+
     @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/Select")
     public ResponseBodyEmitter selectBall(FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken){
@@ -67,6 +77,7 @@ public class FBallController {
         fBallTypeServiceFactory.getService(fBallReqDto.getBallType()).selectBall(emitter,fBallReqDto);
         return emitter;
     }
+
 
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/Insert")
@@ -84,13 +95,13 @@ public class FBallController {
         return emitter;
     }
 
-    @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
-    @PostMapping(value = "/v1/FBall/BallImageUpload")
-    public ResponseBodyEmitter ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files){
+    @DeleteMapping(value = "/v1/FBall/Delete")
+    public ResponseBodyEmitter deleteBall(FBallReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.ballImageUpload(emitter,files);
+        fBallTypeServiceFactory.getService(reqDto.getBallType()).deleteBall(emitter,reqDto,fireBaseToken);
         return emitter;
     }
+
 
 }

@@ -47,6 +47,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
     /**
      * Front 로 부터 화면의 검색 범위를 좌표로 받음 다음 검색 해줌.
+     *
      * @param reqDto
      * @param sorts
      * @param pageable
@@ -54,7 +55,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      * @throws ParseException
      */
     public FBallListUpWrapDto getBallListUp(BallFromMapAreaReqDto reqDto,
-                                                       MultiSorts sorts, Pageable pageable) throws ParseException {
+                                            MultiSorts sorts, Pageable pageable) throws ParseException {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
@@ -67,10 +68,12 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .select(fBall)
                 .from(fBall)
                 .where(stWithin.eq(1)
-                        .and(fBall.activationTime.after(LocalDateTime.now())));
+                        , fBall.activationTime.after(LocalDateTime.now())
+                        , fBall.ballDeleteFlag.isFalse()
+                );
         for (var orderSpecifier : orderSpecifiers) {
             //거리순일때만 분기 처리
-            if (isSpecialOrder(orderSpecifier,"distance")) {
+            if (isSpecialOrder(orderSpecifier, "distance")) {
                 NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                         "function('st_distance_sphere',{0},{1})", fBall.placePoint,
                         GisGeometryUtil.createCenterPoint(reqDto.getCenterPointLat(), reqDto.getCenterPointLng()));
@@ -92,7 +95,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
     }
 
-    public boolean isSpecialOrder(OrderSpecifier orderSpecifier,String orderType) {
+    public boolean isSpecialOrder(OrderSpecifier orderSpecifier, String orderType) {
         String[] split = orderSpecifier.getTarget().toString().split("\\.");
         return split.length > 1 && split[1].equals(orderType);
     }
@@ -114,10 +117,12 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .select(fBall)
                 .from(fBall)
                 .where(matchTemplate.eq(1)
-                        .and(fBall.activationTime.after(LocalDateTime.now())));
+                        , fBall.activationTime.after(LocalDateTime.now())
+                        , fBall.ballDeleteFlag.isFalse()
+                );
         for (var orderSpecifier : orderSpecifiers) {
             //거리순일때만 분기 처리
-            if (isSpecialOrder(orderSpecifier,"distance")) {
+            if (isSpecialOrder(orderSpecifier, "distance")) {
                 NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                         "function('st_distance_sphere',{0},{1})", fBall.placePoint,
                         GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
@@ -152,7 +157,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
         Long count = queryFactory.select(fBall.count()).from(fBall)
-                .where(stWithin.eq(1)).fetchOne();
+                .where(stWithin.eq(1), fBall.ballDeleteFlag.isFalse()).fetchOne();
         return count;
     }
 
@@ -178,7 +183,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                     .from(fBall).join(fBall.fBallUid, fUserInfo)
                     .where(stWithin.eq(1)
                             , fBall.activationTime.after(LocalDateTime.now())
-                            , fBall.ballState.eq(FBallState.Play))
+                            , fBall.ballState.eq(FBallState.Play)
+                            , fBall.ballDeleteFlag.isFalse()
+                    )
                     .orderBy(sortOrders.get(0).isDescending() ? influence.desc() : influence.asc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
@@ -191,7 +198,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                     .from(fBall).join(fBall.fBallUid, fUserInfo)
                     .where(stWithin.eq(1)
                             , fBall.activationTime.after(LocalDateTime.now())
-                            , fBall.ballState.eq(FBallState.Play))
+                            , fBall.ballState.eq(FBallState.Play)
+                            , fBall.ballDeleteFlag.isFalse()
+                    )
                     .orderBy(PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 0),
                             PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 1),
                             PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 2))
@@ -205,6 +214,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
     /**
      * Maker가 만들 Ball 검색
+     *
      * @param reqDto
      * @param sorts
      * @param pageable
@@ -219,18 +229,19 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .otherwise(0);
 
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
-
         List<UserToMakerBallResDto> userToMakerBallResDtos = null;
         if (sorts.getSorts().size() > 0 && sorts.isContain("Alive")) {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
+                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()),
+                            fBall.ballDeleteFlag.isFalse())
                     .orderBy(Alive.desc()).orderBy(orderSpecifiers.get(1))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         } else {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
+                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()),
+                            fBall.ballDeleteFlag.isFalse())
                     .orderBy(orderSpecifiers.get(0))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         }
@@ -248,7 +259,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         List<Tuple> fetch = queryFactory.select(fBall.placePoint,
                 fBall.placePoint.distance(centerPoint))
                 .from(fBall)
-                .where(stWithin.eq(1))
+                .where(stWithin.eq(1),
+                        fBall.ballDeleteFlag.isFalse())
                 .fetch();
         return fetch;
     }
