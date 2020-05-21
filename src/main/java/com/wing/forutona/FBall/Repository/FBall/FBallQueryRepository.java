@@ -233,15 +233,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         if (sorts.getSorts().size() > 0 && sorts.isContain("Alive")) {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()),
-                            fBall.ballDeleteFlag.isFalse())
+                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
                     .orderBy(Alive.desc()).orderBy(orderSpecifiers.get(1))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         } else {
             userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
                     .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()),
-                            fBall.ballDeleteFlag.isFalse())
+                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
                     .orderBy(orderSpecifiers.get(0))
                     .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
         }

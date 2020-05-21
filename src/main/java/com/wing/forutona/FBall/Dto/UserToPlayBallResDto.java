@@ -1,6 +1,7 @@
 package com.wing.forutona.FBall.Dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
 import lombok.Data;
 
@@ -24,6 +25,8 @@ public class UserToPlayBallResDto extends UserBallResDto {
         this.commentCount = fBallPlayer.getBallUuid().getCommentCount();
         this.activationTime = fBallPlayer.getBallUuid().getActivationTime();
         this.joinTime = fBallPlayer.getStartTime();
+        this.ballDeleteFlag = fBallPlayer.getBallUuid().isBallDeleteFlag();
+
     }
 
 }

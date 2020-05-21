@@ -2,13 +2,17 @@ package com.wing.forutona.FBall.Service;
 
 import com.querydsl.core.QueryResults;
 import com.wing.forutona.CustomUtil.MultiSorts;
+import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResWrapDto;
+import com.wing.forutona.FBall.Dto.UserToPlayBallSelectReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepositroy;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerQueryRepository;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,10 +26,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FBallPlayerService {
 
-    @Autowired
-    FBallPlayerQueryRepository fBallPlayerQueryRepository;
+    final FBallPlayerQueryRepository fBallPlayerQueryRepository;
+
+    final FBallPlayerDataRepositroy fBallPlayerDataRepositroy;
 
     @Async
     @Transactional
@@ -36,6 +42,24 @@ public class FBallPlayerService {
             emitter.send(userToPlayBallResWrapDto);
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
+    @Async
+    @Transactional
+    public void UserToPlayBall(ResponseBodyEmitter emitter, UserToPlayBallSelectReqDto reqDto) {
+        try{
+            FUserInfo fUserInfo = new FUserInfo();
+            fUserInfo.setUid(reqDto.getPlayerUid());
+            FBall fBall = new FBall();
+            fBall.setBallUuid(reqDto.getBallUuid());
+            FBallPlayer fBallPlayer = fBallPlayerDataRepositroy.findFBallPlayerByPlayerUidIsAndBallUuidIs(fUserInfo, fBall);
+            UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBallPlayer);
+            emitter.send(userToPlayBallResDto);
+        }catch (IOException e){
+            e.printStackTrace();;
         }finally {
             emitter.complete();
         }

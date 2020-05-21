@@ -7,7 +7,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.CustomUtil.MultiSorts;
+import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.*;
+import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
@@ -33,6 +35,9 @@ public class FBallService {
 
     @Autowired
     FBallQueryRepository fBallQueryRepository;
+
+    @Autowired
+    FBallDataRepository fBallDataRepository;
 
     @Autowired
     MapFindScopeStepRepository mapFindScopeStepRepository;
@@ -171,4 +176,17 @@ public class FBallService {
         return currentScopeMater;
     }
 
+    @Async
+    @Transactional
+    public void getUserToMakerBall(ResponseBodyEmitter emitter, UserToMakerBallSelectReqDto reqDto) {
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+        UserToMakerBallResDto userToMakerBallResDto= new UserToMakerBallResDto(fBall);
+        try {
+            emitter.send(userToMakerBallResDto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
 }

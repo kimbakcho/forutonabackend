@@ -4,6 +4,7 @@ import com.wing.forutona.CustomUtil.MultiSort;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
+import com.wing.forutona.FBall.Dto.UserToPlayBallSelectReqDto;
 import com.wing.forutona.FBall.Service.FBallPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +25,18 @@ public class FBallPlayerController {
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBallPlayer/UserToPlayBallList")
-    public ResponseBodyEmitter UserToPlayBallList(HttpServletResponse response, UserToPlayBallReqDto reqDto,
+    public ResponseBodyEmitter UserToPlayBallList(UserToPlayBallReqDto reqDto,
                                                   @RequestParam MultiSorts sorts,Pageable pageable){
-
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fBallPlayerService.UserToPlayBallList(emitter,reqDto,sorts,pageable);
+        return emitter;
+    }
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/FBallPlayer/UserToPlayBall")
+    public ResponseBodyEmitter UserToPlayBall(UserToPlayBallSelectReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallPlayerService.UserToPlayBall(emitter,reqDto);
         return emitter;
     }
 

@@ -60,6 +60,14 @@ public class FBallController {
         return emitter;
     }
 
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/FBall/UserToMakerBall")
+    public ResponseBodyEmitter getUserToMakerBall(UserToMakerBallSelectReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.getUserToMakerBall(emitter,reqDto);
+        return emitter;
+    }
+
 
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck

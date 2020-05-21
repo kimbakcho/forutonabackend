@@ -134,7 +134,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
             }
             fBall.setDescription("{}");
             fBall.setActivationTime(LocalDateTime.now());
-
             fBall.getTags().clear();
             emitter.send(1);
         } catch (IOException e) {

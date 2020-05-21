@@ -22,5 +22,6 @@ public class UserToMakerBallResDto extends UserBallResDto{
         this.commentCount = fBall.getCommentCount();
         this.activationTime = fBall.getActivationTime();
         this.makeTime =fBall.getMakeTime();
+        this.ballDeleteFlag = fBall.isBallDeleteFlag();
     }
 }

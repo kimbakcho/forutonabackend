@@ -20,5 +20,6 @@ public abstract class UserBallResDto {
     long commentCount;
     LocalDateTime activationTime;
     LocalDateTime makeTime;
+    boolean ballDeleteFlag;
 
 }

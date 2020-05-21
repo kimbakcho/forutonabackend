@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.wing.forutona.FBall.Domain.QFBallPlayer.fBallPlayer;
 
 @Repository
 public class FBallPlayerQueryRepository {
@@ -32,19 +31,20 @@ public class FBallPlayerQueryRepository {
     //Alive 에서 첫번째 정렬,정렬 받은 최신순으로 정렬,
     public List<UserToPlayBallResDto> getUserToPlayBallList(UserToPlayBallReqDto reqDto, MultiSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QFBall fBall = new QFBall("fBall");
+        QFBallPlayer fBallPlayer = new QFBallPlayer("fBallPlayer");
         NumberExpression<Integer> Alive = new CaseBuilder()
                 .when(fBallPlayer.ballUuid.activationTime.after(LocalDateTime.now()))
                 .then(1)
                 .otherwise(0);
-        QFBall fBall = new QFBall("fBall");
-        QFBallPlayer fBallPlayer = new QFBallPlayer("fBallPlayer");
+
 
         List<OrderSpecifier> orderBys = new LinkedList<>();
         for (MultiSort sort : sorts.getSorts()) {
             if (sort.equals("startTime")) {
                 PageableUtil.multipleSortToOrders(orderBys, sort, fBallPlayer);
             } else {
-                PageableUtil.multipleSortToOrders(orderBys, sort, fBall);
+                PageableUtil.multipleSortToOrders(orderBys, sort,fBall);
             }
         }
 
