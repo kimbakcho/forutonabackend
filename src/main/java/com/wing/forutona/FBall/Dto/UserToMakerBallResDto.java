@@ -23,5 +23,6 @@ public class UserToMakerBallResDto extends UserBallResDto{
         this.activationTime = fBall.getActivationTime();
         this.makeTime =fBall.getMakeTime();
         this.ballDeleteFlag = fBall.isBallDeleteFlag();
+        this.ballUid = fBall.getFBallUid().getUid();
     }
 }

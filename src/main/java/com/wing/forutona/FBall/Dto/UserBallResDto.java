@@ -21,5 +21,6 @@ public abstract class UserBallResDto {
     LocalDateTime activationTime;
     LocalDateTime makeTime;
     boolean ballDeleteFlag;
+    String ballUid;
 
 }
