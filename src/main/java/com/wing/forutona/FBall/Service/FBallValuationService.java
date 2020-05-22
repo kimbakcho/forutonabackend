@@ -10,6 +10,7 @@ import com.wing.forutona.FBall.Dto.FBallValuationWrapResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class FBallValuationService {
 
     @Autowired
     FBallDataRepository fBallDataRepository;
+
+    @Autowired
+    FUserInfoDataRepository fUserInfoDataRepository;
 
     @Async
     @Transactional
@@ -53,7 +57,7 @@ public class FBallValuationService {
 
     @Async
     @Transactional
-    public void insertFBallValuation(ResponseBodyEmitter emitter, FBallValuationInsertReqDto reqDto) {
+    public void insertFBallValuation(ResponseBodyEmitter emitter, FBallValuationInsertReqDto reqDto,FFireBaseToken fireBaseToken) {
         try {
             FBallValuation fBallValuation = new FBallValuation();
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
@@ -62,10 +66,11 @@ public class FBallValuationService {
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else {
                 fBallValuation.setBallUuid(fBall);
-                FUserInfo fUserInfo = new FUserInfo();
-                fUserInfo.setUid(reqDto.getUid());
-                fBallValuation.setUid(fUserInfo);
-                fBallValuation.setUpAndDown(reqDto.getUnAndDown());
+
+                FUserInfo playerUid = new FUserInfo();
+                playerUid.setUid(fireBaseToken.getFireBaseToken().getUid());
+                fBallValuation.setUid(playerUid);
+                ballValuation(reqDto, fBallValuation, fBall);
                 FBallValuation save = fBallValuationDataRepository.save(fBallValuation);
                 emitter.send(save.getIdx());
             }
@@ -86,7 +91,7 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else if(fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())){
-                fBallValuation.setUpAndDown(reqDto.getUnAndDown());
+                ballValuation(reqDto, fBallValuation, fBall);
                 emitter.send(fBallValuation.getIdx());
             }else {
                 emitter.send(-1);
@@ -99,6 +104,14 @@ public class FBallValuationService {
         }
     }
 
+    public void ballValuation(FBallValuationInsertReqDto reqDto, FBallValuation fBallValuation, FBall fBall) {
+        fBallValuation.setUpAndDown(reqDto.getUnAndDown());
+        fBall.setBallLikes(fBall.getBallLikes() + reqDto.getUnAndDown());
+        fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
+        FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
+        makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() + reqDto.getUnAndDown());
+    }
+
     @Async
     @Transactional
     public void deleteFBallValuation(ResponseBodyEmitter emitter, Long idx, FFireBaseToken fireBaseToken) {
@@ -109,6 +122,12 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else if(fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())){
+                fBall.setBallLikes(fBall.getBallLikes() - fBallValuation.getUpAndDown());
+                fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
+
+                FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
+                makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() - fBallValuation.getUpAndDown());
+
                 fBallValuationDataRepository.deleteById(idx);
                 emitter.send(idx);
             }else {

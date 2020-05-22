@@ -7,8 +7,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Domain.FBallPlayer;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
+import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepositroy;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
@@ -31,6 +33,7 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
     final FBallDataRepository fBallDataRepository;
     final FUserInfoDataRepository fUserInfoDataRepository;
     final GoogleStorgeAdmin googleStorgeAdmin;
+    final FBallPlayerDataRepositroy fBallPlayerDataRepositroy;
 
     @Async
     @Transactional
@@ -144,6 +147,50 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
             emitter.complete();
         }
     }
+
+    @Async
+    @Transactional
+    @Override
+    public void joinBall(ResponseBodyEmitter emitter, FBallJoinReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
+        try{
+            FUserInfo fBallPlayer = new FUserInfo();
+            fBallPlayer.setUid(fireBaseToken.getFireBaseToken().getUid());
+            FBall fBall = new FBall();
+            fBall.setBallUuid(fBallReqDto.getBallUuid());
+            FBallPlayer ballPlayer = fBallPlayerDataRepositroy.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);
+            if (ballPlayer != null){
+                emitter.send(1);
+            }else {
+                FBallPlayer joinBallPlayer = new FBallPlayer();
+                joinBallPlayer.setBallUuid(fBall);
+                joinBallPlayer.setPlayerUid(fBallPlayer);
+                joinBallPlayer.setStartTime(LocalDateTime.now());
+                joinBallPlayer.setPlayState(FBallPlayState.Join);
+                fBallPlayerDataRepositroy.saveAndFlush(joinBallPlayer);
+                emitter.send(1);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
+    @Async
+    @Transactional
+    @Override
+    public void ballHit(ResponseBodyEmitter emitter, FBallReqDto reqDto) {
+        try {
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+        fBall.setBallHits(fBall.getBallHits()+1);
+            emitter.send(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
 
     public void deleteImageFile(IssueBallDescriptionDto issueBallDescriptionDto) {
         for (FBallDesImagesDto item : issueBallDescriptionDto.getDesimages()

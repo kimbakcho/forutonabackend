@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(
         uniqueConstraints = @UniqueConstraint(columnNames = {"ballUuid", "playerUid"})
 )
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 public class FBallPlayer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

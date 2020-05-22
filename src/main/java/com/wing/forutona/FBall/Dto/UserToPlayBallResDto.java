@@ -14,7 +14,6 @@ public class UserToPlayBallResDto extends UserBallResDto {
 
     @QueryProjection
     public UserToPlayBallResDto(FBallPlayer fBallPlayer) {
-
         this.fBallUuid = getFBall(fBallPlayer).getBallUuid();
         this.fBallType = getFBall(fBallPlayer).getBallType();
         this.longitude = getFBall(fBallPlayer).getLongitude();
@@ -28,7 +27,6 @@ public class UserToPlayBallResDto extends UserBallResDto {
         this.joinTime = fBallPlayer.getStartTime();
         this.ballDeleteFlag = getFBall(fBallPlayer).isBallDeleteFlag();
         this.ballUid = getFBall(fBallPlayer).getFBallUid().getUid();
-
     }
 
     public FBall getFBall(FBallPlayer fBallPlayer) {

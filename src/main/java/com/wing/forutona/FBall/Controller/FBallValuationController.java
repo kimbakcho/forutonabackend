@@ -28,9 +28,9 @@ public class FBallValuationController {
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBallValuation")
-    public ResponseBodyEmitter insertFBallValuation(@RequestBody FBallValuationInsertReqDto reqDto) {
+    public ResponseBodyEmitter insertFBallValuation(@RequestBody FBallValuationInsertReqDto reqDto,FFireBaseToken fireBaseToken) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallValuationService.insertFBallValuation(emitter,reqDto);
+        fBallValuationService.insertFBallValuation(emitter,reqDto,fireBaseToken);
         return emitter;
     }
 

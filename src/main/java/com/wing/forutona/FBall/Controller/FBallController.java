@@ -96,6 +96,21 @@ public class FBallController {
     }
 
     @AuthFireBaseJwtCheck
+    @PostMapping(value = "/v1/FBall/Join")
+    public ResponseBodyEmitter joinBall(@RequestBody FBallJoinReqDto reqDto, FFireBaseToken fireBaseToken){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallTypeServiceFactory.getService(reqDto.getBallType()).joinBall(emitter,reqDto,fireBaseToken);
+        return emitter;
+    }
+
+    @PostMapping(value = "/v1/FBall/BallHit")
+    public ResponseBodyEmitter BallHit(@RequestBody FBallReqDto reqDto){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallTypeServiceFactory.getService(reqDto.getBallType()).ballHit(emitter,reqDto);
+        return emitter;
+    }
+
+    @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBall/Update")
     public ResponseBodyEmitter updateBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
