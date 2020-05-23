@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FBallValuationDataRepository extends JpaRepository<FBallValuation,Long> {
+public interface FBallValuationDataRepository extends JpaRepository<FBallValuation,String> {
     List<FBallValuation> findByBallUuidIsAndUidIs(FBall ballUuid, FUserInfo uid);
 }

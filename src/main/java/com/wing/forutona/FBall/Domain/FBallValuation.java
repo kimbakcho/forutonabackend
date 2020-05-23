@@ -12,8 +12,8 @@ import javax.persistence.*;
 @Setter
 @Getter
 public class FBallValuation {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long idx;
+    @Id
+    String valueUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballUuid")

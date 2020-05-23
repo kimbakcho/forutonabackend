@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FBallValuationInsertReqDto {
-    Long idx;
+    String valueUuid;
     String ballUuid;
     String uid;
     Long unAndDown;

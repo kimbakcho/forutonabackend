@@ -25,7 +25,7 @@ public class FBallValuationController {
         return emitter;
     }
 
-    @ResponseAddJsonHeader
+
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBallValuation")
     public ResponseBodyEmitter insertFBallValuation(@RequestBody FBallValuationInsertReqDto reqDto,FFireBaseToken fireBaseToken) {
@@ -34,7 +34,7 @@ public class FBallValuationController {
         return emitter;
     }
 
-    @ResponseAddJsonHeader
+
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBallValuation")
     public ResponseBodyEmitter updateFBallValuation(@RequestBody FBallValuationInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
@@ -43,12 +43,12 @@ public class FBallValuationController {
         return emitter;
     }
 
-    @ResponseAddJsonHeader
+
     @AuthFireBaseJwtCheck
-    @DeleteMapping(value = "/v1/FBallValuation/{idx}")
-    public ResponseBodyEmitter deleteFBallValuation(@PathVariable Long idx,FFireBaseToken fireBaseToken) {
+    @DeleteMapping(value = "/v1/FBallValuation/{valueUuid}")
+    public ResponseBodyEmitter deleteFBallValuation(@PathVariable String valueUuid,FFireBaseToken fireBaseToken) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallValuationService.deleteFBallValuation(emitter,idx,fireBaseToken);
+        fBallValuationService.deleteFBallValuation(emitter,valueUuid,fireBaseToken);
         return emitter;
     }
 }

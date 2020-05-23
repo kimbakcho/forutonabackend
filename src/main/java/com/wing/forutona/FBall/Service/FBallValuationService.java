@@ -65,14 +65,14 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else {
+                fBallValuation.setValueUuid(reqDto.getValueUuid());
                 fBallValuation.setBallUuid(fBall);
-
                 FUserInfo playerUid = new FUserInfo();
                 playerUid.setUid(fireBaseToken.getFireBaseToken().getUid());
                 fBallValuation.setUid(playerUid);
                 ballValuation(reqDto, fBallValuation, fBall);
                 FBallValuation save = fBallValuationDataRepository.save(fBallValuation);
-                emitter.send(save.getIdx());
+                emitter.send(save.getValueUuid());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,14 +85,14 @@ public class FBallValuationService {
     @Transactional
     public void updateFBallValuation(ResponseBodyEmitter emitter, FBallValuationInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
-            FBallValuation fBallValuation = fBallValuationDataRepository.findById(reqDto.getIdx()).get();
+            FBallValuation fBallValuation = fBallValuationDataRepository.findById(reqDto.getValueUuid()).get();
             FBall fBall = fBallValuation.getBallUuid();
             if(LocalDateTime.now().isAfter(fBall.getActivationTime())){
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else if(fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())){
                 ballValuation(reqDto, fBallValuation, fBall);
-                emitter.send(fBallValuation.getIdx());
+                emitter.send(fBallValuation.getValueUuid());
             }else {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("missMatch Uid"));
@@ -114,9 +114,9 @@ public class FBallValuationService {
 
     @Async
     @Transactional
-    public void deleteFBallValuation(ResponseBodyEmitter emitter, Long idx, FFireBaseToken fireBaseToken) {
+    public void deleteFBallValuation(ResponseBodyEmitter emitter, String valueUuid, FFireBaseToken fireBaseToken) {
         try {
-            FBallValuation fBallValuation = fBallValuationDataRepository.findById(idx).get();
+            FBallValuation fBallValuation = fBallValuationDataRepository.findById(valueUuid).get();
             FBall fBall = fBallValuation.getBallUuid();
             if(LocalDateTime.now().isAfter(fBall.getActivationTime())){
                 emitter.send(-1);
@@ -128,8 +128,8 @@ public class FBallValuationService {
                 FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
                 makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() - fBallValuation.getUpAndDown());
 
-                fBallValuationDataRepository.deleteById(idx);
-                emitter.send(idx);
+                fBallValuationDataRepository.deleteById(valueUuid);
+                emitter.send(valueUuid);
             }else {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("missMatch Uid"));
