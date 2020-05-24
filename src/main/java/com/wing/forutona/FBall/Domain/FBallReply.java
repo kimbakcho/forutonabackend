@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 public class FBallReply {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long idx;
+    String replyUuid;
     @ManyToOne
     @JoinColumn(name = "ballUuid")
     FBall replyBallUuid;

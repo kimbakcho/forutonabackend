@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FBallReplyInsertReqDto {
-    Long idx;
+    String replyUuid;
     String ballUuid;
     Long replyNumber;
     Long replySort;

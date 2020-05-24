@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class FBallReplyResDto {
-    Long idx;
+    String replyUuid;
     String ballUuid;
     String uid;
     Long replyNumber;
@@ -27,7 +27,7 @@ public class FBallReplyResDto {
 
     @QueryProjection
     public FBallReplyResDto(FBallReply fBallReply){
-        this.idx = fBallReply.getIdx();
+        this.replyUuid = fBallReply.getReplyUuid();
         this.ballUuid = fBallReply.getReplyBallUuid().getBallUuid();
         this.uid = fBallReply.getReplyUid().getUid();
         this.replyNumber = fBallReply.getReplyNumber();

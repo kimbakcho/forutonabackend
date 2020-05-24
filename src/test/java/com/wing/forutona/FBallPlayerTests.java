@@ -1,6 +1,5 @@
 package com.wing.forutona;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.wing.forutona.CustomUtil.MultiSort;
 import com.wing.forutona.CustomUtil.MultiSorts;
@@ -9,9 +8,7 @@ import com.wing.forutona.FBall.Dto.UserToMakerBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
-import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepositroy;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerQueryRepository;
-import com.wing.forutona.FBall.Service.FBallPlayerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +48,7 @@ public class FBallPlayerTests {
 
 
         for (UserToPlayBallResDto result : fBallPlayerByPlayer) {
-            System.out.println(result.getFBallUuid());
+            System.out.println(result.getFballResDto().getBallUuid());
         }
 
     }
@@ -70,8 +67,8 @@ public class FBallPlayerTests {
 
         List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, sorts,pageable);
         for (UserToMakerBallResDto userToMakerBall : userToMakerBalls) {
-            System.out.println(userToMakerBall.getBallName());
-            System.out.println(userToMakerBall.getMakeTime());
+            System.out.println(userToMakerBall.getFballResDto().getBallName());
+            System.out.println(userToMakerBall.getFballResDto().getMakeTime());
             System.out.println("++++++++++++++++++++++++++++++++++");
         }
 

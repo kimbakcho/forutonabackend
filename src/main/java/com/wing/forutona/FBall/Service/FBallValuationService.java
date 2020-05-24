@@ -106,7 +106,11 @@ public class FBallValuationService {
 
     public void ballValuation(FBallValuationInsertReqDto reqDto, FBallValuation fBallValuation, FBall fBall) {
         fBallValuation.setUpAndDown(reqDto.getUnAndDown());
-        fBall.setBallLikes(fBall.getBallLikes() + reqDto.getUnAndDown());
+        if(reqDto.getUnAndDown() > 0){
+            fBall.setBallLikes(fBall.getBallLikes() + Math.abs(reqDto.getUnAndDown()));
+        }else {
+            fBall.setBallDisLikes(fBall.getBallDisLikes() + Math.abs(reqDto.getUnAndDown()));
+        }
         fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
         FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
         makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() + reqDto.getUnAndDown());
@@ -122,12 +126,14 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             }else if(fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())){
-                fBall.setBallLikes(fBall.getBallLikes() - fBallValuation.getUpAndDown());
+                if(fBallValuation.getUpAndDown() > 0){
+                    fBall.setBallLikes(fBall.getBallLikes() - Math.abs(fBallValuation.getUpAndDown()));
+                }else {
+                    fBall.setBallDisLikes(fBall.getBallDisLikes() - Math.abs(fBallValuation.getUpAndDown()));
+                }
                 fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
-
                 FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
                 makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() - fBallValuation.getUpAndDown());
-
                 fBallValuationDataRepository.deleteById(valueUuid);
                 emitter.send(valueUuid);
             }else {

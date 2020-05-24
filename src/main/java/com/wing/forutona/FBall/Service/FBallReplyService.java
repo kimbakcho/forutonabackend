@@ -42,6 +42,7 @@ public class FBallReplyService {
         FBallReply fBallReply = new FBallReply();
         FBall fBall = new FBall();
         fBall.setBallUuid(reqDto.getBallUuid());
+        fBallReply.setReplyUuid(reqDto.getReplyUuid());
         fBallReply.setDeleteFlag(false);
         fBallReply.setReplyBallUuid(fBall);
         //대댓글이 아닌 처음 댓글
@@ -119,7 +120,7 @@ public class FBallReplyService {
     @Async
     @Transactional
     public void updateFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) {
-        FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getIdx()).get();
+        FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
         try {
             if (fireBaseToken.getFireBaseToken().getUid().equals(fBallReply.getReplyUid().getUid())) {
                 fBallReply.setReplyText(reqDto.getReplyText());
@@ -138,8 +139,8 @@ public class FBallReplyService {
 
     @Async
     @Transactional
-    public void deleteFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, Long idx) {
-        FBallReply fBallReply = fBallReplyDataRepository.findById(idx).get();
+    public void deleteFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, String replyUuid) {
+        FBallReply fBallReply = fBallReplyDataRepository.findById(replyUuid).get();
         try {
             if (fireBaseToken.getFireBaseToken().getUid().equals(fBallReply.getReplyUid().getUid())) {
                 fBallReply.setReplyText("Delete Text");

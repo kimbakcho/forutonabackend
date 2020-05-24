@@ -65,10 +65,10 @@ public class FBallReplyController {
 
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
-    @DeleteMapping(value = "/v1/FBallReply/{idx}")
-    public ResponseBodyEmitter updateFBallReply(@PathVariable Long idx,FFireBaseToken fireBaseToken){
+    @DeleteMapping(value = "/v1/FBallReply/{replyUuid}")
+    public ResponseBodyEmitter updateFBallReply(@PathVariable String replyUuid,FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallReplyService.deleteFBallReply(emitter,fireBaseToken,idx);
+        fBallReplyService.deleteFBallReply(emitter,fireBaseToken,replyUuid);
         return emitter;
     }
 
