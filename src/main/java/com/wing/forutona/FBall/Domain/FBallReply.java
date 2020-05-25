@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class FBallReply {
     @Id
     String replyUuid;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballUuid")
     FBall replyBallUuid;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
     FUserInfo replyUid;
     Long replyNumber;

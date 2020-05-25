@@ -3,10 +3,7 @@ package com.wing.forutona.FBall.Service;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
+import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
@@ -65,15 +62,16 @@ public class FBallReplyService {
             fBallReply.setReplyDepth(1L);
             fBallReply.setReplyNumber(reqDto.getReplyNumber());
         }
-        FUserInfo fUserInfo = new FUserInfo();
-        fUserInfo.setUid(fireBaseToken.getFireBaseToken().getUid());
-        fBallReply.setReplyUid(fUserInfo);
+        FUserInfo fUserInfo1 = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+        fBallReply.setReplyUid(fUserInfo1);
         fBallReply.setReplyText(reqDto.getReplyText());
         fBallReply.setReplyUploadDateTime(LocalDateTime.now());
         fBallReply.setReplyUpdateDateTime(fBallReply.getReplyUploadDateTime());
-        fBallReplyDataRepository.save(fBallReply);
+        fBallReplyDataRepository.saveAndFlush(fBallReply);
+        FBallReplyResDto fBallReplyResDto =  new FBallReplyResDto(fBallReply);
+
         try {
-            emitter.send(1);
+            emitter.send(fBallReplyResDto);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
