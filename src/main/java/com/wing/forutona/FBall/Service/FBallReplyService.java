@@ -4,6 +4,7 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Dto.*;
+import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
@@ -32,13 +33,14 @@ public class FBallReplyService {
     @Autowired
     FUserInfoDataRepository fUserInfoDataRepository;
 
+    @Autowired
+    FBallDataRepository fBallDataRepository;
 
     @Async
     @Transactional
     public void insertFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) {
         FBallReply fBallReply = new FBallReply();
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
         fBallReply.setReplyUuid(reqDto.getReplyUuid());
         fBallReply.setDeleteFlag(false);
         fBallReply.setReplyBallUuid(fBall);
@@ -51,6 +53,8 @@ public class FBallReplyService {
             } else {
                 fBallReply.setReplyNumber(top1ByReplyBallUuidIsOrderByReplyNumberDesc.getReplyNumber() + 1);
             }
+            fBall.setCommentCount(fBall.getCommentCount()+1);
+
             fBallReply.setReplySort(0L);
             fBallReply.setReplyDepth(0L);
         } else {
