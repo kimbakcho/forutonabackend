@@ -14,13 +14,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 @Configuration
 
 public class DefaultConfiguration {
-    @Bean
-    public MultipartResolver multipartResolver() {
-        CommonsMultipartResolver multipartResolver
-                = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(10242880);
-        return multipartResolver;
-    }
 
 
 }

@@ -61,8 +61,9 @@ spring:
     open-in-view: false
   servlet:
     multipart:
-      max-file-size: 40MB
-      max-request-size: 40MB
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
   mvc:
     async:
       request-timeout: -1
