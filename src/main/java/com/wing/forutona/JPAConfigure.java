@@ -37,6 +37,7 @@ public class JPAConfigure {
         dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
         return dataSource;
     }
+
     @Bean
     @Profile("real")
     public DataSource realDataSource() {

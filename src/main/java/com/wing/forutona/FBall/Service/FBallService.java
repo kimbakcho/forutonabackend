@@ -15,6 +15,7 @@ import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
 import com.wing.forutona.FBall.Service.FBallType.FBallTypeServiceFactory;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,23 +31,15 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class FBallService {
 
+    final private FBallQueryRepository fBallQueryRepository;
+    final private FBallDataRepository fBallDataRepository;
+    final private MapFindScopeStepRepository mapFindScopeStepRepository;
+    final private GoogleStorgeAdmin googleStorgeAdmin;
+    final private FBallTypeServiceFactory fBallMakerFactory;
 
-    @Autowired
-    FBallQueryRepository fBallQueryRepository;
-
-    @Autowired
-    FBallDataRepository fBallDataRepository;
-
-    @Autowired
-    MapFindScopeStepRepository mapFindScopeStepRepository;
-
-    @Autowired
-    GoogleStorgeAdmin googleStorgeAdmin;
-
-    @Autowired
-    FBallTypeServiceFactory fBallMakerFactory;
 
     @Async
     @Transactional
@@ -189,4 +182,19 @@ public class FBallService {
             emitter.complete();
         }
     }
+
+    @Transactional
+    public void increaseContributor(String ballUuid, Long point){
+        FBall fBall = fBallDataRepository.findById(ballUuid).get();
+        fBall.setContributor(fBall.getContributor() + point);
+        fBallDataRepository.flush();;
+    }
+
+    @Transactional
+    public void decreaseContributor(String ballUuid, Long point) {
+        FBall fBall = fBallDataRepository.findById(ballUuid).get();
+        fBall.setContributor(fBall.getContributor() - point);
+        fBallDataRepository.flush();;
+    }
+
 }
