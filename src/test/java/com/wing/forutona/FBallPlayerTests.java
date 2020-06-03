@@ -48,7 +48,7 @@ public class FBallPlayerTests {
 
 
         for (UserToPlayBallResDto result : fBallPlayerByPlayer) {
-            System.out.println(result.getFballResDto().getBallUuid());
+            System.out.println(result.getBallUuid());
         }
 
     }
@@ -67,8 +67,8 @@ public class FBallPlayerTests {
 
         List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, sorts,pageable);
         for (UserToMakerBallResDto userToMakerBall : userToMakerBalls) {
-            System.out.println(userToMakerBall.getFballResDto().getBallName());
-            System.out.println(userToMakerBall.getFballResDto().getMakeTime());
+            System.out.println(userToMakerBall.getBallName());
+            System.out.println(userToMakerBall.getMakeTime());
             System.out.println("++++++++++++++++++++++++++++++++++");
         }
 

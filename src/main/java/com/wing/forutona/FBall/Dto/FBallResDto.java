@@ -24,7 +24,7 @@ public class FBallResDto {
     private LocalDateTime makeTime;
     private String description;
     private String nickName;
-    private String profilePicktureUrl;
+    private String profilePictureUrl;
     private String uid;
     private Double userLevel;
     //해당 부분 BallPower/지도 중심과의 거리로 계산
@@ -50,7 +50,7 @@ public class FBallResDto {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.nickName = fball.getFBallUid().getNickName();
-        this.profilePicktureUrl = fball.getFBallUid().getProfilePictureUrl();
+        this.profilePictureUrl = fball.getFBallUid().getProfilePictureUrl();
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.influencePower = influencePower;
@@ -76,7 +76,7 @@ public class FBallResDto {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.nickName = fball.getFBallUid().getNickName();
-        this.profilePicktureUrl = fball.getFBallUid().getProfilePictureUrl();
+        this.profilePictureUrl = fball.getFBallUid().getProfilePictureUrl();
         this.uid = fball.getFBallUid().getUid();
         this.userLevel = fball.getFBallUid().getUserLevel();
         this.contributor = fball.getContributor();

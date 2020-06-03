@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto, FBallResDto> {
+public class IssueBallTypeService  {
 
     final FBallDataRepository fBallDataRepository;
     final FUserInfoDataRepository fUserInfoDataRepository;
@@ -37,7 +37,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = new FBall(reqDto);
@@ -72,7 +71,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
@@ -107,7 +105,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void selectBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
         try {
             FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
@@ -122,7 +119,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto,FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
@@ -150,7 +146,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void joinBall(ResponseBodyEmitter emitter, FBallJoinReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
         try{
             FUserInfo fBallPlayer = new FUserInfo();
@@ -178,7 +173,6 @@ public class IssueBallTypeService implements FBallTypeService<FBallInsertReqDto,
 
     @Async
     @Transactional
-    @Override
     public void ballHit(ResponseBodyEmitter emitter, FBallReqDto reqDto) {
         try {
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();

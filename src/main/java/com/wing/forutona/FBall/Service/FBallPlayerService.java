@@ -8,6 +8,7 @@ import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResWrapDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallSelectReqDto;
+import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepositroy;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerQueryRepository;
@@ -33,6 +34,8 @@ public class FBallPlayerService {
 
     final FBallPlayerDataRepositroy fBallPlayerDataRepositroy;
 
+    final FBallDataRepository fBallDataRepository;
+
     @Async
     @Transactional
     public void UserToPlayBallList(ResponseBodyEmitter emitter, UserToPlayBallReqDto reqDto, MultiSorts sorts, Pageable pageable){
@@ -53,10 +56,9 @@ public class FBallPlayerService {
         try{
             FUserInfo fUserInfo = new FUserInfo();
             fUserInfo.setUid(reqDto.getPlayerUid());
-            FBall fBall = new FBall();
-            fBall.setBallUuid(reqDto.getBallUuid());
+            FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
             FBallPlayer fBallPlayer = fBallPlayerDataRepositroy.findFBallPlayerByPlayerUidIsAndBallUuidIs(fUserInfo, fBall);
-            UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBallPlayer);
+            UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBall,fBallPlayer);
             emitter.send(userToPlayBallResDto);
         }catch (IOException e){
             e.printStackTrace();;

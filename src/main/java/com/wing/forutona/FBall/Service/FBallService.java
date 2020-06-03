@@ -13,10 +13,8 @@ import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
-import com.wing.forutona.FBall.Service.FBallType.FBallTypeServiceFactory;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
@@ -38,8 +36,6 @@ public class FBallService {
     final private FBallDataRepository fBallDataRepository;
     final private MapFindScopeStepRepository mapFindScopeStepRepository;
     final private GoogleStorgeAdmin googleStorgeAdmin;
-    final private FBallTypeServiceFactory fBallMakerFactory;
-
 
     @Async
     @Transactional

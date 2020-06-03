@@ -8,19 +8,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UserToPlayBallResDto extends UserBallResDto {
+public class UserToPlayBallResDto extends FBallResDto {
 
     LocalDateTime joinTime;
 
-
     @QueryProjection
-    public UserToPlayBallResDto(FBallPlayer fBallPlayer) {
-        fballResDto = new FBallResDto(fBallPlayer.getBallUuid());
+    public UserToPlayBallResDto(FBall fBall,FBallPlayer fBallPlayer) {
+        super(fBall);
         joinTime = fBallPlayer.getStartTime();
-    }
-
-    public FBall getFBall(FBallPlayer fBallPlayer) {
-        return fBallPlayer.getBallUuid();
     }
 
 }

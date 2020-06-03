@@ -5,10 +5,10 @@ import com.wing.forutona.FBall.Domain.FBall;
 import lombok.Data;
 
 @Data
-public class UserToMakerBallResDto extends UserBallResDto{
+public class UserToMakerBallResDto extends FBallResDto{
 
     @QueryProjection
     public UserToMakerBallResDto(FBall fBall){
-        fballResDto = new FBallResDto(fBall);
+        super(fBall);
     }
 }
