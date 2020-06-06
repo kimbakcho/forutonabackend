@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-public interface FBallPlayerDataRepositroy extends JpaRepository<FBallPlayer,Long> {
+public interface FBallPlayerDataRepository extends JpaRepository<FBallPlayer,Long> {
 
     @EntityGraph(attributePaths = {"ballUuid"})
     Slice<FBallPlayer> findFBallPlayerByPlayerUid(String playerUid,Pageable pageable);

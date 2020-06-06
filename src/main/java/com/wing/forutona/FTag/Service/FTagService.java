@@ -3,16 +3,14 @@ package com.wing.forutona.FTag.Service;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
-import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
+import com.wing.forutona.FBall.Dto.FBallListUpFromTagReqDto;
 import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.*;
 import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,13 +38,13 @@ public class FTagService {
      */
     @Async
     @Transactional
-    public void getFTagRanking(ResponseBodyEmitter emitter, TagRankingReqDto tagRankingReqDto) throws ParseException {
-        int searchDistance = fBallService.diatanceOfBallCountToLimit(tagRankingReqDto.getLatitude(),
-                tagRankingReqDto.getLongitude(), 1000);
-        Geometry rect = GisGeometryUtil.createRect(tagRankingReqDto.getLatitude(), tagRankingReqDto.getLongitude(), searchDistance);
-        Geometry centerPoint = GisGeometryUtil.createCenterPoint(tagRankingReqDto.getLatitude(), tagRankingReqDto.getLongitude());
+    public void getFTagRankingFromBallInfluencePower(ResponseBodyEmitter emitter, TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
+        int searchDistance = fBallService.diatanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude(),
+                tagRankingFromBallInfluencePowerReqDto.getLongitude(), 1000);
+        Geometry rect = GisGeometryUtil.createRect(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude(), searchDistance);
+        Geometry centerPoint = GisGeometryUtil.createCenterPoint(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude());
         try {
-            emitter.send(fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(centerPoint, rect, tagRankingReqDto.getLimit()));
+            emitter.send(fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(centerPoint, rect, tagRankingFromBallInfluencePowerReqDto.getLimit()));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -54,25 +52,12 @@ public class FTagService {
         }
     }
 
-    @Async
-    @Transactional
-    public void getTagSearchFromTextToBalls(ResponseBodyEmitter emitter, TagSearchFromTextReqDto reqDto,
-                                            MultiSorts sorts, Pageable pageable) {
-        try {
-            FBallListUpWrapDto tagSearchFromTextToBalls = fBallTagQueryRepository.getTagSearchFromTextToBalls(reqDto, sorts, pageable);
-            emitter.send(tagSearchFromTextToBalls);
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
 
     @Async
     @Transactional
-    public void getTagSearchFromTextToTagRankings(ResponseBodyEmitter emitter, TagSearchFromTextReqDto reqDto) {
+    public void getRelationTagRankingFromTagNameOrderByBallPower(ResponseBodyEmitter emitter, FBallListUpFromTagReqDto reqDto) {
         try {
-            TagRankingWrapdto tagSearchFromTextToTagRankings = fBallTagQueryRepository.getTagSearchFromTextToTagRankings(reqDto);
+            TagRankingWrapdto tagSearchFromTextToTagRankings = fBallTagQueryRepository.getRelationTagRankingFromTagNameOrderByBallPower(reqDto);
             emitter.send(tagSearchFromTextToTagRankings);
         } catch (IOException e) {
             e.printStackTrace();

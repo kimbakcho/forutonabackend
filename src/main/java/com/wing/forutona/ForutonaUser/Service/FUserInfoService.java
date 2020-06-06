@@ -150,12 +150,12 @@ public class FUserInfoService {
     public void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto) {
         try {
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(reqDto.getUid()).get();
-            FUserInfoResDto fUserInfoResDto = new FUserInfoResDto();
-            fUserInfoResDto.setNickName(fUserInfo.getNickName());
-            fUserInfoResDto.setCumulativeInfluence(fUserInfo.getCumulativeInfluence());
-            fUserInfoResDto.setFollowCount(fUserInfo.getFollowCount());
-            fUserInfoResDto.setProfilePictureUrl(fUserInfo.getProfilePictureUrl());
-            emitter.send(fUserInfoResDto);
+            FUserInfoSimple1ResDto fUserInfoSimple1ResDto = new FUserInfoSimple1ResDto();
+            fUserInfoSimple1ResDto.setNickName(fUserInfo.getNickName());
+            fUserInfoSimple1ResDto.setCumulativeInfluence(fUserInfo.getCumulativeInfluence());
+            fUserInfoSimple1ResDto.setFollowCount(fUserInfo.getFollowCount());
+            fUserInfoSimple1ResDto.setProfilePictureUrl(fUserInfo.getProfilePictureUrl());
+            emitter.send(fUserInfoSimple1ResDto);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -79,10 +79,10 @@ public class FBallService {
      */
     @Async
     @Transactional
-    public void BallListUp(ResponseBodyEmitter emitter,BallFromMapAreaReqDto reqDto,
-                                         MultiSorts sorts, Pageable pageable){
+    public void BallListUpFromBallInfluencePower(ResponseBodyEmitter emitter, BallFromMapAreaReqDto reqDto,
+                                                 MultiSorts sorts, Pageable pageable){
         try {
-            emitter.send(fBallQueryRepository.getBallListUp(reqDto,sorts,pageable));
+            emitter.send(fBallQueryRepository.getBallListUpFromBallInfluencePower(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {
@@ -99,9 +99,9 @@ public class FBallService {
      */
     @Async
     @Transactional
-    public void BallListUp(ResponseBodyEmitter emitter, BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public void BallListUpFromSearchTitle(ResponseBodyEmitter emitter, FBallListUpFromSearchTitleReqDto reqDto, MultiSorts sorts, Pageable pageable) {
         try {
-            emitter.send(fBallQueryRepository.getBallListUp(reqDto,sorts,pageable));
+            emitter.send(fBallQueryRepository.getBallListUpFromSearchTitle(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }finally {
@@ -118,11 +118,11 @@ public class FBallService {
      */
     @Async
     @Transactional
-    public void BallListUp(ResponseBodyEmitter emitter, FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
+    public void BallListUpFromBallInfluencePower(ResponseBodyEmitter emitter, FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
         int findDistanceRange = this.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
                 reqDto.getBallLimit());
         try {
-            emitter.send(fBallQueryRepository.getBallListUp(
+            emitter.send(fBallQueryRepository.getBallListUpFromBallInfluencePower(
                     GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude())
                     , GisGeometryUtil.createRect(reqDto.getLatitude(), reqDto.getLongitude(), findDistanceRange)
                     , pageable));
@@ -179,6 +179,19 @@ public class FBallService {
         }
     }
 
+    @Async
+    @Transactional
+    public void ListUpFromTagName(ResponseBodyEmitter emitter, FBallListUpFromTagReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+        try {
+            FBallListUpWrapDto fBallListUpWrapDto = fBallQueryRepository.ListUpFromTagName(reqDto,sorts,pageable);
+            emitter.send(fBallListUpWrapDto);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }finally {
+            emitter.complete();
+        }
+    }
+
     @Transactional
     public void increaseContributor(String ballUuid, Long point){
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
@@ -192,5 +205,6 @@ public class FBallService {
         fBall.setContributor(fBall.getContributor() - point);
         fBallDataRepository.flush();;
     }
+
 
 }

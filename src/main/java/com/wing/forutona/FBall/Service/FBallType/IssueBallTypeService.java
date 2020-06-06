@@ -10,7 +10,7 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
-import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepositroy;
+import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
@@ -33,7 +33,7 @@ public class IssueBallTypeService  {
     final FBallDataRepository fBallDataRepository;
     final FUserInfoDataRepository fUserInfoDataRepository;
     final GoogleStorgeAdmin googleStorgeAdmin;
-    final FBallPlayerDataRepositroy fBallPlayerDataRepositroy;
+    final FBallPlayerDataRepository fBallPlayerDataRepository;
 
     @Async
     @Transactional
@@ -152,7 +152,7 @@ public class IssueBallTypeService  {
             fBallPlayer.setUid(fireBaseToken.getFireBaseToken().getUid());
             FBall fBall = new FBall();
             fBall.setBallUuid(fBallReqDto.getBallUuid());
-            FBallPlayer ballPlayer = fBallPlayerDataRepositroy.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);
+            FBallPlayer ballPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);
             if (ballPlayer != null){
                 emitter.send(1);
             }else {
@@ -161,7 +161,7 @@ public class IssueBallTypeService  {
                 joinBallPlayer.setPlayerUid(fBallPlayer);
                 joinBallPlayer.setStartTime(LocalDateTime.now());
                 joinBallPlayer.setPlayState(FBallPlayState.Join);
-                fBallPlayerDataRepositroy.saveAndFlush(joinBallPlayer);
+                fBallPlayerDataRepository.saveAndFlush(joinBallPlayer);
                 emitter.send(1);
             }
         }catch (IOException e){

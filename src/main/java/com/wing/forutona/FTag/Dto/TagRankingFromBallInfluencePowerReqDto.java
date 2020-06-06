@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagRankingReqDto {
+public class TagRankingFromBallInfluencePowerReqDto {
     double latitude;
     double longitude;
     int limit;
-
 }

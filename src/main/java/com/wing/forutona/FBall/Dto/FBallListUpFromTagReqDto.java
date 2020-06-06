@@ -3,8 +3,8 @@ package com.wing.forutona.FBall.Dto;
 import lombok.Data;
 
 @Data
-public class BallNameSearchReqDto {
-    String searchText;
+public class FBallListUpFromTagReqDto {
+    String searchTag;
     double latitude;
     double longitude;
 }

@@ -5,7 +5,6 @@ import com.grum.geocalc.EarthCalc;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.*;
@@ -16,12 +15,11 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
-import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Dto.NearBallFindDistanceReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Service.FBallService;
-import com.wing.forutona.FTag.Dto.TagRankingReqDto;
+import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import com.wing.forutona.FTag.Service.FTagService;
@@ -157,10 +155,10 @@ class ForutonaApplicationTests {
 
     @Test
     public void getTagTagRanking(){
-        TagRankingReqDto tagRankingReqDto = new TagRankingReqDto();
-        tagRankingReqDto.setLatitude(37.51368824280154);
-        tagRankingReqDto.setLongitude(126.8985465914011);
-        tagRankingReqDto.setLimit(10);
+        TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto = new TagRankingFromBallInfluencePowerReqDto();
+        tagRankingFromBallInfluencePowerReqDto.setLatitude(37.51368824280154);
+        tagRankingFromBallInfluencePowerReqDto.setLongitude(126.8985465914011);
+        tagRankingFromBallInfluencePowerReqDto.setLimit(10);
 //        List<TagRankingDto> fTagRanking = fTagService.getFTagRanking(tagRankingReqDto);
 //        for (TagRankingDto tagRankingDto : fTagRanking) {
 //            System.out.println( "tag ranking = " + tagRankingDto.getRanking());

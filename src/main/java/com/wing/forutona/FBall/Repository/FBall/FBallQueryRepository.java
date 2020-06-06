@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.wing.forutona.FBall.Domain.QFBall.fBall;
+import static com.wing.forutona.FTag.Domain.QFBalltag.fBalltag;
 import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
 @Repository
@@ -54,8 +55,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      * @return
      * @throws ParseException
      */
-    public FBallListUpWrapDto getBallListUp(BallFromMapAreaReqDto reqDto,
-                                            MultiSorts sorts, Pageable pageable) throws ParseException {
+    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(BallFromMapAreaReqDto reqDto,
+                                                                  MultiSorts sorts, Pageable pageable) throws ParseException {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
@@ -101,13 +102,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    /**
-     * SerachText 기준으로 BallUp을 한다.
-     * Frount 에서 검색어로 Ball을 찾는데 주로 이용한다.
-     *
-     * @return
-     */
-    public FBallListUpWrapDto getBallListUp(BallNameSearchReqDto reqDto, MultiSorts sorts, Pageable pageable) throws ParseException {
+
+    public FBallListUpWrapDto getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, MultiSorts sorts, Pageable pageable) throws ParseException {
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
@@ -169,14 +165,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      * @param pageable
      * @return
      */
-    public FBallListUpWrapDto getBallListUp(Geometry centerPoint, Geometry rect, Pageable pageable) {
+    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry rect, Pageable pageable) {
         List<String> sortProperty = pageable.getSort().get()
                 .map(x -> x.getProperty()).collect(Collectors.toList());
         List<Sort.Direction> sortOrders = pageable.getSort().get()
                 .map(x -> x.getDirection()).collect(Collectors.toList());
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
-        if (sortProperty.size() > 0 && sortProperty.contains("Influence")) {
             NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
             List<FBallResDto> fBallResDtos = queryFactory.select(
                     new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
@@ -191,25 +186,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                     .offset(pageable.getOffset())
                     .fetch();
             return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
-        } else {
-            List<OrderSpecifier> orderSpecifiers = PageableUtil.pageAbleToOrders(pageable, fBall);
-            List<FBallResDto> fBallResDtos = queryFactory.select(
-                    new QFBallResDto(fBall))
-                    .from(fBall).join(fBall.fBallUid, fUserInfo)
-                    .where(stWithin.eq(1)
-                            , fBall.activationTime.after(LocalDateTime.now())
-                            , fBall.ballState.eq(FBallState.Play)
-                            , fBall.ballDeleteFlag.isFalse()
-                    )
-                    .orderBy(PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 0),
-                            PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 1),
-                            PageableUtil.getDynamicOrderSpecifier(orderSpecifiers, 2))
-                    .limit(pageable.getPageSize())
-                    .offset(pageable.getOffset())
-                    .fetch();
-            return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
         }
-    }
+
+
 
 
     /**
@@ -248,6 +227,42 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
+    public FBallListUpWrapDto ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
+                                                MultiSorts sorts, Pageable pageable) throws ParseException {
+        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        JPAQuery<FBall> query = queryFactory.select(fBall)
+                .from(fBalltag)
+                .join(fBalltag.ballUuid, fBall)
+                .where(fBalltag.tagItem.eq(reqDto.getSearchTag())
+                        .and(fBall.activationTime.after(LocalDateTime.now())));
+        for (var orderSpecifier : orderSpecifiers) {
+            String[] split = orderSpecifier.getTarget().toString().split("\\.");
+            //거리순일때만 분기 처리
+            if (split.length > 1 && split[1].equals("distance")) {
+                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
+                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
+                        GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
+
+                if (orderSpecifier.getOrder().toString().equals("DESC")) {
+                    query = query.orderBy(st_distance_sphere.desc());
+                } else {
+                    query = query.orderBy(st_distance_sphere.asc());
+                }
+            } else {
+                query = query.orderBy(orderSpecifier);
+            }
+        }
+        QueryResults<FBall> fBallQueryResults = query.limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetchResults();
+        FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
+        wrapDto.setSearchBallCount(fBallQueryResults.getTotal());
+        wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+        return wrapDto;
+    }
+
+
     /*
     CenterPoint와 rect 범위 안의 ball 들의 거리 반환
      */
@@ -262,6 +277,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .fetch();
         return fetch;
     }
+
+
 
 
 }

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FBallDataRepository extends JpaRepository<FBall,String> {
-//
-//    @Query("select count(fb.ballUuid) from FBall fb where within(fb.placePoint, :rect) = true ")
-//    Long getFindLocationWithin(@Param("rect") Geometry rect);
+
 
 }

@@ -7,7 +7,6 @@ import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.FBallService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,28 +23,38 @@ public class FBallController {
 
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/FBall/BallListUpFromMapArea")
+    @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public ResponseBodyEmitter getListUpBallFromMapArea(BallFromMapAreaReqDto reqDto,
                                                         @RequestParam MultiSorts sorts, Pageable pageable){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.BallListUp(emitter,reqDto,sorts,pageable);
+        fBallService.BallListUpFromBallInfluencePower(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/FBall/BallListUpFromSearchText")
-    public ResponseBodyEmitter getListUpBallFromSearchText(BallNameSearchReqDto reqDto
-            ,@RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {
+    @GetMapping(value = "/v1/FBall/ListUpFromSearchTitle")
+    public ResponseBodyEmitter getListUpBallFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto
+            , @RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.BallListUp(emitter,reqDto,sorts,pageable);
+        fBallService.BallListUpFromSearchTitle(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/FBall/BallListUp")
-    public ResponseBodyEmitter ListUpBall(FBallListUpReqDto reqDto, Pageable pageable) throws ParseException {
+    @GetMapping(value = "/v1/FBall/ListUpFromBallInfluencePower")
+    public ResponseBodyEmitter ListUpBallInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.BallListUp(emitter,reqDto,pageable);
+        fBallService.BallListUpFromBallInfluencePower(emitter,reqDto,pageable);
+        return emitter;
+    }
+
+
+    @ResponseAddJsonHeader
+    @GetMapping(value = "/v1/FBall/ListUpFromTagName")
+    public ResponseBodyEmitter ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
+                                                 @RequestParam MultiSorts sorts, Pageable pageable) throws ParseException {
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        fBallService.ListUpFromTagName(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 
@@ -75,6 +84,5 @@ public class FBallController {
         fBallService.ballImageUpload(emitter,files);
         return emitter;
     }
-
 
 }
