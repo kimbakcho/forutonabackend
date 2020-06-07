@@ -4,7 +4,6 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallValuation;
 import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
@@ -103,15 +102,15 @@ public class FBallValuationService {
     }
 
     private void ballValuation(FBallValuationInsertReqDto reqDto, FBallValuation fBallValuation, FBall fBall) {
-        fBallValuation.setUpAndDown(reqDto.getUnAndDown());
-        if (reqDto.getUnAndDown() > 0) {
-            fBall.setBallLikes(fBall.getBallLikes() + Math.abs(reqDto.getUnAndDown()));
+        fBallValuation.setUpAndDown(reqDto.getUpAndDown());
+        if (reqDto.getUpAndDown() > 0) {
+            fBall.setBallLikes(fBall.getBallLikes() + Math.abs(reqDto.getUpAndDown()));
         } else {
-            fBall.setBallDisLikes(fBall.getBallDisLikes() + Math.abs(reqDto.getUnAndDown()));
+            fBall.setBallDisLikes(fBall.getBallDisLikes() + Math.abs(reqDto.getUpAndDown()));
         }
         fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
         FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
-        makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() + reqDto.getUnAndDown());
+        makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() + reqDto.getUpAndDown());
     }
 
     @Async

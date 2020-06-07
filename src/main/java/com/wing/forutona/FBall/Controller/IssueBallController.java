@@ -3,9 +3,10 @@ package com.wing.forutona.FBall.Controller;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
-import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
+import com.wing.forutona.FBall.Dto.IssueBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallJoinReqDto;
 import com.wing.forutona.FBall.Dto.FBallReqDto;
+import com.wing.forutona.FBall.Dto.IssueBallUpdateReqDto;
 import com.wing.forutona.FBall.Service.FBallType.IssueBallTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class IssueBallController {
 
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/Issue/Insert")
-    public ResponseBodyEmitter insertBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+    public ResponseBodyEmitter insertBall(@RequestBody IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         issueBallTypeService.insertBall(emitter,reqDto,fireBaseToken);
         return emitter;
@@ -51,7 +52,7 @@ public class IssueBallController {
 
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBall/Issue/Update")
-    public ResponseBodyEmitter updateBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
+    public ResponseBodyEmitter updateBall(@RequestBody IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         issueBallTypeService.updateBall(emitter,reqDto,fireBaseToken);
         return emitter;

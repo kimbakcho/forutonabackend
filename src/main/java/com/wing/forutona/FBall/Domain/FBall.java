@@ -1,18 +1,13 @@
 package com.wing.forutona.FBall.Domain;
 
-import com.querydsl.core.annotations.QueryEntity;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.wing.forutona.CustomUtil.GisGeometryUtil;
-import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
+import com.wing.forutona.FBall.Dto.IssueBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallState;
 import com.wing.forutona.FBall.Dto.FBallType;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -72,7 +67,7 @@ public class FBall {
   @OneToMany(mappedBy = "ballUuid",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
   List<FBalltag> tags;
 
-  public FBall(FBallInsertReqDto reqDto){
+  public FBall(IssueBallInsertReqDto reqDto){
     this.ballUuid = reqDto.getBallUuid();
     this.longitude = reqDto.getLongitude();
     this.latitude = reqDto.getLatitude();
@@ -82,10 +77,6 @@ public class FBall {
     this.ballName = reqDto.getBallName();
     this.ballType = reqDto.getBallType();
     this.placeAddress = reqDto.getPlaceAddress();
-    this.administrativeArea = reqDto.getAdministrativeArea();
-    this.country = reqDto.getCountry();
-    this.ballPassword = reqDto.getBallPassword();
-    this.maximumPlayers = reqDto.getMaximumPlayers();
     this.description = reqDto.getDescription();
     List<FBalltag> tagCollect = reqDto.getTags().stream().map(x -> new FBalltag(this, x)).collect(Collectors.toList());
     this.tags = tagCollect;

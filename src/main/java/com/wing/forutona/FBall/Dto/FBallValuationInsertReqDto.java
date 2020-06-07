@@ -7,5 +7,5 @@ public class FBallValuationInsertReqDto {
     String valueUuid;
     String ballUuid;
     String uid;
-    Long unAndDown;
+    Long upAndDown;
 }

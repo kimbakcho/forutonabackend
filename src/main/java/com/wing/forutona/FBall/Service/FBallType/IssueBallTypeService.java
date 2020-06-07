@@ -37,7 +37,7 @@ public class IssueBallTypeService  {
 
     @Async
     @Transactional
-    public void insertBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+    public void insertBall(ResponseBodyEmitter emitter, IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = new FBall(reqDto);
             fBall.setMakeTime(LocalDateTime.now());
@@ -71,7 +71,7 @@ public class IssueBallTypeService  {
 
     @Async
     @Transactional
-    public void updateBall(ResponseBodyEmitter emitter, FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+    public void updateBall(ResponseBodyEmitter emitter, IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
             if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())) {
@@ -85,10 +85,6 @@ public class IssueBallTypeService  {
             fBall.setPlacePoint(point);
             fBall.setBallName(reqDto.getBallName());
             fBall.setPlaceAddress(reqDto.getPlaceAddress());
-            fBall.setAdministrativeArea(reqDto.getAdministrativeArea());
-            fBall.setCountry(reqDto.getCountry());
-            fBall.setBallPassword(reqDto.getBallPassword());
-            fBall.setMaximumPlayers(reqDto.getMaximumPlayers());
             fBall.setDescription(reqDto.getDescription());
             List<FBalltag> tagCollect = reqDto.getTags().stream().map(x -> new FBalltag(fBall, x)).collect(Collectors.toList());
             fBall.getTags().clear();
