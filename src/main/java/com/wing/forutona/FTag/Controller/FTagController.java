@@ -3,6 +3,7 @@ package com.wing.forutona.FTag.Controller;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.FireBaseAdmin;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
+import com.wing.forutona.FTag.Dto.RelationTagRankingFromTagNameReqDto;
 import com.wing.forutona.FTag.Dto.TagFromBallReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
 import com.wing.forutona.FBall.Dto.FBallListUpFromTagReqDto;
@@ -28,7 +29,7 @@ public class FTagController {
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")
-    public ResponseBodyEmitter getRelationTagRankingFromTagNameOrderByBallPower(FBallListUpFromTagReqDto reqDto) {
+    public ResponseBodyEmitter getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         fTagService.getRelationTagRankingFromTagNameOrderByBallPower(emitter, reqDto);
         return emitter;

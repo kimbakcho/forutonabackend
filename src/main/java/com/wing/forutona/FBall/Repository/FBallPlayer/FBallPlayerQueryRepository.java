@@ -1,15 +1,13 @@
 package com.wing.forutona.FBall.Repository.FBallPlayer;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wing.forutona.CustomUtil.MultiSort;
 import com.wing.forutona.CustomUtil.MultiSorts;
 import com.wing.forutona.CustomUtil.PageableUtil;
-import com.wing.forutona.FBall.Domain.QFBall;
-import com.wing.forutona.FBall.Domain.QFBallPlayer;
+
 import com.wing.forutona.FBall.Dto.QUserToPlayBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallResDto;
@@ -22,6 +20,9 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.wing.forutona.FBall.Domain.QFBall.*;
+import static com.wing.forutona.FBall.Domain.QFBallPlayer.*;
+
 
 @Repository
 public class FBallPlayerQueryRepository {
@@ -31,8 +32,7 @@ public class FBallPlayerQueryRepository {
     //Alive 에서 첫번째 정렬,정렬 받은 최신순으로 정렬,
     public List<UserToPlayBallResDto> getUserToPlayBallList(UserToPlayBallReqDto reqDto, MultiSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        QFBall fBall = new QFBall("fBall");
-        QFBallPlayer fBallPlayer = new QFBallPlayer("fBallPlayer");
+
         NumberExpression<Integer> Alive = new CaseBuilder()
                 .when(fBallPlayer.ballUuid.activationTime.after(LocalDateTime.now()))
                 .then(1)
@@ -44,7 +44,7 @@ public class FBallPlayerQueryRepository {
             if (sort.equals("startTime")) {
                 PageableUtil.multipleSortToOrders(orderBys, sort, fBallPlayer);
             } else {
-                PageableUtil.multipleSortToOrders(orderBys, sort,fBall);
+                PageableUtil.multipleSortToOrders(orderBys, sort, fBall);
             }
         }
 

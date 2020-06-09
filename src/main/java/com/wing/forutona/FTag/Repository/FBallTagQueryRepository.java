@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.wing.forutona.FTag.Dto.QTagRankingDto;
+import com.wing.forutona.FTag.Dto.RelationTagRankingFromTagNameReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingDto;
 import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
 import com.wing.forutona.FBall.Dto.FBallListUpFromTagReqDto;
@@ -55,11 +56,11 @@ public class FBallTagQueryRepository {
 
 
 
-    public TagRankingWrapdto getRelationTagRankingFromTagNameOrderByBallPower(FBallListUpFromTagReqDto reqDto) {
+    public TagRankingWrapdto getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
                 "function('match',{0},{1})",
-                fBalltag.tagItem, "+" + reqDto.getSearchTag() + "*");
+                fBalltag.tagItem, "+" + reqDto.getSearchTagName() + "*");
         List<TagRankingDto> fetchlists = queryFactory.select(
                 Projections.bean(TagRankingDto.class,
                         fBalltag.tagItem.as("tagName"), fBall.ballPower.sum().as("tagBallPower"))

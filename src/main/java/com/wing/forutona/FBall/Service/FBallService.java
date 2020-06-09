@@ -79,10 +79,10 @@ public class FBallService {
      */
     @Async
     @Transactional
-    public void BallListUpFromBallInfluencePower(ResponseBodyEmitter emitter, BallFromMapAreaReqDto reqDto,
-                                                 MultiSorts sorts, Pageable pageable){
+    public void BallListUpFromMapArea(ResponseBodyEmitter emitter, BallFromMapAreaReqDto reqDto,
+                                      MultiSorts sorts, Pageable pageable){
         try {
-            emitter.send(fBallQueryRepository.getBallListUpFromBallInfluencePower(reqDto,sorts,pageable));
+            emitter.send(fBallQueryRepository.getBallListUpFromMapArea(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         } finally {

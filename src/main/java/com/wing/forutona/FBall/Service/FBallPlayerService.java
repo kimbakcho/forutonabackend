@@ -54,7 +54,7 @@ public class FBallPlayerService {
             fUserInfo.setUid(reqDto.getPlayerUid());
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
             FBallPlayer fBallPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fUserInfo, fBall);
-            UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBall,fBallPlayer);
+            UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBallPlayer);
             emitter.send(userToPlayBallResDto);
         }catch (IOException e){
             e.printStackTrace();;

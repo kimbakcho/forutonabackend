@@ -28,6 +28,7 @@ public class IssueBallController {
 
 
     @AuthFireBaseJwtCheck
+    @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/Issue/Insert")
     public ResponseBodyEmitter insertBall(@RequestBody IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();

@@ -13,8 +13,8 @@ public class UserToPlayBallResDto extends FBallResDto {
     LocalDateTime joinTime;
 
     @QueryProjection
-    public UserToPlayBallResDto(FBall fBall,FBallPlayer fBallPlayer) {
-        super(fBall);
+    public UserToPlayBallResDto(FBallPlayer fBallPlayer) {
+        super(fBallPlayer.getBallUuid());
         joinTime = fBallPlayer.getStartTime();
     }
 

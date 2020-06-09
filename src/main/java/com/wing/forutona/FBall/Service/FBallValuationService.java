@@ -69,7 +69,8 @@ public class FBallValuationService {
                 contributorsControllerService.ifNotExistsInsert(new ContributorReqDto(reqDto.getUid(),reqDto.getBallUuid()));
 
                 FBallValuation save = fBallValuationDataRepository.save(fBallValuation);
-                emitter.send(save.getValueUuid());
+                FBallValuationResDto fBallValuationResDto = new FBallValuationResDto(save);
+                emitter.send(fBallValuationResDto);
             }
         } catch (IOException e) {
             e.printStackTrace();

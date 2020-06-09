@@ -55,8 +55,8 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
      * @return
      * @throws ParseException
      */
-    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(BallFromMapAreaReqDto reqDto,
-                                                                  MultiSorts sorts, Pageable pageable) throws ParseException {
+    public FBallListUpWrapDto getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
+                                                       MultiSorts sorts, Pageable pageable) throws ParseException {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
@@ -135,7 +135,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .offset(pageable.getOffset())
                 .fetchResults();
         FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
-        wrapDto.setSearchBallCount(fBallQueryResults.getTotal());
+        wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
         wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
         return wrapDto;
     }
@@ -257,7 +257,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .offset(pageable.getOffset())
                 .fetchResults();
         FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
-        wrapDto.setSearchBallCount(fBallQueryResults.getTotal());
+        wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
         wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
         return wrapDto;
     }

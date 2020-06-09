@@ -59,8 +59,9 @@ public class IssueBallTypeService  {
             fBall.setMakeExp(300);
             fBall.setCommentCount(0);
             fBall.setUserExp(0);
-            FBall save = fBallDataRepository.save(fBall);
-            emitter.send(1);
+            FBall saveBall = fBallDataRepository.saveAndFlush(fBall);
+            FBallResDto fBallResDto = new FBallResDto(saveBall);
+            emitter.send(fBallResDto);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

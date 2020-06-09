@@ -27,7 +27,7 @@ public class FBallController {
     public ResponseBodyEmitter getListUpBallFromMapArea(BallFromMapAreaReqDto reqDto,
                                                         @RequestParam MultiSorts sorts, Pageable pageable){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.BallListUpFromBallInfluencePower(emitter,reqDto,sorts,pageable);
+        fBallService.BallListUpFromMapArea(emitter,reqDto,sorts,pageable);
         return emitter;
     }
 

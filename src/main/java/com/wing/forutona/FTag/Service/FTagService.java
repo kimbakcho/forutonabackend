@@ -55,7 +55,7 @@ public class FTagService {
 
     @Async
     @Transactional
-    public void getRelationTagRankingFromTagNameOrderByBallPower(ResponseBodyEmitter emitter, FBallListUpFromTagReqDto reqDto) {
+    public void getRelationTagRankingFromTagNameOrderByBallPower(ResponseBodyEmitter emitter, RelationTagRankingFromTagNameReqDto reqDto) {
         try {
             TagRankingWrapdto tagSearchFromTextToTagRankings = fBallTagQueryRepository.getRelationTagRankingFromTagNameOrderByBallPower(reqDto);
             emitter.send(tagSearchFromTextToTagRankings);
