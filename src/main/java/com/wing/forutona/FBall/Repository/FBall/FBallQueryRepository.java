@@ -141,14 +141,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    /**
-     * 범위내 Ball 갯수 카운터
-     * 주 사용은 목적은 지도 기반 검색에 BallListUp 최적화
-     * example 최대 1000개의 볼 까지의 거리 까지만 Sort
-     *
-     * @param rect
-     * @return
-     */
     public Long getFindBallCountInDistance(Geometry rect) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
@@ -157,21 +149,11 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         return count;
     }
 
-    /**
-     * Ball을 ListUp 할때 Map 중심 위치를 기준으로 검색
-     *
-     * @param centerPoint Map중심 위치
-     * @param rect        검색 범위
-     * @param pageable
-     * @return
-     */
-    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry rect, Pageable pageable) {
-        List<String> sortProperty = pageable.getSort().get()
-                .map(x -> x.getProperty()).collect(Collectors.toList());
+    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
         List<Sort.Direction> sortOrders = pageable.getSort().get()
                 .map(x -> x.getDirection()).collect(Collectors.toList());
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
+        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, searchBoundary);
             NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
             List<FBallResDto> fBallResDtos = queryFactory.select(
                     new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
@@ -181,7 +163,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                             , fBall.ballState.eq(FBallState.Play)
                             , fBall.ballDeleteFlag.isFalse()
                     )
-                    .orderBy(sortOrders.get(0).isDescending() ? influence.desc() : influence.asc())
+                    .orderBy(influence.desc())
                     .limit(pageable.getPageSize())
                     .offset(pageable.getOffset())
                     .fetch();
@@ -190,15 +172,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
 
 
-
-    /**
-     * Maker가 만들 Ball 검색
-     *
-     * @param reqDto
-     * @param sorts
-     * @param pageable
-     * @return
-     */
     public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
                                                            MultiSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);

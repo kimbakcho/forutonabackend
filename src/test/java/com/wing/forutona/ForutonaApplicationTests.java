@@ -149,7 +149,7 @@ class ForutonaApplicationTests {
         reqDto.setLongitude(126.8985465914011);
         reqDto.setDistance(10000);
 
-        int i = fBallService.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(), 30);
+        int i = fBallService.distanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(), 30);
         System.out.println("distance  = " + i);
     }
 

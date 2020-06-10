@@ -4,7 +4,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Dto.FBallListUpFromTagReqDto;
 import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.*;
@@ -39,7 +38,7 @@ public class FTagService {
     @Async
     @Transactional
     public void getFTagRankingFromBallInfluencePower(ResponseBodyEmitter emitter, TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
-        int searchDistance = fBallService.diatanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude(),
+        int searchDistance = fBallService.distanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude(),
                 tagRankingFromBallInfluencePowerReqDto.getLongitude(), 1000);
         Geometry rect = GisGeometryUtil.createRect(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude(), searchDistance);
         Geometry centerPoint = GisGeometryUtil.createCenterPoint(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude());

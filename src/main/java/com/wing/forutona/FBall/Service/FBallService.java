@@ -109,22 +109,15 @@ public class FBallService {
         }
     }
 
-    /**
-     * 중심 위치로부터 찾기
-     * @param emitter
-     * @param reqDto
-     * @param pageable
-     * @throws ParseException
-     */
     @Async
     @Transactional
     public void BallListUpFromBallInfluencePower(ResponseBodyEmitter emitter, FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
-        int findDistanceRange = this.diatanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
+        int findDistanceRangeLimit = this.distanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
                 reqDto.getBallLimit());
         try {
             emitter.send(fBallQueryRepository.getBallListUpFromBallInfluencePower(
                     GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude())
-                    , GisGeometryUtil.createRect(reqDto.getLatitude(), reqDto.getLongitude(), findDistanceRange)
+                    , GisGeometryUtil.createRect(reqDto.getLatitude(), reqDto.getLongitude(), findDistanceRangeLimit)
                     , pageable));
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,11 +141,9 @@ public class FBallService {
     }
 
 
-    /*
-    범위내 목적으로 하는 Ball갯수 까지 Rect(범위)를 확장 시켜 적합한 집계 거리 반환
-     */
+
     @Transactional
-    public int diatanceOfBallCountToLimit(double latitude, double longitude, int limit) throws ParseException {
+    public int distanceOfBallCountToLimit(double latitude, double longitude, int limit) throws ParseException {
         List<FMapFindScopeStep> scopeMeter = mapFindScopeStepRepository.findAll(Sort.by("scopeMeter").ascending());
         int currentScopeMater = 0;
         for (FMapFindScopeStep mapFindScopeStep : scopeMeter) {
