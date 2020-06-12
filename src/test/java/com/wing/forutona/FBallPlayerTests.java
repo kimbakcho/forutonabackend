@@ -1,8 +1,8 @@
 package com.wing.forutona;
 
 import com.querydsl.core.types.Order;
-import com.wing.forutona.CustomUtil.MultiSort;
-import com.wing.forutona.CustomUtil.MultiSorts;
+import com.wing.forutona.CustomUtil.FSort;
+import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.FBall.Dto.UserToMakerBallReqDto;
 import com.wing.forutona.FBall.Dto.UserToMakerBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
@@ -38,10 +38,10 @@ public class FBallPlayerTests {
 
         Pageable pageable = PageRequest.of(0, 20, Sort.by("Alive").descending().and(Sort.by("startTime").descending()));
 
-        MultiSorts sorts = new MultiSorts();
-        List<MultiSort> sort = new ArrayList<>();
-        sort.add(new MultiSort("Alive", Order.DESC));
-        sort.add(new MultiSort("startTime", Order.DESC));
+        FSorts sorts = new FSorts();
+        List<FSort> sort = new ArrayList<>();
+        sort.add(new FSort("Alive", Order.DESC));
+        sort.add(new FSort("startTime", Order.DESC));
         sorts.setSorts(sort);
 
         List<UserToPlayBallResDto> fBallPlayerByPlayer = fBallPlayerQueryRepository.getUserToPlayBallList(dto,sorts, pageable);
@@ -59,10 +59,10 @@ public class FBallPlayerTests {
         dto.setMakerUid("h2q2jl3nRPXZ8809Uvi9KdzSss83");
 
         Pageable pageable = PageRequest.of(0, 20);
-        MultiSorts sorts = new MultiSorts();
-        List<MultiSort> sort = new ArrayList<>();
-        sort.add(new MultiSort("Alive", Order.DESC));
-        sort.add(new MultiSort("makeTime", Order.DESC));
+        FSorts sorts = new FSorts();
+        List<FSort> sort = new ArrayList<>();
+        sort.add(new FSort("Alive", Order.DESC));
+        sort.add(new FSort("makeTime", Order.DESC));
         sorts.setSorts(sort);
 
         List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(dto, sorts,pageable);

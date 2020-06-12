@@ -4,9 +4,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wing.forutona.CustomUtil.MultiSort;
-import com.wing.forutona.CustomUtil.MultiSorts;
-import com.wing.forutona.CustomUtil.PageableUtil;
+import com.wing.forutona.CustomUtil.FSort;
+import com.wing.forutona.CustomUtil.FSorts;
 
 import com.wing.forutona.FBall.Dto.QUserToPlayBallResDto;
 import com.wing.forutona.FBall.Dto.UserToPlayBallReqDto;
@@ -29,46 +28,37 @@ public class FBallPlayerQueryRepository {
     @PersistenceContext
     EntityManager em;
 
-    //Alive 에서 첫번째 정렬,정렬 받은 최신순으로 정렬,
-    public List<UserToPlayBallResDto> getUserToPlayBallList(UserToPlayBallReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public List<UserToPlayBallResDto> getUserToPlayBallList(UserToPlayBallReqDto reqDto, FSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
+        return queryFactory.select(new QUserToPlayBallResDto(fBallPlayer))
+                .from(fBallPlayer)
+                .join(fBallPlayer.ballUuid, fBall)
+                .fetchJoin()
+                .where(fBallPlayer.playerUid.uid.eq(reqDto.getPlayerUid()))
+                .orderBy(getOrderByFBallWithFBallPlayer(sorts).stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
+
+    }
+
+
+    public List<OrderSpecifier> getOrderByFBallWithFBallPlayer(FSorts sorts) {
         NumberExpression<Integer> Alive = new CaseBuilder()
                 .when(fBallPlayer.ballUuid.activationTime.after(LocalDateTime.now()))
                 .then(1)
                 .otherwise(0);
 
-
         List<OrderSpecifier> orderBys = new LinkedList<>();
-        for (MultiSort sort : sorts.getSorts()) {
+        for (FSort sort : sorts.getSorts()) {
             if (sort.equals("startTime")) {
-                PageableUtil.multipleSortToOrders(orderBys, sort, fBallPlayer);
+                orderBys.add(sort.toOrderSpecifier(fBallPlayer));
+            } else if(sort.equals("Alive")){
+                orderBys.add(Alive.desc());
             } else {
-                PageableUtil.multipleSortToOrders(orderBys, sort, fBall);
+                orderBys.add(sort.toOrderSpecifier(fBall));
             }
         }
-
-        List<UserToPlayBallResDto> fBallPlayerQueryResults = null;
-        if (sorts.getSorts().size() > 0 && sorts.isContain("Alive")) {
-            fBallPlayerQueryResults = queryFactory.select(new QUserToPlayBallResDto(fBallPlayer))
-                    .from(fBallPlayer)
-                    .join(fBallPlayer.ballUuid, fBall)
-                    .fetchJoin()
-                    .where(fBallPlayer.playerUid.uid.eq(reqDto.getPlayerUid()))
-                    .orderBy(Alive.desc(),PageableUtil.getDynamicOrderSpecifier(orderBys,1))
-                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
-        } else {
-            fBallPlayerQueryResults = queryFactory.select(new QUserToPlayBallResDto(fBallPlayer))
-                    .from(fBallPlayer)
-                    .join(fBallPlayer.ballUuid, fBall)
-                    .fetchJoin()
-                    .where(fBallPlayer.playerUid.uid.eq(reqDto.getPlayerUid()))
-                    .orderBy(PageableUtil.getDynamicOrderSpecifier(orderBys,0),
-                            PageableUtil.getDynamicOrderSpecifier(orderBys,1))
-                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
-        }
-        return fBallPlayerQueryResults;
-
+        return orderBys;
     }
 
 

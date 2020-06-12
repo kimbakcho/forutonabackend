@@ -6,7 +6,7 @@ import com.google.cloud.storage.Storage;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
-import com.wing.forutona.CustomUtil.MultiSorts;
+import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
@@ -80,7 +80,7 @@ public class FBallService {
     @Async
     @Transactional
     public void BallListUpFromMapArea(ResponseBodyEmitter emitter, BallFromMapAreaReqDto reqDto,
-                                      MultiSorts sorts, Pageable pageable){
+                                      FSorts sorts, Pageable pageable){
         try {
             emitter.send(fBallQueryRepository.getBallListUpFromMapArea(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
@@ -99,7 +99,7 @@ public class FBallService {
      */
     @Async
     @Transactional
-    public void BallListUpFromSearchTitle(ResponseBodyEmitter emitter, FBallListUpFromSearchTitleReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public void BallListUpFromSearchTitle(ResponseBodyEmitter emitter, FBallListUpFromSearchTitleReqDto reqDto, FSorts sorts, Pageable pageable) {
         try {
             emitter.send(fBallQueryRepository.getBallListUpFromSearchTitle(reqDto,sorts,pageable));
         } catch (IOException | ParseException e) {
@@ -128,7 +128,7 @@ public class FBallService {
 
     @Async
     @Transactional
-    public void getUserToMakerBalls(ResponseBodyEmitter emitter, UserToMakerBallReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public void getUserToMakerBalls(ResponseBodyEmitter emitter, UserToMakerBallReqDto reqDto, FSorts sorts, Pageable pageable) {
         try {
             List<UserToMakerBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls(reqDto, sorts, pageable);
             UserToMakerBallResWrapDto resWrapDto = new UserToMakerBallResWrapDto(LocalDateTime.now(), userToMakerBalls);
@@ -172,7 +172,7 @@ public class FBallService {
 
     @Async
     @Transactional
-    public void ListUpFromTagName(ResponseBodyEmitter emitter, FBallListUpFromTagReqDto reqDto, MultiSorts sorts, Pageable pageable) {
+    public void ListUpFromTagName(ResponseBodyEmitter emitter, FBallListUpFromTagReqDto reqDto, FSorts sorts, Pageable pageable) {
         try {
             FBallListUpWrapDto fBallListUpWrapDto = fBallQueryRepository.ListUpFromTagName(reqDto,sorts,pageable);
             emitter.send(fBallListUpWrapDto);

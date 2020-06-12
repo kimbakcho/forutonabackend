@@ -20,7 +20,7 @@ public class IssueBallController {
 
     @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/Issue/Select")
-    public ResponseBodyEmitter selectBall(FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken){
+    public ResponseBodyEmitter selectBall(FBallReqDto fBallReqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         issueBallTypeService.selectBall(emitter,fBallReqDto);
         return emitter;

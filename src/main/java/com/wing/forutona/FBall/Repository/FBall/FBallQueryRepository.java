@@ -1,32 +1,34 @@
 package com.wing.forutona.FBall.Repository.FBall;
 
+import com.google.type.LatLng;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.wing.forutona.CustomUtil.FSort;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
-import com.wing.forutona.CustomUtil.MultiSorts;
-import com.wing.forutona.CustomUtil.PageableUtil;
+import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.Querydsl4RepositorySupport;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,115 +48,96 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    /**
-     * Front 로 부터 화면의 검색 범위를 좌표로 받음 다음 검색 해줌.
-     *
-     * @param reqDto
-     * @param sorts
-     * @param pageable
-     * @return
-     * @throws ParseException
-     */
     public FBallListUpWrapDto getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
-                                                       MultiSorts sorts, Pageable pageable) throws ParseException {
-
+                                                       FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
-        String rectStr = GisGeometryUtil.createRectPOLYGONStr(reqDto.getSouthwestLng(),
+
+        String mapAreaGeoRectStr = GisGeometryUtil.createRectPOLYGONStr(reqDto.getSouthwestLng(),
                 reqDto.getSouthwestLat(), reqDto.getNortheastLng(), reqDto.getNortheastLat());
-        Geometry rect = new WKTReader().read(rectStr);
-        rect.setSRID(4326);
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
-        JPAQuery<FBall> query = queryFactory
+        Geometry mapAreaGeoRect = new WKTReader().read(mapAreaGeoRectStr);
+        mapAreaGeoRect.setSRID(4326);
+
+        NumberTemplate stWithin = boundaryInBallsFilter(mapAreaGeoRect);
+
+        LatLng centerLatLng = LatLng.newBuilder().setLatitude(reqDto.getCenterPointLat()).setLongitude(reqDto.getCenterPointLng()).build();
+
+        List<FBall> fBallList = queryFactory
                 .select(fBall)
                 .from(fBall)
                 .where(stWithin.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
-                        , fBall.ballDeleteFlag.isFalse()
-                );
-        for (var orderSpecifier : orderSpecifiers) {
-            //거리순일때만 분기 처리
-            if (isSpecialOrder(orderSpecifier, "distance")) {
-                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
-                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                        GisGeometryUtil.createCenterPoint(reqDto.getCenterPointLat(), reqDto.getCenterPointLng()));
-                if (orderSpecifier.getOrder().toString().equals("DESC")) {
-                    query = query.orderBy(st_distance_sphere.desc());
-                } else {
-                    query = query.orderBy(st_distance_sphere.asc());
-                }
+                        , fBall.ballDeleteFlag.isFalse())
+                .orderBy(getDistanceWithOrderSpecifiers(centerLatLng, sorts).stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset()).fetch();
+
+        return new FBallListUpWrapDto(LocalDateTime.now(),fBallList.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+    }
+
+    public List<OrderSpecifier> getDistanceWithOrderSpecifiers(LatLng position, FSorts sorts) throws ParseException {
+        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+        for (var sort : sorts.getSorts()) {
+            if (sort.getSort().equals("distance")) {
+                    NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
+                            "function('st_distance_sphere',{0},{1})", fBall.placePoint,
+                            GisGeometryUtil.createCenterPoint(position.getLatitude(), position.getLongitude()));
+                    if (sort.getOrder().equals(Order.DESC)) {
+                        orderSpecifiers.add(st_distance_sphere.desc());
+                    } else {
+                        orderSpecifiers.add(st_distance_sphere.asc());
+                    }
             } else {
-                query = query.orderBy(orderSpecifier);
+                orderSpecifiers.add(sort.toOrderSpecifier(fBall));
             }
         }
-        List<FBall> fetch = query.limit(pageable.getPageSize())
-                .offset(pageable.getOffset()).fetch();
-        FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
-
-        wrapDto.setBalls(fetch.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
-        return wrapDto;
-
-    }
-
-    public boolean isSpecialOrder(OrderSpecifier orderSpecifier, String orderType) {
-        String[] split = orderSpecifier.getTarget().toString().split("\\.");
-        return split.length > 1 && split[1].equals(orderType);
+        return orderSpecifiers;
     }
 
 
-
-    public FBallListUpWrapDto getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, MultiSorts sorts, Pageable pageable) throws ParseException {
-        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
+    public FBallListUpWrapDto getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
                 "function('match',{0},{1})",
                 QFBall.fBall.ballName, "+" + reqDto.getSearchText() + "*");
-        JPAQuery<FBall> query = queryFactory
+
+        LatLng centerLatLng = LatLng.newBuilder().setLatitude(reqDto.getLatitude()).setLongitude(reqDto.getLongitude()).build();
+
+        QueryResults<FBall> fBallQueryResults = queryFactory
                 .select(fBall)
                 .from(fBall)
                 .where(matchTemplate.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballDeleteFlag.isFalse()
-                );
-        for (var orderSpecifier : orderSpecifiers) {
-            //거리순일때만 분기 처리
-            if (isSpecialOrder(orderSpecifier, "distance")) {
-                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
-                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                        GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
-                if (orderSpecifier.getOrder().toString().equals("DESC")) {
-                    query = query.orderBy(st_distance_sphere.desc());
-                } else {
-                    query = query.orderBy(st_distance_sphere.asc());
-                }
-            } else {
-                query = query.orderBy(orderSpecifier);
-            }
-        }
-        QueryResults<FBall> fBallQueryResults = query.limit(pageable.getPageSize())
+                ).orderBy(getDistanceWithOrderSpecifiers(centerLatLng, sorts).stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchResults();
+
         FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
         wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
         wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+
         return wrapDto;
     }
 
-
     public Long getFindBallCountInDistance(Geometry rect) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
+
+        NumberTemplate stWithin = boundaryInBallsFilter(rect);
+
         Long count = queryFactory.select(fBall.count()).from(fBall)
                 .where(stWithin.eq(1), fBall.ballDeleteFlag.isFalse()).fetchOne();
         return count;
     }
 
     public FBallListUpWrapDto getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
-        List<Sort.Direction> sortOrders = pageable.getSort().get()
-                .map(x -> x.getDirection()).collect(Collectors.toList());
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, searchBoundary);
+
+        NumberTemplate stWithin = boundaryInBallsFilter(searchBoundary);
+
             NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
+
             List<FBallResDto> fBallResDtos = queryFactory.select(
                     new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
                     .from(fBall).join(fBall.fBallUid, fUserInfo)
@@ -170,77 +153,74 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
             return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
         }
 
+    public NumberTemplate<Integer> boundaryInBallsFilter(Geometry searchBoundary) {
+        return Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, searchBoundary);
+    }
 
 
     public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
-                                                           MultiSorts sorts, Pageable pageable) {
+                                                           FSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberExpression<Integer> Alive = new CaseBuilder()
+
+        List<OrderSpecifier> fBallOrderSpecifier = getAliveWithFBallOrderSpecifier(sorts);
+
+        return queryFactory.select(new QUserToMakerBallResDto(fBall))
+                    .from(fBall)
+                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
+                    .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
+                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
+
+    }
+
+    private List<OrderSpecifier> getAliveWithFBallOrderSpecifier(FSorts sorts) {
+        List<OrderSpecifier> orderBys = new LinkedList<>();
+        for (FSort sort : sorts.getSorts()) {
+            if(sort.getSort().equals("Alive")){
+                orderBys.add(getAliveCaseBuilder().desc());
+            } else {
+                orderBys.add(sort.toOrderSpecifier(fBall));
+            }
+        }
+        return orderBys;
+    }
+
+
+
+    private NumberExpression<Integer> getAliveCaseBuilder() {
+        return new CaseBuilder()
                 .when(fBall.activationTime.after(LocalDateTime.now()))
                 .then(1)
                 .otherwise(0);
-
-        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
-        List<UserToMakerBallResDto> userToMakerBallResDtos = null;
-        if (sorts.getSorts().size() > 0 && sorts.isContain("Alive")) {
-            userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
-                    .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
-                    .orderBy(Alive.desc()).orderBy(orderSpecifiers.get(1))
-                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
-        } else {
-            userToMakerBallResDtos = queryFactory.select(new QUserToMakerBallResDto(fBall))
-                    .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
-                    .orderBy(orderSpecifiers.get(0))
-                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
-        }
-
-        return userToMakerBallResDtos;
     }
 
 
     public FBallListUpWrapDto ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
-                                                MultiSorts sorts, Pageable pageable) throws ParseException {
-        List<OrderSpecifier> orderSpecifiers = PageableUtil.multipleSortToOrders(sorts.getSorts(), fBall);
+                                                FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        JPAQuery<FBall> query = queryFactory.select(fBall)
+
+        LatLng centerLatLng = LatLng.newBuilder().setLatitude(reqDto.getLatitude()).setLongitude(reqDto.getLongitude()).build();
+
+        QueryResults<FBall> fBallQueryResults = queryFactory.select(fBall)
                 .from(fBalltag)
                 .join(fBalltag.ballUuid, fBall)
                 .where(fBalltag.tagItem.eq(reqDto.getSearchTag())
-                        .and(fBall.activationTime.after(LocalDateTime.now())));
-        for (var orderSpecifier : orderSpecifiers) {
-            String[] split = orderSpecifier.getTarget().toString().split("\\.");
-            //거리순일때만 분기 처리
-            if (split.length > 1 && split[1].equals("distance")) {
-                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
-                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                        GisGeometryUtil.createCenterPoint(reqDto.getLatitude(), reqDto.getLongitude()));
-
-                if (orderSpecifier.getOrder().toString().equals("DESC")) {
-                    query = query.orderBy(st_distance_sphere.desc());
-                } else {
-                    query = query.orderBy(st_distance_sphere.asc());
-                }
-            } else {
-                query = query.orderBy(orderSpecifier);
-            }
-        }
-        QueryResults<FBall> fBallQueryResults = query.limit(pageable.getPageSize())
+                        .and(fBall.activationTime.after(LocalDateTime.now())))
+                .orderBy(getDistanceWithOrderSpecifiers(centerLatLng, sorts).stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchResults();
+
         FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
         wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
         wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+
         return wrapDto;
     }
 
 
-    /*
-    CenterPoint와 rect 범위 안의 ball 들의 거리 반환
-     */
     public List<Tuple> getFindBallInDistanceForQueryDsl(Geometry centerPoint, Geometry rect) {
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
+        NumberTemplate stWithin = boundaryInBallsFilter(rect);
+
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         List<Tuple> fetch = queryFactory.select(fBall.placePoint,
                 fBall.placePoint.distance(centerPoint))
@@ -248,6 +228,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .where(stWithin.eq(1),
                         fBall.ballDeleteFlag.isFalse())
                 .fetch();
+
         return fetch;
     }
 

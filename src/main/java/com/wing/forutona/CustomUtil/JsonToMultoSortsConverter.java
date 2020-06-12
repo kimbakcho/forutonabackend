@@ -6,13 +6,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-class JsonToMultoSortsConverter implements Converter<String, MultiSorts> {
+class JsonToMultoSortsConverter implements Converter<String, FSorts> {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    public MultiSorts convert(String s) {
+    public FSorts convert(String s) {
         try {
-            return jsonMapper.readValue(s, MultiSorts.class);
+            return jsonMapper.readValue(s, FSorts.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return  null;
