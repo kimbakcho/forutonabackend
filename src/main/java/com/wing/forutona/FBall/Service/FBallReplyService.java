@@ -66,7 +66,7 @@ public class FBallReplyService {
             fBallReply.setReplyDepth(1L);
             fBallReply.setReplyNumber(reqDto.getReplyNumber());
         }
-        FUserInfo fUserInfo1 = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+        FUserInfo fUserInfo1 = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
         fBallReply.setReplyUid(fUserInfo1);
         fBallReply.setReplyText(reqDto.getReplyText());
         fBallReply.setReplyUploadDateTime(LocalDateTime.now());
@@ -124,7 +124,7 @@ public class FBallReplyService {
     public void updateFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) {
         FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
         try {
-            if (fireBaseToken.getFireBaseToken().getUid().equals(fBallReply.getReplyUid().getUid())) {
+            if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
                 fBallReply.setReplyText(reqDto.getReplyText());
                 fBallReply.setReplyUpdateDateTime(LocalDateTime.now());
                 emitter.send(1);
@@ -144,7 +144,7 @@ public class FBallReplyService {
     public void deleteFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, String replyUuid) {
         FBallReply fBallReply = fBallReplyDataRepository.findById(replyUuid).get();
         try {
-            if (fireBaseToken.getFireBaseToken().getUid().equals(fBallReply.getReplyUid().getUid())) {
+            if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
                 fBallReply.setReplyText("Delete Text");
                 fBallReply.setReplyUpdateDateTime(LocalDateTime.now());
                 fBallReply.setDeleteFlag(true);

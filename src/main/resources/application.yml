@@ -79,3 +79,43 @@ forutona:
   sureMdeptcode: P8-ECX-6T
   sureMFrom: 010-6710-7004
 ---
+spring:
+  profiles: test
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  jpa:
+    open-in-view: false
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  mvc:
+    async:
+      request-timeout: -1
+server:
+  port: 8443
+forutona:
+  serviekeypath: C:\\Users\\backho\\Desktop\\forutonadata\\adminsdkservicekey\\forutona-firebase-adminsdk-p6ho6-ab85124646.json
+  storgeserviekeypath: C:\\Users\\backho\\Desktop\\forutonadata\\adminsdkservicekey\\Forutona-3539edf2b36d.json
+  smssretrieverappsign: hVwMMiFZJlz
+  sureMID: forutona1020
+  sureMdeptcode: P8-ECX-6T
+  sureMFrom: 010-6710-7004
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+            StatementCreatorUtils: TRACE
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+---

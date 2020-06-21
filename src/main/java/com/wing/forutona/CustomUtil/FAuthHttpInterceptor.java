@@ -50,7 +50,7 @@ public class FAuthHttpInterceptor implements HandlerInterceptor {
             String token = request.getHeader(HttpHeaders.AUTHORIZATION);
             token = token.replace("Bearer ", "");
             try {
-                FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(token, true);
+                FirebaseAuth.getInstance().verifyIdToken(token, true);
             } catch (FirebaseAuthException ex) {
                 ex.printStackTrace();
                 return false;

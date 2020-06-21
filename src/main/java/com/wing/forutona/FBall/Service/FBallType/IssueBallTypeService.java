@@ -43,7 +43,7 @@ public class IssueBallTypeService  {
             fBall.setMakeTime(LocalDateTime.now());
             //이슈Ball의 경우는 Wait가 없음
             fBall.setBallState(FBallState.Play);
-            FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+            FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
             fBall.setFBallUid(fUserInfo);
             //아래 지수는 액션에 의해 변해야 함으로 Client 단순 정보로 변하게 하지 않기 위해서 직접 BackEnd 에서 Defined
             fBall.setPointReward(0);
@@ -75,7 +75,7 @@ public class IssueBallTypeService  {
     public void updateBall(ResponseBodyEmitter emitter, IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())) {
+            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
                 throw new Exception("don't Have Permisstion");
             }
             fBall.setLongitude(reqDto.getLongitude());
@@ -119,7 +119,7 @@ public class IssueBallTypeService  {
     public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto,FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
-            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getFireBaseToken().getUid())) {
+            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
                 throw new Exception("don't Have Permisstion");
             }
             fBall.setBallDeleteFlag(true);
@@ -146,7 +146,7 @@ public class IssueBallTypeService  {
     public void joinBall(ResponseBodyEmitter emitter, FBallJoinReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
         try{
             FUserInfo fBallPlayer = new FUserInfo();
-            fBallPlayer.setUid(fireBaseToken.getFireBaseToken().getUid());
+            fBallPlayer.setUid(fireBaseToken.getUserFireBaseUid());
             FBall fBall = new FBall();
             fBall.setBallUuid(fBallReqDto.getBallUuid());
             FBallPlayer ballPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);

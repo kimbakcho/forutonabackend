@@ -39,6 +39,17 @@ public class JPAConfigure {
     }
 
     @Bean
+    @Profile("test")
+    public DataSource testDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUsername("neoforutonatester");
+        dataSource.setPassword("forutona1020");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
+        return dataSource;
+    }
+
+    @Bean
     @Profile("real")
     public DataSource realDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -65,8 +76,25 @@ public class JPAConfigure {
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         Properties jpaProperties = new Properties();
+//        jpaProperties.put("hibernate.hbm2ddl.auto", "create");
+        jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
+        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("hibernate.format_sql", "true");
+        jpaProperties.put("hibernate.use_sql_comment", "true");
+        em.setJpaProperties(jpaProperties);
+        return em;
+    }
 
-
+    @Bean(name = "entityManagerFactory")
+    @Profile("test")
+    public LocalContainerEntityManagerFactoryBean testEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em
+                = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(testDataSource());
+        em.setPackagesToScan(new String[]{"com.wing.forutona"});
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        Properties jpaProperties = new Properties();
 //        jpaProperties.put("hibernate.hbm2ddl.auto", "create");
         jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
         jpaProperties.put("hibernate.show_sql", "true");

@@ -4,24 +4,28 @@ import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.ForutonaUser.Dto.*;
-import com.wing.forutona.ForutonaUser.Service.FUserInfoService;
+import com.wing.forutona.ForutonaUser.Service.FAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @RestController
-public class FUserInfoController {
+public class FAccountController {
 
     @Autowired
-    FUserInfoService fUserInfoService;
+    FAccountService fAccountService;
 
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
     @GetMapping(value = "/v1/ForutonaUser/Me")
     public ResponseBodyEmitter getMe(FFireBaseToken fFireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.getMe(emitter,fFireBaseToken);
+        fAccountService.getMe(emitter,fFireBaseToken);
         return emitter;
     }
 
@@ -29,7 +33,7 @@ public class FUserInfoController {
     @GetMapping(value = "/v1/ForutonaUser/checkNickNameDuplication")
     public ResponseBodyEmitter checkNickNameDuplication(@RequestParam  String nickName){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.checkNickNameDuplication(emitter,nickName);
+        fAccountService.checkNickNameDuplication(emitter,nickName);
         return emitter;
     }
 
@@ -38,7 +42,7 @@ public class FUserInfoController {
     @PutMapping(value = "/v1/ForutonaUser/AccountUserInfo")
     public ResponseBodyEmitter updateAccountUserInfo(FFireBaseToken fFireBaseToken, @RequestBody FuserAccountUpdateReqdto reqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.updateAccountUserInfo(emitter,fFireBaseToken,reqDto);
+        fAccountService.updateAccountUserInfo(emitter,fFireBaseToken,reqDto);
         return emitter;
     }
 
@@ -47,7 +51,7 @@ public class FUserInfoController {
     public ResponseBodyEmitter updateUserProfileImage(FFireBaseToken fFireBaseToken,
                                                       @RequestParam("ProfileImage") MultipartFile file){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.updateUserProfileImage(emitter,fFireBaseToken,file);
+        fAccountService.updateUserProfileImage(emitter,fFireBaseToken,file);
         return emitter;
     }
 
@@ -56,7 +60,7 @@ public class FUserInfoController {
     @PutMapping(value = "/v1/ForutonaUser/PwChange")
     public ResponseBodyEmitter userPwChange(FFireBaseToken fFireBaseToken, @RequestBody  FUserInfoPwChangeReqDto reqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.userPwChange(emitter,fFireBaseToken,reqDto);
+        fAccountService.userPwChange(emitter,fFireBaseToken,reqDto);
         return emitter;
     }
 
@@ -68,7 +72,7 @@ public class FUserInfoController {
     @GetMapping(value = "/v1/ForutonaUser/UserInfoSimple1")
     public ResponseBodyEmitter getUserInfoSimple1(FUserReqDto reqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.getUserInfoSimple1(emitter,reqDto);
+        fAccountService.getUserInfoSimple1(emitter,reqDto);
         return emitter;
     }
 
@@ -76,7 +80,7 @@ public class FUserInfoController {
     @GetMapping(value = "/v1/ForutonaUser/SnsUserJoinCheckInfo")
     public ResponseBodyEmitter getSnsUserJoinCheckInfo(FUserSnSLoginReqDto snSLoginReqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.getSnsUserJoinCheckInfo(emitter,snSLoginReqDto);
+        fAccountService.getSnsUserJoinCheckInfo(emitter,snSLoginReqDto);
         return emitter;
     }
 
@@ -85,9 +89,7 @@ public class FUserInfoController {
     @PostMapping(value = "/v1/ForutonaUser/JoinUser")
     public ResponseBodyEmitter joinUser(@RequestBody FUserInfoJoinReqDto reqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fUserInfoService.joinUser(emitter,reqDto);
+        fAccountService.joinUser(emitter,reqDto);
         return emitter;
     }
-
-
 }

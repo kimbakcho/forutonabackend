@@ -1,6 +1,7 @@
 package com.wing.forutona.ForutonaUser.Domain;
 
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "UserInfo")
 public class FUserInfo {
@@ -77,6 +78,7 @@ public class FUserInfo {
     this.userBalls.add(fBall);
     fBall.setFBallUid(this);
   }
+
   public FUserInfo (FUserInfoJoinReqDto reqDto){
     this.forutonaAgree = reqDto.isForutonaAgree();
     this.forutonaManagementAgree = reqDto.isForutonaManagementAgree();
@@ -93,5 +95,14 @@ public class FUserInfo {
     this.placePoint = geomFactory.createPoint(new Coordinate(37.4402052,126.79369789999998));
     this.placePoint.setSRID(4326);
     this.phoneNumber = reqDto.getInternationalizedPhoneNumber();
+  }
+
+  public void updatePlacePoint(LatLng latLng){
+    GeometryFactory geomFactory = new GeometryFactory();
+    Point point = geomFactory.createPoint(new Coordinate(latLng.getLatitude(), latLng.getLongitude()));
+    point.setSRID(4326);
+    this.placePoint = point;
+    this.latitude = latLng.getLatitude();
+    this.longitude = latLng.getLongitude();
   }
 }

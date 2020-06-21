@@ -57,31 +57,18 @@ class ForutonaApplicationTests {
     @PersistenceContext
     EntityManager em;
 
-
     @Test
     public  void MysqlFullTextMatch(){
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         String text = "test";
-
         NumberTemplate booleanTemplate = Expressions.numberTemplate(Integer.class,"function('match',{0},{1})", QFBall.fBall.ballName, "+ret*");
-
         Expression<Integer> test = ExpressionUtils.as(Expressions.constant(1), "test");
         List<FBall> fetch = queryFactory.select(QFBall.fBall).from(QFBall.fBall).where(booleanTemplate.eq(1)).fetch();
         for (FBall fBall : fetch) {
             System.out.println(fBall.getBallName());
         }
-
     }
 
-//    //https://www.baeldung.com/hibernate-spatial
-//    @Test
-//    public void getFindBallCountInDistanceForJpaData() {
-//        NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
-//        reqDto.setLatitude(37.51368824280154);
-//        reqDto.setLongitude(126.8985465914011);
-//        reqDto.setDistance(100);
-//        Long count = fBallDataRepository.getFindLocationWithin(createRect(reqDto.getLatitude(), reqDto.getLongitude(), 1000));
-//    }
 
     //지도 중심 위치로 부터 주번 볼 검색
     @Test
@@ -100,12 +87,9 @@ class ForutonaApplicationTests {
         Geometry rect = new WKTReader().read(GisGeometryUtil.createRectPOLYGONStr(area.southWest.longitude,area.southWest.latitude,area.northEast.longitude,area.northEast.latitude));
         rect.setSRID(4326);
 
-
         Long count = fBallQueryRepository.getFindBallCountInDistance(rect);
 		System.out.println("count = "+ count);
     }
-
-
 
     //일정 범위내에 Ball들의 거리 계산
     @Test
@@ -140,8 +124,6 @@ class ForutonaApplicationTests {
 
     }
 
-
-
     @Test
     public void diatanceOfBallCountToLimit() throws ParseException {
         NearBallFindDistanceReqDto reqDto = new NearBallFindDistanceReqDto();
@@ -167,13 +149,6 @@ class ForutonaApplicationTests {
 //            System.out.println( "--------------------------------------------");
 //        }
     }
-
-
-
-
-
-
-
 
     public Geometry createCircle(double x, double y, double radius) {
         GeometricShapeFactory shapeFactory = new GeometricShapeFactory();

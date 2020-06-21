@@ -63,7 +63,7 @@ public class FBallValuationService {
                 fBallValuation.setValueUuid(reqDto.getValueUuid());
                 fBallValuation.setBallUuid(fBall);
                 FUserInfo playerUid = new FUserInfo();
-                playerUid.setUid(fireBaseToken.getFireBaseToken().getUid());
+                playerUid.setUid(fireBaseToken.getUserFireBaseUid());
                 fBallValuation.setUid(playerUid);
                 ballValuation(reqDto, fBallValuation, fBall);
                 contributorsControllerService.ifNotExistsInsert(new ContributorReqDto(reqDto.getUid(),reqDto.getBallUuid()));
@@ -88,7 +88,7 @@ public class FBallValuationService {
             if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
-            } else if (fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())) {
+            } else if (fireBaseToken.getUserFireBaseUid().equals(fBallValuation.getUid().getUid())) {
                 ballValuation(reqDto, fBallValuation, fBall);
                 emitter.send(fBallValuation.getValueUuid());
             } else {
@@ -123,7 +123,7 @@ public class FBallValuationService {
             if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
-            } else if (fireBaseToken.getFireBaseToken().getUid().equals(fBallValuation.getUid().getUid())) {
+            } else if (fireBaseToken.getUserFireBaseUid().equals(fBallValuation.getUid().getUid())) {
                 if (fBallValuation.getUpAndDown() > 0) {
                     fBall.setBallLikes(fBall.getBallLikes() - Math.abs(fBallValuation.getUpAndDown()));
                 } else {

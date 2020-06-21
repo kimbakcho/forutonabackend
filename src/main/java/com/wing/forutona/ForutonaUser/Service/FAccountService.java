@@ -23,8 +23,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 import java.io.IOException;
 import java.util.UUID;
 
+public interface FAccountService {
+    void checkNickNameDuplication(ResponseBodyEmitter emitter, String nickName);
+    void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto);
+    void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken);
+    void updateUserProfileImage(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, MultipartFile file);
+    void updateAccountUserInfo(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FuserAccountUpdateReqdto reqdto);
+    void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto);
+    void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto);
+    void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto);
+}
+
 @Service
-public class FUserInfoService {
+class FAccountServiceImpl implements FAccountService {
+
     @Autowired
     FUserInfoQueryRepository fUserInfoQueryRepository;
 
@@ -34,12 +46,6 @@ public class FUserInfoService {
     @Autowired
     GoogleStorgeAdmin googleStorgeAdmin;
 
-    /**
-     * 닉네임 중복을 체크
-     *
-     * @param emitter
-     * @param nickName
-     */
     @Async
     @Transactional
     public void checkNickNameDuplication(ResponseBodyEmitter emitter, String nickName) {
@@ -61,7 +67,7 @@ public class FUserInfoService {
 
     @Async
     public void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto) {
-        UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(fFireBaseToken.getFireBaseToken().getUid());
+        UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(fFireBaseToken.getUserFireBaseUid());
         updateRequest.setPassword(reqDto.getPw());
         try {
             UserRecord userRecord = FirebaseAuth.getInstance().updateUser(updateRequest);
@@ -76,7 +82,7 @@ public class FUserInfoService {
     @Async
     @Transactional
     public void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
         try {
             emitter.send(new FUserInfoResDto(fUserInfo));
         } catch (IOException e) {
@@ -89,7 +95,7 @@ public class FUserInfoService {
     @Async
     @Transactional
     public void updateUserProfileImage(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, MultipartFile file) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getFireBaseToken().getUid()).get();
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
         Storage storage = googleStorgeAdmin.GetStorageInstance();
         try {
             String OriginalFile = file.getOriginalFilename();
@@ -119,7 +125,7 @@ public class FUserInfoService {
     @Transactional
     public void updateAccountUserInfo(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FuserAccountUpdateReqdto reqdto) {
         try {
-            FUserInfo fUserInfo = fUserInfoDataRepository.findById(fFireBaseToken.getFireBaseToken().getUid()).get();
+            FUserInfo fUserInfo = fUserInfoDataRepository.findById(fFireBaseToken.getUserFireBaseUid()).get();
             fUserInfo.setIsoCode(reqdto.getIsoCode());
             //이전 자신의 닉네임과 같지 않을때 중복 체크후 닉네임 설정
             if (!fUserInfo.getNickName().equals(reqdto.getNickName())) {
@@ -128,7 +134,7 @@ public class FUserInfoService {
                 }
             }
             fUserInfo.setSelfIntroduction(reqdto.getSelfIntroduction());
-            if(reqdto.getUserProfileImageUrl() != null){
+            if (reqdto.getUserProfileImageUrl() != null) {
                 fUserInfo.setProfilePictureUrl(reqdto.getUserProfileImageUrl());
             }
             emitter.send(1);
@@ -163,16 +169,9 @@ public class FUserInfoService {
         }
     }
 
-    /**
-     * SNS 로그인 할때 회원 가입 여부 판단
-     *
-     * @param emitter
-     * @param snSLoginReqDto
-     */
     @Async
     @Transactional
     public void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto) {
-
         try {
             SnsLoginService snsLoginService = null;
             if (snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook) {
@@ -200,13 +199,13 @@ public class FUserInfoService {
         try {
             SnsLoginService snsLoginService = null;
             if (reqDto.getSnsSupportService().equals(SnsSupportService.FaceBook)) {
-                snsLoginService= new FaceBookLoginService(fUserInfoDataRepository);
+                snsLoginService = new FaceBookLoginService(fUserInfoDataRepository);
             } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Naver)) {
-                snsLoginService= new NaverLoginService(fUserInfoDataRepository);
+                snsLoginService = new NaverLoginService(fUserInfoDataRepository);
             } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Kakao)) {
-                snsLoginService= new KakaoLoginService(fUserInfoDataRepository);
-            } else if(reqDto.getSnsSupportService().equals(SnsSupportService.Forutona)){
-                snsLoginService= new ForutonaLoginService(fUserInfoDataRepository);
+                snsLoginService = new KakaoLoginService(fUserInfoDataRepository);
+            } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Forutona)) {
+                snsLoginService = new ForutonaLoginService(fUserInfoDataRepository);
             } else {
                 throw new Exception("Not Support SnsService");
             }
@@ -217,6 +216,5 @@ public class FUserInfoService {
         } finally {
             emitter.complete();
         }
-
     }
 }
