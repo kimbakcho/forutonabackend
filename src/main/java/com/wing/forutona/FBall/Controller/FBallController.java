@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 @RequiredArgsConstructor
 public class FBallController {
 
-
     final FBallService fBallService;
-
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
@@ -40,13 +41,7 @@ public class FBallController {
         return emitter;
     }
 
-    @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/FBall/ListUpFromBallInfluencePower")
-    public ResponseBodyEmitter ListUpBallInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fBallService.BallListUpFromBallInfluencePower(emitter,reqDto,pageable);
-        return emitter;
-    }
+
 
 
     @ResponseAddJsonHeader

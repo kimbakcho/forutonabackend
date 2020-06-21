@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
 import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.*;
@@ -30,6 +31,9 @@ public class FTagService {
     @Autowired
     FBallService fBallService;
 
+    @Autowired
+    DistanceOfBallCountToLimitService distanceOfBallCountToLimitService;
+
     /*
     현재 사용자가 설정한 지도의 중심 위치에서 Top10 개의 영향력 Tag를 가지고 옴
     centerPoint가 사용자 설정의 지도 중심 위치
@@ -38,12 +42,12 @@ public class FTagService {
     @Async
     @Transactional
     public void getFTagRankingFromBallInfluencePower(ResponseBodyEmitter emitter, TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
-        int searchDistance = fBallService.distanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude(),
+        int searchDistance = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude(),
                 tagRankingFromBallInfluencePowerReqDto.getLongitude(), 1000);
         Geometry rect = GisGeometryUtil.createRect(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude(), searchDistance);
         Geometry centerPoint = GisGeometryUtil.createCenterPoint(tagRankingFromBallInfluencePowerReqDto.getLatitude(), tagRankingFromBallInfluencePowerReqDto.getLongitude());
         try {
-            emitter.send(fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(centerPoint, rect, tagRankingFromBallInfluencePowerReqDto.getLimit()));
+            emitter.send(fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(centerPoint, rect,tagRankingFromBallInfluencePowerReqDto.getLimit()));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -18,6 +18,7 @@ import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.NearBallFindDistanceReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
 import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
@@ -50,6 +51,9 @@ class ForutonaApplicationTests {
 
     @Autowired
     FBallService fBallService;
+
+    @Autowired
+    DistanceOfBallCountToLimitService distanceOfBallCountToLimitService;
 
     @Autowired
     FTagService fTagService;
@@ -131,7 +135,7 @@ class ForutonaApplicationTests {
         reqDto.setLongitude(126.8985465914011);
         reqDto.setDistance(10000);
 
-        int i = fBallService.distanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(), 30);
+        int i = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(), 30);
         System.out.println("distance  = " + i);
     }
 
