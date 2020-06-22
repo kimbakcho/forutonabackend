@@ -27,16 +27,15 @@ public class FBallTagQueryRepository {
     @PersistenceContext
     EntityManager em;
 
-    /*
-    1.centerPoint 으로부터 rect 범위 안의 Ball 들의 파워을 구함
-    2.파워와 centerPoint 와 rect 범위 안의 Ball의 거리를 구해서 영향력을 구함.(살아 있는 Ball만 구성 )
-    3.해당 영향력을 기준으로 정렬
-     */
     public TagRankingWrapdto getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
         NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class, "function('st_distance_sphere',{0},{1})", fBall.placePoint, centerPoint);
+
         NumberExpression influence = fBall.ballPower.divide(st_distance_sphere).sum();
+
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
+
         List<TagRankingDto> tagRankingDtos = queryFactory.select(
                 new QTagRankingDto(fBalltag.tagItem, influence))
                 .from(fBall).join(fBall.tags, fBalltag)
@@ -45,15 +44,19 @@ public class FBallTagQueryRepository {
                 .orderBy(influence.desc())
                 .limit(limit)
                 .fetch();
+
+        makeTagRankingIndex(tagRankingDtos);
+
+        TagRankingWrapdto tagRankingWrapdto = new TagRankingWrapdto(LocalDateTime.now(), tagRankingDtos);
+        return tagRankingWrapdto;
+    }
+
+    public void makeTagRankingIndex(List<TagRankingDto> tagRankingDtos) {
         int i = 1;
         for (TagRankingDto tagRankingDto : tagRankingDtos) {
             tagRankingDto.setRanking(i++);
         }
-        TagRankingWrapdto tagRankingWrapdto = new TagRankingWrapdto(LocalDateTime.now(), tagRankingDtos);
-
-        return tagRankingWrapdto;
     }
-
 
 
     public TagRankingWrapdto getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto) {

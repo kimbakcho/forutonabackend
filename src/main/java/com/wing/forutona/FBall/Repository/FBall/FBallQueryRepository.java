@@ -15,8 +15,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.wing.forutona.CustomUtil.FSort;
-import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.CustomUtil.FSorts;
+import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.*;
@@ -42,11 +42,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     @PersistenceContext
     EntityManager em;
 
-
     public FBallQueryRepository() {
         super(FBall.class);
     }
-
 
     public FBallListUpWrapDto getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
                                                        FSorts sorts, Pageable pageable) throws ParseException {
@@ -71,21 +69,21 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset()).fetch();
 
-        return new FBallListUpWrapDto(LocalDateTime.now(),fBallList.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+        return new FBallListUpWrapDto(LocalDateTime.now(), fBallList.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
     }
 
     public List<OrderSpecifier> getDistanceWithOrderSpecifiers(LatLng position, FSorts sorts) throws ParseException {
         List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
         for (var sort : sorts.getSorts()) {
             if (sort.getSort().equals("distance")) {
-                    NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
-                            "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                            GisGeometryUtil.createCenterPoint(position.getLatitude(), position.getLongitude()));
-                    if (sort.getOrder().equals(Order.DESC)) {
-                        orderSpecifiers.add(st_distance_sphere.desc());
-                    } else {
-                        orderSpecifiers.add(st_distance_sphere.asc());
-                    }
+                NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
+                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
+                        GisGeometryUtil.createCenterPoint(position.getLatitude(), position.getLongitude()));
+                if (sort.getOrder().equals(Order.DESC)) {
+                    orderSpecifiers.add(st_distance_sphere.desc());
+                } else {
+                    orderSpecifiers.add(st_distance_sphere.asc());
+                }
             } else {
                 orderSpecifiers.add(sort.toOrderSpecifier(fBall));
             }
@@ -136,22 +134,23 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         NumberTemplate stWithin = boundaryInBallsFilter(searchBoundary);
 
-            NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
+        NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
 
-            List<FBallResDto> fBallResDtos = queryFactory.select(
-                    new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
-                    .from(fBall).join(fBall.fBallUid, fUserInfo)
-                    .where(stWithin.eq(1)
-                            , fBall.activationTime.after(LocalDateTime.now())
-                            , fBall.ballState.eq(FBallState.Play)
-                            , fBall.ballDeleteFlag.isFalse()
-                    )
-                    .orderBy(influence.desc())
-                    .limit(pageable.getPageSize())
-                    .offset(pageable.getOffset())
-                    .fetch();
-            return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
-        }
+        List<FBallResDto> fBallResDtos = queryFactory.select(
+                new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
+                .from(fBall).join(fBall.fBallUid, fUserInfo)
+                .where(stWithin.eq(1)
+                        , fBall.activationTime.after(LocalDateTime.now())
+                        , fBall.ballState.eq(FBallState.Play)
+                        , fBall.ballDeleteFlag.isFalse()
+                )
+                .orderBy(influence.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+        
+        return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
+    }
 
     public NumberTemplate<Integer> boundaryInBallsFilter(Geometry searchBoundary) {
         return Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, searchBoundary);
@@ -165,17 +164,17 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         List<OrderSpecifier> fBallOrderSpecifier = getAliveWithFBallOrderSpecifier(sorts);
 
         return queryFactory.select(new QUserToMakerBallResDto(fBall))
-                    .from(fBall)
-                    .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
-                    .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
-                    .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
+                .from(fBall)
+                .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
+                .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
+                .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
 
     }
 
     private List<OrderSpecifier> getAliveWithFBallOrderSpecifier(FSorts sorts) {
         List<OrderSpecifier> orderBys = new LinkedList<>();
         for (FSort sort : sorts.getSorts()) {
-            if(sort.getSort().equals("Alive")){
+            if (sort.getSort().equals("Alive")) {
                 orderBys.add(getAliveCaseBuilder().desc());
             } else {
                 orderBys.add(sort.toOrderSpecifier(fBall));
@@ -183,7 +182,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         }
         return orderBys;
     }
-
 
 
     private NumberExpression<Integer> getAliveCaseBuilder() {
@@ -231,8 +229,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         return fetch;
     }
-
-
 
 
 }

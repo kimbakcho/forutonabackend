@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 class DistanceOfBallCountToLimitServiceImplTest extends BaseTest {
 
@@ -50,7 +51,7 @@ class DistanceOfBallCountToLimitServiceImplTest extends BaseTest {
         //when
         int result = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(127.0, 31.0, 1000);
         //then
-        assertEquals(500,result);
+        then(result).should().equals(500);
 
     }
 

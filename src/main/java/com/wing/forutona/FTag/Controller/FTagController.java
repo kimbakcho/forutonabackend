@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @RestController
 public class FTagController {
 
@@ -21,9 +25,18 @@ public class FTagController {
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FTag/RankingFromBallInfluencePower")
-    public ResponseBodyEmitter getFTagRankingFromBallInfluencePower(TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
+    public ResponseBodyEmitter getFTagRankingFromBallInfluencePower(TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fTagService.getFTagRankingFromBallInfluencePower(emitter, tagRankingFromBallInfluencePowerReqDto);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(fTagService.getFTagRankingFromBallInfluencePower(tagRankingFromBallInfluencePowerReqDto));
+                emitter.complete();
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -31,7 +44,16 @@ public class FTagController {
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")
     public ResponseBodyEmitter getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fTagService.getRelationTagRankingFromTagNameOrderByBallPower(emitter, reqDto);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(fTagService.getRelationTagRankingFromTagNameOrderByBallPower( reqDto));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -39,7 +61,16 @@ public class FTagController {
     @GetMapping(value = "/v1/FTag/tagFromBallUuid")
     public ResponseBodyEmitter getTagFromBallUuid(TagFromBallReqDto reqDto) {
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fTagService.getTagFromBallUuid(emitter,reqDto);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(fTagService.getTagFromBallUuid(reqDto));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 }
