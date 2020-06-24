@@ -92,4 +92,23 @@ public class FAccountController {
         fAccountService.joinUser(emitter,reqDto);
         return emitter;
     }
+
+    @ResponseAddJsonHeader
+    @AuthFireBaseJwtCheck
+    @PutMapping(value = "/v1/ForutonaUser/FireBaseMessageToken")
+    public ResponseBodyEmitter updateFireBaseMessageToken(@RequestParam String uid,@RequestParam String token){
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(fAccountService.updateFireBaseMessageToken(uid,token));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
+        return emitter;
+
+    }
 }

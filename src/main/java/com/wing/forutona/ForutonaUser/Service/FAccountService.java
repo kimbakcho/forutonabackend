@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface FAccountService {
@@ -32,6 +33,7 @@ public interface FAccountService {
     void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto);
     void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto);
     void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto);
+    int updateFireBaseMessageToken(String uid, String token);
 }
 
 @Service
@@ -216,5 +218,13 @@ class FAccountServiceImpl implements FAccountService {
         } finally {
             emitter.complete();
         }
+    }
+
+    @Override
+    @Transactional
+    public int updateFireBaseMessageToken(String uid, String token) {
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(uid).get();
+        fUserInfo.setFCMtoken(token);
+        return 1;
     }
 }

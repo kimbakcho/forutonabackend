@@ -37,7 +37,7 @@ class FUserPositionControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("updateUserPosition")
+    @DisplayName("updateUserPosition call service ")
     public void updateUserPosition() throws Exception {
         //given
         UserPositionUpdateReqDto userPositionUpdateReqDto = new UserPositionUpdateReqDto(127.0, 18.0);

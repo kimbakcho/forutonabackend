@@ -8,6 +8,7 @@ import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface FBallListUpService {
@@ -22,6 +23,7 @@ class FBallListUpServiceImpl implements FBallListUpService {
     final DistanceOfBallCountToLimitService distanceOfBallCountToLimitService;
 
     @Override
+    @Transactional
     public FBallListUpWrapDto ListUpBallInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
 
         int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(reqDto.getLatitude(), reqDto.getLongitude(),
