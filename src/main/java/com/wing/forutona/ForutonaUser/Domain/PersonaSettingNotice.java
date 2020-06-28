@@ -1,10 +1,8 @@
 package com.wing.forutona.ForutonaUser.Domain;
 
 import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeInsertReqDto;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeUpdateReqDto;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Setter
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -25,11 +23,21 @@ public class PersonaSettingNotice {
     String noticeContent;
     String lang;
 
-    public PersonaSettingNotice(PersonaSettingNoticeInsertReqDto reqDto){
+
+    public static PersonaSettingNotice fromPersonaSettingNoticeInsertReqDto (PersonaSettingNoticeInsertReqDto reqDto){
+        PersonaSettingNotice personaSettingNotice = new PersonaSettingNotice();
+        personaSettingNotice.noticeName = reqDto.getNoticeName();
+        personaSettingNotice.noticeWriteDateTime = reqDto.getNoticeWriteDateTime();
+        personaSettingNotice.noticeContent = reqDto.getNoticeContent();
+        personaSettingNotice.lang = reqDto.getLang();
+        return personaSettingNotice;
+    }
+
+    public void updatePersonaSettingNotice(PersonaSettingNoticeUpdateReqDto reqDto){
+        this.lang = reqDto.getLang();
+        this.noticeContent = reqDto.getNoticeContent();
         this.noticeName = reqDto.getNoticeName();
         this.noticeWriteDateTime = reqDto.getNoticeWriteDateTime();
-        this.noticeContent = reqDto.getNoticeContent();
-        this.lang = reqDto.getLang();
     }
 
 }

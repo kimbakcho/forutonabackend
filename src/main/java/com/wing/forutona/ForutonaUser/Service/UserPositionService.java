@@ -23,8 +23,7 @@ class UserPositionServiceImpl implements  UserPositionService{
     @Transactional
     public int updateUserPosition(UserPositionUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
-        LatLng userPlacePoint = LatLng.newBuilder().setLongitude(reqDto.getLng()).setLatitude(reqDto.getLat()).build();
-        fUserInfo.updatePlacePoint(userPlacePoint);
+        fUserInfo.updatePlacePoint(reqDto.getLng(),reqDto.getLat());
         return  1;
     }
 

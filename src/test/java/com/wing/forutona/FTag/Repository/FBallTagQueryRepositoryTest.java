@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @Transactional
@@ -49,7 +49,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
         //then
         System.out.println(fBalltag.getTagItem());
         System.out.println(influencePowerRankingDto.getContents().get(0).getTagName());
-        then(influencePowerRankingDto.getContents().get(0).getTagName()).isEqualTo(fBalltag.getTagItem());
+        assertEquals(influencePowerRankingDto.getContents().get(0).getTagName(),fBalltag.getTagItem());
 
     }
 
@@ -70,12 +70,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
 
     private void makeTagBallPowerStrong(FBalltag fBalltag) {
         FBall fBall = fBalltag.getBallUuid();
-        fBall.setBallPower(100);
-        fBall.setLongitude(126.89606021076441);
-        fBall.setLatitude(37.50298846403655);
-        GeometryFactory geomFactory = new GeometryFactory();
-        Point point = geomFactory.createPoint(new Coordinate(126.89606021076441,  37.50298846403655));
-        point.setSRID(4326);
-        fBall.setPlacePoint(point);
+        fBall.setBallPower(1000);
+        fBall.setPlacePoint(126.89606021076441,37.50298846403655);
     }
 }

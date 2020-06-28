@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -39,7 +40,6 @@ class UserPositionServiceImplTest extends BaseTest {
 
     @BeforeEach
     void setUp() {
-        fUserInfo.setUid("testUid");
         given(fUserInfoDataRepository.findById(any())).willReturn(Optional.of(fUserInfo));
     }
 
@@ -51,6 +51,6 @@ class UserPositionServiceImplTest extends BaseTest {
         userPositionService.updateUserPosition(userPositionUpdateReqDto,fFireBaseToken);
         //then
         then(fUserInfoDataRepository).should().findById(any());
-        then(fUserInfo).should().updatePlacePoint(any());
+        then(fUserInfo).should().updatePlacePoint(anyDouble(),anyDouble());
     }
 }

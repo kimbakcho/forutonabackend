@@ -4,6 +4,7 @@ package com.wing.forutona.ForutonaUser.Service;
 import com.wing.forutona.ForutonaUser.Domain.PersonaSettingNotice;
 import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeInsertReqDto;
 import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeResDto;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeUpdateReqDto;
 import com.wing.forutona.ForutonaUser.Repository.PersonaSettingNoticeDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,7 +59,7 @@ public class PersonaSettingNoticeService {
     @Async
     @Transactional
     public void insertPersonaSettingNotice(ResponseBodyEmitter emitter, PersonaSettingNoticeInsertReqDto reqDto) {
-        PersonaSettingNotice personaSettingNotice = new PersonaSettingNotice(reqDto);
+        PersonaSettingNotice personaSettingNotice =  PersonaSettingNotice.fromPersonaSettingNoticeInsertReqDto(reqDto);
         personaSettingNoticeDataRepository.save(personaSettingNotice);
         try {
             emitter.send(1);
@@ -71,12 +72,9 @@ public class PersonaSettingNoticeService {
 
     @Async
     @Transactional
-    public void updatePersonaSettingNotice(ResponseBodyEmitter emitter, PersonaSettingNoticeInsertReqDto reqDto) {
+    public void updatePersonaSettingNotice(ResponseBodyEmitter emitter, PersonaSettingNoticeUpdateReqDto reqDto) {
         PersonaSettingNotice personaSettingNotice = personaSettingNoticeDataRepository.findById(reqDto.getIdx()).get();
-        personaSettingNotice.setLang(reqDto.getLang());
-        personaSettingNotice.setNoticeContent(reqDto.getNoticeContent());
-        personaSettingNotice.setNoticeName(reqDto.getNoticeName());
-        personaSettingNotice.setNoticeWriteDateTime(reqDto.getNoticeWriteDateTime());
+        personaSettingNotice.updatePersonaSettingNotice(reqDto);
         try {
             emitter.send(1);
         } catch (IOException e) {

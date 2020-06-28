@@ -2,17 +2,13 @@ package com.wing.forutona.FBall.Domain;
 
 import com.google.firebase.auth.UserInfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Setter
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class FBallReply {
     @Id
@@ -29,6 +25,46 @@ public class FBallReply {
     String replyText;
     LocalDateTime replyUploadDateTime;
     LocalDateTime replyUpdateDateTime;
-    Boolean deleteFlag;
+    Boolean deleteFlag = false;
 
+    @Builder
+    public FBallReply(String replyUuid,FBall replyBallUuid){
+        this.replyUuid = replyUuid;
+        this.replyBallUuid = replyBallUuid;
+    }
+
+    public void setReplyNumber(long replyNumber) {
+        this.replyNumber = replyNumber;
+    }
+
+    public void setReplySort(long replySort) {
+        this.replySort = replySort;
+    }
+
+    public void setReplyDepth(long replyDepth) {
+        this.replyDepth = replyDepth;
+    }
+
+    public void setReplyUid(FUserInfo replyUid) {
+        this.replyUid = replyUid;
+    }
+
+    public void setReplyText(String replyText) {
+        this.replyText = replyText;
+    }
+
+    public void setReplyUploadDateTime(LocalDateTime replyUploadDateTime) {
+        this.replyUploadDateTime = replyUploadDateTime;
+    }
+
+    public void setReplyUpdateDateTime(LocalDateTime replyUploadDateTime) {
+        this.replyUploadDateTime = replyUploadDateTime;
+    }
+
+    public void delete(){
+        this.replyText = "Delete Text";
+        this.replyUpdateDateTime = LocalDateTime.now();
+        this.deleteFlag = true;
+
+    }
 }

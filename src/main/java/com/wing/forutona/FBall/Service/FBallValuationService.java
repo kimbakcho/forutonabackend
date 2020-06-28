@@ -32,10 +32,10 @@ public class FBallValuationService {
     @Async
     @Transactional
     public void getFBallValuation(ResponseBodyEmitter emitter, FBallValuationReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
-        FUserInfo fUserInfo = new FUserInfo();
-        fUserInfo.setUid(reqDto.getUid());
+        FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+
+        FUserInfo fUserInfo = FUserInfo.builder().uid(reqDto.getUid()).build();
+
         List<FBallValuation> byBallUuidIsAndUidIs1 = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo);
         List<FBallValuationResDto> collect = byBallUuidIsAndUidIs1.stream().map(x -> new FBallValuationResDto(x)).collect(Collectors.toList());
         FBallValuationWrapResDto fBallValuationWrapResDto = new FBallValuationWrapResDto();
@@ -54,19 +54,21 @@ public class FBallValuationService {
     @Transactional
     public void insertFBallValuation(ResponseBodyEmitter emitter, FBallValuationInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
-            FBallValuation fBallValuation = new FBallValuation();
+
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
             if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             } else {
-                fBallValuation.setValueUuid(reqDto.getValueUuid());
-                fBallValuation.setBallUuid(fBall);
-                FUserInfo playerUid = new FUserInfo();
-                playerUid.setUid(fireBaseToken.getUserFireBaseUid());
-                fBallValuation.setUid(playerUid);
-                ballValuation(reqDto, fBallValuation, fBall);
-                contributorsControllerService.ifNotExistsInsert(new ContributorReqDto(reqDto.getUid(),reqDto.getBallUuid()));
+                FUserInfo playerUid = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
+                FBallValuation fBallValuation = FBallValuation.builder()
+                        .valueUuid(reqDto.getValueUuid())
+                        .ballUuid(fBall)
+                        .uid(playerUid)
+                        .build();
+
+                ballValuation(fBallValuation);
+                contributorsControllerService.ifNotExistsInsert(new ContributorReqDto(reqDto.getUid(), reqDto.getBallUuid()));
 
                 FBallValuation save = fBallValuationDataRepository.save(fBallValuation);
                 FBallValuationResDto fBallValuationResDto = new FBallValuationResDto(save);
@@ -89,7 +91,8 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             } else if (fireBaseToken.getUserFireBaseUid().equals(fBallValuation.getUid().getUid())) {
-                ballValuation(reqDto, fBallValuation, fBall);
+                fBallValuation.setUpAndDown(reqDto.getUpAndDown());
+                ballValuation(fBallValuation);
                 emitter.send(fBallValuation.getValueUuid());
             } else {
                 emitter.send(-1);
@@ -102,16 +105,13 @@ public class FBallValuationService {
         }
     }
 
-    private void ballValuation(FBallValuationInsertReqDto reqDto, FBallValuation fBallValuation, FBall fBall) {
-        fBallValuation.setUpAndDown(reqDto.getUpAndDown());
-        if (reqDto.getUpAndDown() > 0) {
-            fBall.setBallLikes(fBall.getBallLikes() + Math.abs(reqDto.getUpAndDown()));
-        } else {
-            fBall.setBallDisLikes(fBall.getBallDisLikes() + Math.abs(reqDto.getUpAndDown()));
-        }
-        fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
+    private void ballValuation( FBallValuation fBallValuation) {
+        FBall fBall = fBallValuation.getBallUuid();
+        fBall.setBallLikesFromBallValuation(fBallValuation.getUpAndDown());
+        fBall.setBallDisLikesFromBallValuation(fBallValuation.getUpAndDown());
+        fBall.updateBallPower();
         FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
-        makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() + reqDto.getUpAndDown());
+        makerUid.updateCumulativeInfluence(fBallValuation.getUpAndDown());
     }
 
     @Async
@@ -124,16 +124,10 @@ public class FBallValuationService {
                 emitter.send(-1);
                 emitter.completeWithError(new Throwable("over Active Time"));
             } else if (fireBaseToken.getUserFireBaseUid().equals(fBallValuation.getUid().getUid())) {
-                if (fBallValuation.getUpAndDown() > 0) {
-                    fBall.setBallLikes(fBall.getBallLikes() - Math.abs(fBallValuation.getUpAndDown()));
-                } else {
-                    fBall.setBallDisLikes(fBall.getBallDisLikes() - Math.abs(fBallValuation.getUpAndDown()));
-                }
-                fBall.setBallPower(fBall.getBallPower() + fBallValuation.getUpAndDown());
+                ballValuation(fBallValuation);
                 FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
-                makerUid.setCumulativeInfluence(makerUid.getCumulativeInfluence() - fBallValuation.getUpAndDown());
                 fBallValuationDataRepository.deleteById(valueUuid);
-                contributorsControllerService.deleteContributorsByUidIsAndBallUuidIs(new ContributorReqDto(makerUid.getUid(),fBall.getBallUuid()));
+                contributorsControllerService.deleteContributorsByUidIsAndBallUuidIs(new ContributorReqDto(makerUid.getUid(), fBall.getBallUuid()));
                 emitter.send(valueUuid);
             } else {
                 emitter.send(-1);

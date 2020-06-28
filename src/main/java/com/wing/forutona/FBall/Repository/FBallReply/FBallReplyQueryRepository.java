@@ -63,8 +63,8 @@ public class FBallReplyQueryRepository {
 
     @Transactional
     public FBallReplyResWrapDto getFBallDetailReply(FBallReplyReqDto reqDto,Pageable pageable) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+
         FBallReplyResWrapDto fBallReplyResWrapDto = new FBallReplyResWrapDto();
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 

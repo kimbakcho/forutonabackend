@@ -1,9 +1,14 @@
 package com.wing.forutona.FBall.Domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "MapFindScopeStep")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FMapFindScopeStep {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     long idx;
@@ -24,4 +29,12 @@ public class FMapFindScopeStep {
     public void setScopeMeter(int scopeMeter) {
         this.scopeMeter = scopeMeter;
     }
+
+    @Builder
+    public FMapFindScopeStep(long idx,int scopeMeter){
+        this.idx = idx;
+        this.scopeMeter = scopeMeter;
+    }
+
+
 }

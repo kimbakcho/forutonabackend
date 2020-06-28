@@ -8,9 +8,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoJoinReqDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,8 +18,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "UserInfo")
 public class FUserInfo {
   @Id
@@ -70,7 +67,6 @@ public class FUserInfo {
   private long alarmSponNewContent;
   private long deactivation;
 
-
   @OneToMany(mappedBy = "fBallUid")
   private List<FBall> userBalls = new ArrayList<>();
 
@@ -79,33 +75,65 @@ public class FUserInfo {
     fBall.setFBallUid(this);
   }
 
-  public FUserInfo (FUserInfoJoinReqDto reqDto){
-    this.forutonaAgree = reqDto.isForutonaAgree();
-    this.forutonaManagementAgree = reqDto.isForutonaManagementAgree();
-    this.privateAgree = reqDto.isPrivateAgree();
-    this.positionAgree = reqDto.isPositionAgree();
-    this.martketingAgree = reqDto.isMartketingAgree();
-    this.ageLimitAgree = reqDto.isAgeLimitAgree();
-    this.email = reqDto.getEmail();
-    this.isoCode = reqDto.getCountryCode();
-    this.selfIntroduction = reqDto.getUserIntroduce();
-    this.nickName = reqDto.getNickName();
-    this.profilePictureUrl = reqDto.getUserProfileImageUrl();
-    GeometryFactory geomFactory = new GeometryFactory();
-    this.placePoint = geomFactory.createPoint(new Coordinate(37.4402052,126.79369789999998));
-    this.placePoint.setSRID(4326);
-    this.phoneNumber = reqDto.getInternationalizedPhoneNumber();
+  @Builder
+  public FUserInfo(String uid,String fCMtoken){
+    this.uid = uid;
+    this.fCMtoken = fCMtoken;
   }
 
-  public void updatePlacePoint(LatLng latLng){
+  public static FUserInfo fromFUserInfoJoinReqDto  (FUserInfoJoinReqDto reqDto){
+    FUserInfo fUserInfo = new FUserInfo();
+    fUserInfo.uid = reqDto.getEmailUserUid();
+    fUserInfo.snsService = reqDto.getSnsSupportService().name();
+    fUserInfo.forutonaAgree = reqDto.isForutonaAgree();
+    fUserInfo.forutonaManagementAgree = reqDto.isForutonaManagementAgree();
+    fUserInfo.privateAgree = reqDto.isPrivateAgree();
+    fUserInfo.positionAgree = reqDto.isPositionAgree();
+    fUserInfo.martketingAgree = reqDto.isMartketingAgree();
+    fUserInfo.ageLimitAgree = reqDto.isAgeLimitAgree();
+    fUserInfo.email = reqDto.getEmail();
+    fUserInfo.isoCode = reqDto.getCountryCode();
+    fUserInfo.selfIntroduction = reqDto.getUserIntroduce();
+    fUserInfo.nickName = reqDto.getNickName();
+    fUserInfo.profilePictureUrl = reqDto.getUserProfileImageUrl();
     GeometryFactory geomFactory = new GeometryFactory();
-    Point point = geomFactory.createPoint(new Coordinate(latLng.getLatitude(), latLng.getLongitude()));
+    fUserInfo.placePoint = geomFactory.createPoint(new Coordinate(37.4402052,126.79369789999998));
+    fUserInfo.placePoint.setSRID(4326);
+    fUserInfo.phoneNumber = reqDto.getInternationalizedPhoneNumber();
+    return fUserInfo;
+  }
+
+  public void updatePlacePoint(double latitude,double longitude){
+    GeometryFactory geomFactory = new GeometryFactory();
+    Point point = geomFactory.createPoint(new Coordinate(latitude, longitude));
     point.setSRID(4326);
     this.placePoint = point;
-    this.latitude = latLng.getLatitude();
-    this.longitude = latLng.getLongitude();
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
-  public void updateFireBaseMessageToken(){
 
+
+  public void updateCumulativeInfluence(double upAndDown) {
+    this.cumulativeInfluence += upAndDown;
+  }
+
+  public void setProfilePictureUrl(String profilePictureUrl) {
+    this.profilePictureUrl =profilePictureUrl;
+  }
+
+  public void setIsoCode(String isoCode) {
+    this.isoCode = isoCode;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+
+  public void setSelfIntroduction(String selfIntroduction) {
+    this.selfIntroduction = selfIntroduction;
+  }
+
+  public void setFCMtoken(String fCMtoken) {
+    this.fCMtoken = fCMtoken;
   }
 }

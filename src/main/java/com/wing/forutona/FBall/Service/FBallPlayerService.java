@@ -50,8 +50,7 @@ public class FBallPlayerService {
     @Transactional
     public void UserToPlayBall(ResponseBodyEmitter emitter, UserToPlayBallSelectReqDto reqDto) {
         try{
-            FUserInfo fUserInfo = new FUserInfo();
-            fUserInfo.setUid(reqDto.getPlayerUid());
+            FUserInfo fUserInfo = FUserInfo.builder().uid(reqDto.getPlayerUid()).build();
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
             FBallPlayer fBallPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fUserInfo, fBall);
             UserToPlayBallResDto userToPlayBallResDto = new UserToPlayBallResDto(fBallPlayer);

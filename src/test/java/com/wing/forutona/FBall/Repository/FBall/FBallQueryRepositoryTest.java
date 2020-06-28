@@ -65,12 +65,8 @@ class FBallQueryRepositoryTest extends BaseTest {
 
     private void makeStrongInfluencePowerBall(FBall fBall) {
         fBall.setBallPower(100);
-        fBall.setLongitude(126.89706021076441);
-        fBall.setLatitude(37.50298846403655);
-        GeometryFactory geomFactory = new GeometryFactory();
-        Point point = geomFactory.createPoint(new Coordinate(126.89706021076441,  37.50298846403655));
-        point.setSRID(4326);
-        fBall.setPlacePoint(point);
+        fBall.setPlacePoint(126.89706021076441,37.50298846403655);
+
     }
 
 }

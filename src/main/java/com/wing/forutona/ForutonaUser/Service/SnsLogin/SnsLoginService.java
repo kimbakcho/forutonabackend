@@ -23,13 +23,15 @@ abstract public class SnsLoginService {
     public abstract FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto);
 
     public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto){
-        FUserInfo fUserInfo = new FUserInfo(reqDto);
+
         FUserSnSLoginReqDto snSLoginReqDto = new FUserSnSLoginReqDto();
         snSLoginReqDto.setSnsService(reqDto.getSnsSupportService());
         snSLoginReqDto.setAccessToken(reqDto.getSnsToken());
         FUserSnsCheckJoinResDto infoFromToken = getInfoFromToken(snSLoginReqDto);
         String fireBaseuid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
-        fUserInfo.setUid(fireBaseuid);
+        reqDto.setEmailUserUid(fireBaseuid);
+        FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);
+
         String customToken = null;
         try {
             customToken = FirebaseAuth.getInstance().createCustomToken(fUserInfo.getUid());

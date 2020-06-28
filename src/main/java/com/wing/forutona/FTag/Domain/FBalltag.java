@@ -3,15 +3,10 @@ package com.wing.forutona.FTag.Domain;
 
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FTag.Dto.TagInsertReqDto;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-
-@Setter
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,9 +20,9 @@ public class FBalltag {
   //ALTER TABLE `FBalltag` ADD FULLTEXT INDEX `tagindex` (`tagItem`) WITH PARSER ngram;  ngram index 사용
   private String tagItem;
 
-
-  public FBalltag(FBall fball, TagInsertReqDto reqDto){
-    this.ballUuid = fball;
-    this.tagItem = reqDto.getTagItem();
+  @Builder
+  public FBalltag(FBall ballUuid, String tagItem){
+    this.ballUuid = ballUuid;
+    this.tagItem = tagItem;
   }
 }

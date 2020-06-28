@@ -20,28 +20,26 @@ public class ContributorsControllerService {
 
     @Transactional
     public void ifNotExistsInsert(ContributorReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
-        FUserInfo fUserInfo = new FUserInfo();
-        fUserInfo.setUid(reqDto.getUid());
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+        FUserInfo fUserInfo = FUserInfo.builder().uid(reqDto.getUid()).build();
+
         List<Contributors> contributorsByUidIsAndBallUuidIs = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
-        if(contributorsByUidIsAndBallUuidIs.size()  == 0){
-            Contributors contributors = new Contributors();
-            contributors.setUid(fUserInfo);
-            contributors.setBallUuid(fBall);
+        if (contributorsByUidIsAndBallUuidIs.size() == 0) {
+            Contributors contributors =  Contributors.builder().uid(fUserInfo).ballUuid(fBall).build();
+
             contributorsDataRepository.saveAndFlush(contributors);
-            fBallService.increaseContributor(contributors.getBallUuid().getBallUuid(),1L);
+            fBallService.increaseContributor(contributors.getBallUuid().getBallUuid(), 1L);
         }
     }
 
     @Transactional
     public void deleteContributorsByUidIsAndBallUuidIs(ContributorReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
-        FUserInfo fUserInfo = new FUserInfo();
-        fUserInfo.setUid(reqDto.getUid());
-        contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(fUserInfo,fBall);
-        fBallService.decreaseContributor(fBall.getBallUuid(),1L);
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+
+        FUserInfo fUserInfo = FUserInfo.builder().uid(reqDto.getUid()).build();
+
+        contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
+        fBallService.decreaseContributor(fBall.getBallUuid(), 1L);
     }
 
 

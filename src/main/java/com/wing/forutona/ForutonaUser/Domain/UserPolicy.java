@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class UserPolicy {

@@ -22,9 +22,9 @@ class FUserInfoTest {
     @DisplayName("PlacePoint Geo 기준 업데이트")
     void updatePlacePoint() {
         //given
-        LatLng userPlacePoint = LatLng.newBuilder().setLongitude(127.0).setLatitude(31.0).build();
+
         //when
-        fUserInfo.updatePlacePoint(userPlacePoint);
+        fUserInfo.updatePlacePoint(127.0,31.0);
         //then
         Point placePoint = fUserInfo.getPlacePoint();
         assertEquals(31.0,placePoint.getX());

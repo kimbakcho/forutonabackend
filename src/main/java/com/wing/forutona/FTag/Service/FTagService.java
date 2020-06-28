@@ -69,8 +69,7 @@ class FTagServiceImpl implements FTagService {
 
     @Transactional
     public TagResDtoWrap getTagFromBallUuid(TagFromBallReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
         List<FBalltag> fBalltagByBallUuidIs = fBallTagDataRepository.findFBalltagByBallUuidIs(fBall);
         List<TagResDto> collect = fBalltagByBallUuidIs.stream().map(x -> new TagResDto(x)).collect(Collectors.toList());
         TagResDtoWrap dtoWrap = new TagResDtoWrap();

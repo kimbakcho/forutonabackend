@@ -21,7 +21,6 @@ public class FaceBookLoginService extends SnsLoginService {
         super(fUserInfoDataRepository);
     }
 
-
     @Override
     public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
         String getUrl = "https://graph.facebook.com/v6.0/me?fields=name,first_name,last_name,email&access_token=" + reqDto.getAccessToken();

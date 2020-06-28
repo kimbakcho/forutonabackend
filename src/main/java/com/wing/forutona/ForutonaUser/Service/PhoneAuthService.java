@@ -66,7 +66,7 @@ public class PhoneAuthService {
                     phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());
                     phoneAuthDataRepository.flush();
                 }
-                PhoneAuth phoneAuth = new PhoneAuth(reqDto);
+                PhoneAuth phoneAuth =  PhoneAuth.fromPhoneAuthReqDto(reqDto);
                 phoneAuthDataRepository.save(phoneAuth);
                 phoneAuthDataRepository.flush();
                 SuerMSendsns(phoneAuth.getInternationalizedPhoneNumber(),phoneAuth.getAuthNumber(),phoneAuth.getIsoCode());
@@ -192,7 +192,7 @@ public class PhoneAuthService {
                             phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());
                             phoneAuthDataRepository.flush();
                         }
-                        PhoneAuth phoneAuth = new PhoneAuth(reqDto);
+                        PhoneAuth phoneAuth =  PhoneAuth.fromPhoneAuthReqDto(reqDto);
                         phoneAuthDataRepository.save(phoneAuth);
                         PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto(phoneAuth);
                         resDto.setError(false);

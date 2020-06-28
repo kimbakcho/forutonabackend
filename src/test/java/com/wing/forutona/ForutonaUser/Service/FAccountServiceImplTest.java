@@ -37,9 +37,8 @@ class FAccountServiceImplTest extends BaseTest {
     @DisplayName("Repository Call 및 토큰 변경 확인 ")
     void updateFireBaseMessageToken() {
         //given
-        FUserInfo fUserInfo = new FUserInfo();
-        fUserInfo.setUid("test");
-        fUserInfo.setFCMtoken("test");
+        FUserInfo fUserInfo =  FUserInfo.builder().uid("test").fCMtoken("test").build();
+
         when(fUserInfoDataRepository.findById(anyString())).thenReturn(Optional.of(fUserInfo));
         //when
         fAccountService.updateFireBaseMessageToken("test","testToken");

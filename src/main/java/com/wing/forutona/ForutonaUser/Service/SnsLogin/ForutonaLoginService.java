@@ -31,9 +31,7 @@ public class ForutonaLoginService extends SnsLoginService {
 
     @Override
     public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) {
-        FUserInfo fUserInfo = new FUserInfo(reqDto);
-        fUserInfo.setUid(reqDto.getEmailUserUid());
-        fUserInfo.setSnsService(reqDto.getSnsSupportService().name());
+        FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);
         String encSHA256 = "";
         FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
         try {

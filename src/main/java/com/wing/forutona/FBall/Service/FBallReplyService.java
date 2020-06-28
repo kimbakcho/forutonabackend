@@ -39,11 +39,12 @@ public class FBallReplyService {
     @Async
     @Transactional
     public void insertFBallReply(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) {
-        FBallReply fBallReply = new FBallReply();
+
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-        fBallReply.setReplyUuid(reqDto.getReplyUuid());
-        fBallReply.setDeleteFlag(false);
-        fBallReply.setReplyBallUuid(fBall);
+        FBallReply fBallReply = FBallReply.builder()
+                .replyUuid(reqDto.getReplyUuid())
+                .replyBallUuid(fBall)
+                .build();
         //대댓글이 아닌 처음 댓글
         if (reqDto.getReplyNumber() == -1) {
             FBallReply top1ByReplyBallUuidIsOrderByReplyNumberDesc = fBallReplyDataRepository.findTop1ByReplyBallUuidIsOrderByReplyNumberDesc(fBall);
@@ -94,8 +95,8 @@ public class FBallReplyService {
     @Async
     @Transactional
     public void getFBallReply(ResponseBodyEmitter emitter, FBallReplyReqDto reqDto, Pageable pageable) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+
         FBallReplyResWrapDto fBallReply = fBallReplyQueryRepository.getFBallReply(fBall, pageable);
         try {
             emitter.send(fBallReply);
@@ -145,9 +146,7 @@ public class FBallReplyService {
         FBallReply fBallReply = fBallReplyDataRepository.findById(replyUuid).get();
         try {
             if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
-                fBallReply.setReplyText("Delete Text");
-                fBallReply.setReplyUpdateDateTime(LocalDateTime.now());
-                fBallReply.setDeleteFlag(true);
+                fBallReply.delete();
                 emitter.send(1);
             } else {
                 emitter.send(0);
@@ -163,8 +162,7 @@ public class FBallReplyService {
     @Async
     @Transactional
     public void getFBallSubReply(ResponseBodyEmitter emitter, FBallReplyReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.setBallUuid(reqDto.getBallUuid());
+        FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
         List<FBallReply> subReplyItem = fBallReplyDataRepository.
                 findByReplyBallUuidIsAndReplyNumberIsOrderByReplyUploadDateTimeDesc(fBall, reqDto.getReplyNumber());
 

@@ -141,7 +141,7 @@ public class FBallService {
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
         fBall.setContributor(fBall.getContributor() + point);
         fBallDataRepository.flush();
-        ;
+
     }
 
     @Transactional
@@ -149,7 +149,7 @@ public class FBallService {
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
         fBall.setContributor(fBall.getContributor() - point);
         fBallDataRepository.flush();
-        ;
+
     }
 
 

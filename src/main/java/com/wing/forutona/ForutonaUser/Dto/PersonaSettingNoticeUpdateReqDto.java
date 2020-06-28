@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 
 @Data
-public class PersonaSettingNoticeInsertReqDto {
+public class PersonaSettingNoticeUpdateReqDto {
     Long idx;
     String noticeName;
     LocalDateTime noticeWriteDateTime;
