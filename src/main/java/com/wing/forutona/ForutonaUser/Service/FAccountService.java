@@ -21,18 +21,26 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface FAccountService {
-    void checkNickNameDuplication(ResponseBodyEmitter emitter, String nickName);
+
+    boolean checkNickNameDuplication(String nickName);
+
     void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto);
+
     void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken);
+
     void updateUserProfileImage(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, MultipartFile file);
+
     void updateAccountUserInfo(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FuserAccountUpdateReqdto reqdto);
+
     void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto);
+
     void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto);
+
     void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto);
+
     int updateFireBaseMessageToken(String uid, String token);
 }
 
@@ -48,26 +56,18 @@ class FAccountServiceImpl implements FAccountService {
     @Autowired
     GoogleStorgeAdmin googleStorgeAdmin;
 
-    @Async
+
     @Transactional
-    public void checkNickNameDuplication(ResponseBodyEmitter emitter, String nickName) {
-        try {
-            NickNameDuplicationCheckResDto resDto = new NickNameDuplicationCheckResDto();
-            if (fUserInfoDataRepository.countByNickNameEquals(nickName) > 0) {
-                resDto.setHaveNickName(true);
-                emitter.send(resDto);
-            } else {
-                resDto.setHaveNickName(false);
-                emitter.send(resDto);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
+    public boolean checkNickNameDuplication(String nickName) {
+        if (fUserInfoDataRepository.countByNickNameEquals(nickName) > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Async
+    @Transactional
     public void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto) {
         UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(fFireBaseToken.getUserFireBaseUid());
         updateRequest.setPassword(reqDto.getPw());

@@ -22,8 +22,7 @@ abstract public class SnsLoginService {
 
     public abstract FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto);
 
-    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto){
-
+    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) throws FirebaseAuthException {
         FUserSnSLoginReqDto snSLoginReqDto = new FUserSnSLoginReqDto();
         snSLoginReqDto.setSnsService(reqDto.getSnsSupportService());
         snSLoginReqDto.setAccessToken(reqDto.getSnsToken());

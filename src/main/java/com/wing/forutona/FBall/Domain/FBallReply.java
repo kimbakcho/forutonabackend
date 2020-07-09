@@ -58,7 +58,7 @@ public class FBallReply {
     }
 
     public void setReplyUpdateDateTime(LocalDateTime replyUploadDateTime) {
-        this.replyUploadDateTime = replyUploadDateTime;
+        this.replyUpdateDateTime = replyUploadDateTime;
     }
 
     public void delete(){

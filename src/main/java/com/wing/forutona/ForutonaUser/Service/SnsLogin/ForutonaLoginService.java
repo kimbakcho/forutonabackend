@@ -13,6 +13,8 @@ import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class ForutonaLoginService extends SnsLoginService {
 
@@ -30,7 +32,7 @@ public class ForutonaLoginService extends SnsLoginService {
     }
 
     @Override
-    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) {
+    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) throws FirebaseAuthException {
         FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);
         String encSHA256 = "";
         FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
@@ -55,6 +57,7 @@ public class ForutonaLoginService extends SnsLoginService {
                 resDto.setJoinComplete(true);
             }
         }else {
+            FirebaseAuth.getInstance().deleteUser(reqDto.getEmailUserUid());
             resDto.setCustomToken("");
             resDto.setJoinComplete(false);
         }

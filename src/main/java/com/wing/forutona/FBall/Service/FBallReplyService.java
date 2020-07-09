@@ -71,7 +71,7 @@ public class FBallReplyService {
         fBallReply.setReplyUid(fUserInfo1);
         fBallReply.setReplyText(reqDto.getReplyText());
         fBallReply.setReplyUploadDateTime(LocalDateTime.now());
-        fBallReply.setReplyUpdateDateTime(fBallReply.getReplyUploadDateTime());
+        fBallReply.setReplyUpdateDateTime(LocalDateTime.now());
         fBallReplyDataRepository.saveAndFlush(fBallReply);
         FBallReplyResDto fBallReplyResDto =  new FBallReplyResDto(fBallReply);
 

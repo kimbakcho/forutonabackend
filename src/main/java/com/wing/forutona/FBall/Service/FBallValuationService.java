@@ -64,6 +64,7 @@ public class FBallValuationService {
                 FBallValuation fBallValuation = FBallValuation.builder()
                         .valueUuid(reqDto.getValueUuid())
                         .ballUuid(fBall)
+                        .upAndDown(reqDto.getUpAndDown())
                         .uid(playerUid)
                         .build();
 

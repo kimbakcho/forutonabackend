@@ -22,10 +22,11 @@ public class FBallValuation {
     Long upAndDown;
 
     @Builder
-    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid){
+    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid,Long upAndDown){
         this.valueUuid = valueUuid;
         this.ballUuid = ballUuid;
         this.uid =uid;
+        this.upAndDown = upAndDown;
     }
 
     public void setUpAndDown(Long upAndDown) {

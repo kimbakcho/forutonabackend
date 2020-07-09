@@ -33,7 +33,16 @@ public class FAccountController {
     @GetMapping(value = "/v1/ForutonaUser/checkNickNameDuplication")
     public ResponseBodyEmitter checkNickNameDuplication(@RequestParam  String nickName){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        fAccountService.checkNickNameDuplication(emitter,nickName);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(fAccountService.checkNickNameDuplication(nickName));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -56,6 +65,7 @@ public class FAccountController {
     }
 
 
+    @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/ForutonaUser/PwChange")
     public ResponseBodyEmitter userPwChange(FFireBaseToken fFireBaseToken, @RequestBody  FUserInfoPwChangeReqDto reqDto){
@@ -109,6 +119,5 @@ public class FAccountController {
             }
         });
         return emitter;
-
     }
 }

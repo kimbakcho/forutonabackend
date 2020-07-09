@@ -47,4 +47,14 @@ class FAccountServiceImplTest extends BaseTest {
         assertEquals(fUserInfo.getFCMtoken(),"testToken");
 
     }
+
+    @Test
+    void checkNickNameDuplication() {
+
+        when(fUserInfoDataRepository.countByNickNameEquals(anyString())).thenReturn(1L).thenReturn(0L);
+
+        assertEquals(fAccountService.checkNickNameDuplication("tset"),true);
+        assertEquals(fAccountService.checkNickNameDuplication("tset1"),false);
+
+    }
 }
