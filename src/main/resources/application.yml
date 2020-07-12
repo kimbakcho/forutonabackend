@@ -119,3 +119,32 @@ logging:
             sql:
               BasicBinder: TRACE
 ---
+spring:
+  profiles: realtest
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  jpa:
+    open-in-view: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+  mvc:
+    async:
+      request-timeout: -1
+
+
+server:
+  port: 8443
+forutona:
+  serviekeypath: /home/forutona/servicekeys/forutona-firebase-adminsdk-p6ho6-ab85124646.json
+  storgeserviekeypath: /home/forutona/servicekeys/Forutona-3539edf2b36d.json
+  smssretrieverappsign: DnCuZoNCCGH
+  sureMID: forutona1020
+  sureMdeptcode: P8-ECX-6T
+  sureMFrom: 010-6710-7004
+---

@@ -7,7 +7,5 @@ public class FBallReplyInsertReqDto {
     String replyUuid;
     String ballUuid;
     Long replyNumber;
-    Long replySort;
-    Long replyDepth;
     String replyText;
 }

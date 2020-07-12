@@ -76,9 +76,10 @@ public class FUserInfo {
   }
 
   @Builder
-  public FUserInfo(String uid,String fCMtoken){
+  public FUserInfo(String uid,String fCMtoken,String nickName){
     this.uid = uid;
     this.fCMtoken = fCMtoken;
+    this.nickName = nickName;
   }
 
   public static FUserInfo fromFUserInfoJoinReqDto  (FUserInfoJoinReqDto reqDto){

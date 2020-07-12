@@ -28,9 +28,24 @@ public class FBallReply {
     Boolean deleteFlag = false;
 
     @Builder
-    public FBallReply(String replyUuid,FBall replyBallUuid){
+    public FBallReply(String replyUuid,FBall replyBallUuid
+            ,FUserInfo replyUid
+            ,Long replyNumber
+            ,Long replySort
+            ,String replyText
+            ,LocalDateTime replyUploadDateTime
+            ,LocalDateTime replyUpdateDateTime
+            ,Long replyDepth ){
         this.replyUuid = replyUuid;
         this.replyBallUuid = replyBallUuid;
+        this.replyUid = replyUid;
+        this.replyNumber = replyNumber;
+        this.replySort = replySort;
+        this.replyText = replyText;
+        this.replyUploadDateTime = replyUploadDateTime;
+        this.replyUpdateDateTime = replyUpdateDateTime;
+        this.replyDepth = replyDepth;
+
     }
 
     public void setReplyNumber(long replyNumber) {
@@ -65,6 +80,5 @@ public class FBallReply {
         this.replyText = "Delete Text";
         this.replyUpdateDateTime = LocalDateTime.now();
         this.deleteFlag = true;
-
     }
 }

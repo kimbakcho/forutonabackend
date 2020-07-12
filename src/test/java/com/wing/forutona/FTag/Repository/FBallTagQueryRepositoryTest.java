@@ -10,11 +10,14 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,6 +36,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
     @Autowired
     FBallTagQueryRepository fBallTagQueryRepository;
 
+
     @Test
     @DisplayName("태그에 관련된 볼에 강한 영향력을 주입 후 해당 태그로 결과 받기")
     void getFindTagRankingInDistanceOfInfluencePower() throws ParseException {
@@ -44,7 +48,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
         //when
         TagRankingWrapdto influencePowerRankingDto = fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(
                 GisGeometryUtil.createCenterPoint(37.50298846403655, 126.89706021076441)
-                , GisGeometryUtil.createRect(37.50298846403655, 126.89706021076441, 1000),
+                , GisGeometryUtil.createRect(37.50298846403655, 126.89706021076441, 10000),
                 1000);
         //then
         System.out.println(fBalltag.getTagItem());
@@ -70,7 +74,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
 
     private void makeTagBallPowerStrong(FBalltag fBalltag) {
         FBall fBall = fBalltag.getBallUuid();
-        fBall.setBallPower(1000);
-        fBall.setPlacePoint(126.89606021076441,37.50298846403655);
+        fBall.setBallPower(10000);
+        fBall.setPlacePoint(126.89716021076441,37.50298846403655);
     }
 }

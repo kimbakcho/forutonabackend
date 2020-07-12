@@ -43,6 +43,13 @@
 				<spring.profiles.active>real</spring.profiles.active>
 			</properties>
 		</profile>
+		<profile>
+			<id>realtest</id>
+			<properties>
+				<tomcat.publish.path>/forutonatest</tomcat.publish.path>
+				<spring.profiles.active>realtest</spring.profiles.active>
+			</properties>
+		</profile>
 	</profiles>
 	<properties>
 		<java.version>11</java.version>

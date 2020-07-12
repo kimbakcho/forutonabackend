@@ -25,6 +25,7 @@ public class FBallReplyResDto {
     String userProfilePictureUrl;
     Boolean deleteFlag;
 
+
     @QueryProjection
     public FBallReplyResDto(FBallReply fBallReply){
         this.replyUuid = fBallReply.getReplyUuid();

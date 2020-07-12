@@ -27,7 +27,7 @@ class FUserInfoTest {
         fUserInfo.updatePlacePoint(127.0,31.0);
         //then
         Point placePoint = fUserInfo.getPlacePoint();
-        assertEquals(31.0,placePoint.getX());
-        assertEquals(127.0,placePoint.getY());
+        assertEquals(127.0,placePoint.getX());
+        assertEquals(31.0,placePoint.getY());
     }
 }

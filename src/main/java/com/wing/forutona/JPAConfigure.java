@@ -57,9 +57,19 @@ public class JPAConfigure {
         dataSource.setUsername("neoforutonabeta");
         dataSource.setPassword("neoforutona1020");
         dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_beta?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
-
         return dataSource;
-}
+    }
+
+    @Bean
+    @Profile("realtest")
+    public DataSource realTestDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUsername("neoforutonatester");
+        dataSource.setPassword("forutona1020");
+        dataSource.setUrl("jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false");
+        return dataSource;
+    }
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
@@ -119,6 +129,25 @@ public class JPAConfigure {
 //        jpaProperties.put("hibernate.show_sql", "true");
 //        jpaProperties.put("hibernate.format_sql", "true");
 //        jpaProperties.put("hibernate.use_sql_comment", "true");
+        em.setJpaProperties(jpaProperties);
+        return em;
+    }
+
+    @Bean(name = "entityManagerFactory")
+    @Profile("realtest")
+    public LocalContainerEntityManagerFactoryBean RealTestEntityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean em
+                = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(realTestDataSource());
+        em.setPackagesToScan(new String[]{"com.wing.forutona"});
+        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        Properties jpaProperties = new Properties();
+//        jpaProperties.put("hibernate.hbm2ddl.auto", "create");
+        jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
+        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("hibernate.format_sql", "true");
+        jpaProperties.put("hibernate.use_sql_comment", "true");
         em.setJpaProperties(jpaProperties);
         return em;
     }
