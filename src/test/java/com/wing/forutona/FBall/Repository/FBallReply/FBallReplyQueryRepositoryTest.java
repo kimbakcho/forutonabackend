@@ -38,6 +38,8 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     @Autowired
     FBallReplyQueryRepository fBallReplyQueryRepository;
 
+    @Autowired
+    FBallReplyDataRepository fBallReplyDataRepository;
 
     @BeforeEach
     void BeforeEach(){
@@ -50,6 +52,7 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         //given
         List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         List<FUserInfo> users = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent();
+        fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<10;j++){
             for(int i=0;i<2;i++){
@@ -81,6 +84,7 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         //given
         List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         List<FUserInfo> users = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent();
+        fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<2;j++){
             for(int i=0;i<10;i++){

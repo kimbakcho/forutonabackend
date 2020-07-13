@@ -3,10 +3,7 @@ package com.wing.forutona.FBall.Service;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
+import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
@@ -51,12 +48,14 @@ public class FBallReplyService {
                 .build();
         if (reqDto.getReplyNumber() == -1) {
             Long maxReplyNumber = fBallReplyQueryRepository.getMaxReplyNumber(reqDto.getBallUuid());
-            saveFBallReplyItem.setReplyNumber(maxReplyNumber);
+            long nextReplyNumber = maxReplyNumber + 1;
+            saveFBallReplyItem.setReplyNumber(nextReplyNumber);
             saveFBallReplyItem.setReplySort(0);
         } else {
             Long maxSortNumber = fBallReplyQueryRepository.getMaxSortNumber(reqDto.getReplyNumber(), reqDto.getBallUuid());
             saveFBallReplyItem.setReplyNumber(reqDto.getReplyNumber());
-            saveFBallReplyItem.setReplySort(maxSortNumber);
+            long nextSortNumber = maxSortNumber + 1;
+            saveFBallReplyItem.setReplySort(nextSortNumber);
         }
         FBallReply save = fBallReplyDataRepository.saveAndFlush(saveFBallReplyItem);
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(save);
@@ -72,7 +71,7 @@ public class FBallReplyService {
 
 
     @Transactional
-    public int updateFBallReply(FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) throws Throwable {
+    public FBallReplyResDto updateFBallReply(FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) throws Throwable {
         FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
         if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
             fBallReply.setReplyText(reqDto.getReplyText());
@@ -80,7 +79,7 @@ public class FBallReplyService {
         } else {
             throw new Throwable("missMatchUid");
         }
-        return 1;
+        return new FBallReplyResDto(fBallReply);
     }
 
     @Transactional

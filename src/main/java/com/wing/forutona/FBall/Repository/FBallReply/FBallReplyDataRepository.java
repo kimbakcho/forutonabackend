@@ -11,4 +11,5 @@ public interface FBallReplyDataRepository extends JpaRepository<FBallReply,Strin
 
     List<FBallReply> findByReplyBallUuidIsAndReplyNumberIsOrderByReplyUploadDateTimeDesc(FBall replyBallUuid,Long replyNumber);
 
+    void deleteByReplyBallUuid(FBall fBall);
 }

@@ -3,23 +3,19 @@ package com.wing.forutona.FBall.Repository.FBallReply;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.FBall.Domain.QFBallReply;
-import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBall.Dto.FBallReplyResDto;
+import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
+import com.wing.forutona.FBall.Dto.QFBallReplyResDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static com.wing.forutona.FBall.Domain.QFBallReply.*;
 import static com.wing.forutona.FBall.Domain.QFBallReply.fBallReply;
 import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
@@ -29,18 +25,6 @@ public class FBallReplyQueryRepository {
     EntityManager em;
 
 
-    public int updateReplySortPlusOne(FBall ballUuid, Long replyNumber, Long replySort) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        queryFactory.update(fBallReply).where(fBallReply.replyBallUuid.eq(ballUuid),
-                fBallReply.replyNumber.eq(replyNumber), fBallReply.replySort.goe(replySort))
-                .set(fBallReply.replySort, fBallReply.replySort.add(1)).execute();
-        em.flush();
-        em.clear();
-        return 1;
-    }
-
-
 
     public Long getMaxSortNumber(Long replyNumber, String fBallUuid) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
@@ -48,7 +32,7 @@ public class FBallReplyQueryRepository {
 
         return queryFactory.select(fBallReply.replySort.max())
                 .from(fBallReply)
-                .where(fBallReply.replyBallUuid.eq(fBall),fBallReply.replyNumber.eq(replyNumber))
+                .where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replyNumber.eq(replyNumber))
                 .fetchOne();
     }
 
@@ -79,12 +63,22 @@ public class FBallReplyQueryRepository {
             booleanBuilder.and(fBallReply.replySort.eq(0L));
         }
 
-        List<FBallReplyResDto> fetch = queryFactory.select(new QFBallReplyResDto(fBallReply))
+        List<FBallReplyResDto> fBallReplyResDto = queryFactory.select(new QFBallReplyResDto(fBallReply))
                 .from(fBallReply)
                 .join(fBallReply.replyUid, fUserInfo).fetchJoin()
                 .where(fBallReply.replyBallUuid.eq(fBall), booleanBuilder)
                 .orderBy(orderSpecifier).limit(pageable.getPageSize()).offset(pageable.getOffset())
                 .fetch();
+
+
+        fBallReplyResDto.forEach(item -> {
+            if (item.getReplySort() == 0) {
+                Long subReplyCount = queryFactory.select(fBallReply.count()).from(fBallReply)
+                        .where(fBallReply.replyBallUuid.eq(fBall),fBallReply.replyNumber.eq(item.getReplyNumber()), fBallReply.replySort.ne(0L))
+                        .fetchOne();
+                item.setSubReplyCount(subReplyCount);
+            }
+        });
 
         Long totalReplyCount = queryFactory.
                 select(fBallReply.count()).from(fBallReply).
@@ -93,8 +87,11 @@ public class FBallReplyQueryRepository {
 
         FBallReplyResWrapDto replyResWrapDto = new FBallReplyResWrapDto();
         replyResWrapDto.setReplyTotalCount(totalReplyCount);
-        replyResWrapDto.setContents(fetch);
-        replyResWrapDto.setCount(fetch.size());
+        replyResWrapDto.setContents(fBallReplyResDto);
+        replyResWrapDto.setCount(fBallReplyResDto.size());
+        replyResWrapDto.setOffset(pageable.getOffset());
+        replyResWrapDto.setPageSize(pageable.getPageSize());
+        replyResWrapDto.setOnlySubReply(reqDto.isReqOnlySubReply());
         return replyResWrapDto;
     }
 

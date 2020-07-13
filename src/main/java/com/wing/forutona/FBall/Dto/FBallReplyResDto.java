@@ -24,6 +24,7 @@ public class FBallReplyResDto {
     String userNickName;
     String userProfilePictureUrl;
     Boolean deleteFlag;
+    Long subReplyCount = 0L;
 
 
     @QueryProjection
