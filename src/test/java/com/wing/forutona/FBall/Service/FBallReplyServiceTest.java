@@ -4,10 +4,7 @@ import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
+import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
@@ -115,11 +112,9 @@ class FBallReplyServiceTest extends BaseTest {
         //given
         FBallReply fBallReply = fBallReplyDataRepository.findAll(PageRequest.of(0, 1)).getContent().get(0);
         when(fireBaseToken.getUserFireBaseUid()).thenReturn(fBallReply.getReplyUid().getUid());
-        FBallReplyInsertReqDto reqDto = new FBallReplyInsertReqDto();
+        FBallReplyUpdateReqDto reqDto = new FBallReplyUpdateReqDto();
         reqDto.setReplyUuid(fBallReply.getReplyUuid());
         reqDto.setReplyText("testEdit");
-        reqDto.setBallUuid(fBallReply.getReplyBallUuid().getBallUuid());
-        reqDto.setReplyNumber(fBallReply.getReplyNumber());
         //when
         fBallReplyService.updateFBallReply(fireBaseToken,reqDto);
         //then

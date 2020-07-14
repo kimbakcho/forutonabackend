@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Optional;
 
 import static com.wing.forutona.FBall.Domain.QFBallReply.fBallReply;
 import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
@@ -25,7 +24,6 @@ public class FBallReplyQueryRepository {
     EntityManager em;
 
 
-
     public Long getMaxSortNumber(Long replyNumber, String fBallUuid) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         FBall fBall = FBall.builder().ballUuid(fBallUuid).build();
@@ -34,16 +32,24 @@ public class FBallReplyQueryRepository {
                 .from(fBallReply)
                 .where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replyNumber.eq(replyNumber))
                 .fetchOne();
+
+
     }
 
 
     public Long getMaxReplyNumber(String fBallUuid) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         FBall fBall = FBall.builder().ballUuid(fBallUuid).build();
-        return queryFactory.select(fBallReply.replyNumber.max())
-                .from(fBallReply)
-                .where(fBallReply.replyBallUuid.eq(fBall))
-                .fetchOne();
+        Long itemCount = queryFactory.select(fBallReply.count()).from(fBallReply)
+                .where(fBallReply.replyBallUuid.eq(fBall)).fetchOne();
+        if (itemCount == 0) {
+            return -1L;
+        } else {
+            return queryFactory.select(fBallReply.replyNumber.max())
+                    .from(fBallReply)
+                    .where(fBallReply.replyBallUuid.eq(fBall))
+                    .fetchOne();
+        }
     }
 
 
@@ -74,7 +80,7 @@ public class FBallReplyQueryRepository {
         fBallReplyResDto.forEach(item -> {
             if (item.getReplySort() == 0) {
                 Long subReplyCount = queryFactory.select(fBallReply.count()).from(fBallReply)
-                        .where(fBallReply.replyBallUuid.eq(fBall),fBallReply.replyNumber.eq(item.getReplyNumber()), fBallReply.replySort.ne(0L))
+                        .where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replyNumber.eq(item.getReplyNumber()), fBallReply.replySort.ne(0L))
                         .fetchOne();
                 item.setSubReplyCount(subReplyCount);
             }

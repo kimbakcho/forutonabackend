@@ -5,6 +5,7 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBall.Dto.FBallReplyUpdateReqDto;
 import com.wing.forutona.FBall.Service.FBallReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class FBallReplyController {
     @ResponseAddJsonHeader
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBallReply")
-    public ResponseBodyEmitter updateFBallReply(@RequestBody FBallReplyInsertReqDto reqDto,FFireBaseToken fireBaseToken){
+    public ResponseBodyEmitter updateFBallReply(@RequestBody FBallReplyUpdateReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {

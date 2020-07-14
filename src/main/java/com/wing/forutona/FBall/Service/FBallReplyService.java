@@ -46,7 +46,7 @@ public class FBallReplyService {
                 .replyUploadDateTime(LocalDateTime.now())
                 .replyText(reqDto.getReplyText())
                 .build();
-        if (reqDto.getReplyNumber() == -1) {
+        if (isInsertRootReply(reqDto.getReplyNumber())) {
             Long maxReplyNumber = fBallReplyQueryRepository.getMaxReplyNumber(reqDto.getBallUuid());
             long nextReplyNumber = maxReplyNumber + 1;
             saveFBallReplyItem.setReplyNumber(nextReplyNumber);
@@ -63,6 +63,10 @@ public class FBallReplyService {
         return fBallReplyResDto;
     }
 
+    public boolean isInsertRootReply(Long replyNumber) {
+        return replyNumber == -1;
+    }
+
 
     @Transactional
     public FBallReplyResWrapDto getFBallReply(FBallReplyReqDto reqDto, Pageable pageable) {
@@ -71,7 +75,7 @@ public class FBallReplyService {
 
 
     @Transactional
-    public FBallReplyResDto updateFBallReply(FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) throws Throwable {
+    public FBallReplyResDto updateFBallReply(FFireBaseToken fireBaseToken, FBallReplyUpdateReqDto reqDto) throws Throwable {
         FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
         if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
             fBallReply.setReplyText(reqDto.getReplyText());
@@ -83,14 +87,14 @@ public class FBallReplyService {
     }
 
     @Transactional
-    public int deleteFBallReply(FFireBaseToken fireBaseToken, String replyUuid) throws Throwable {
+    public FBallReplyResDto deleteFBallReply(FFireBaseToken fireBaseToken, String replyUuid) throws Throwable {
         FBallReply fBallReply = fBallReplyDataRepository.findById(replyUuid).get();
         if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
             fBallReply.delete();
         } else {
             throw new Throwable("missMatchUid");
         }
-        return 1;
+        return new FBallReplyResDto(fBallReply);
     }
 
 }
