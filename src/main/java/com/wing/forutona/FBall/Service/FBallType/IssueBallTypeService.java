@@ -39,7 +39,7 @@ public class IssueBallTypeService {
             FBall fBall = FBall.builder()
                     .makeTime(LocalDateTime.now())
                     .ballState(FBallState.Play)
-                    .fBallUid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build())
+                    .uid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build())
                     .activationTime(LocalDateTime.now().plusDays(7))
                     //아래 지수는 액션에 의해 변해야 함으로 Client 단순 정보로 변하게 하지 않기 위해서 직접 BackEnd 에서 Defined
                     .makeExp(300)
@@ -61,7 +61,7 @@ public class IssueBallTypeService {
     public void updateBall(ResponseBodyEmitter emitter, IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
+            if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
                 throw new Exception("don't Have Permisstion");
             }
 
@@ -104,7 +104,7 @@ public class IssueBallTypeService {
     public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
         try {
             FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
-            if (!fBall.getFBallUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
+            if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
                 throw new Exception("don't Have Permisstion");
             }
             fBall.delete();

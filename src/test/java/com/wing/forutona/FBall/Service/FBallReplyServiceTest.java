@@ -8,12 +8,15 @@ import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
+import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertService;
+import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +43,14 @@ class FBallReplyServiceTest extends BaseTest {
 
     @MockBean
     FBallReplyQueryRepository fBallReplyQueryRepository;
+
+    @Autowired
+    @Qualifier("FBallReplyRootInsertService")
+    FBallReplyInsertService fBallReplyRootInsertService;
+
+    @Autowired
+    @Qualifier("FBallReplySubInsertService")
+    FBallReplyInsertService fBallReplySubInsertService;
 
     @Autowired
     FBallReplyService fBallReplyService;
@@ -75,9 +86,10 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, reqDto);
+        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, fBallReplyRootInsertService, reqDto);
         //then
         assertNotEquals(-1,fBallReplyResDto.getReplyNumber());
+
     }
 
     @Test
@@ -98,7 +110,7 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, reqDto);
+        fBallReplyService.insertFBallReply(fireBaseToken,fBallReplySubInsertService ,reqDto);
         //then
         List<FBallReply> thenReplyItems = fBallReplyDataRepository.findByReplyBallUuidIsAndReplyNumberIsOrderByReplyUploadDateTimeDesc(
                 fBall, fBallReply.getReplyNumber()

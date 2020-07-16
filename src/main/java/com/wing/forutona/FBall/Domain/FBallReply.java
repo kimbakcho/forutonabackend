@@ -1,6 +1,5 @@
 package com.wing.forutona.FBall.Domain;
 
-import com.google.firebase.auth.UserInfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.*;
 
@@ -80,5 +79,13 @@ public class FBallReply {
         this.replyText = "Delete Text";
         this.replyUpdateDateTime = LocalDateTime.now();
         this.deleteFlag = true;
+    }
+
+    public FUserInfo getBallMakerUerInfo(){
+        return replyBallUuid.getUid();
+    }
+
+    public long addFBallReplyCount(){
+        return replyBallUuid.addBallReplyCount();
     }
 }

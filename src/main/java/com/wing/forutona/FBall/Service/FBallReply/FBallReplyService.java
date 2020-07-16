@@ -1,4 +1,4 @@
-package com.wing.forutona.FBall.Service;
+package com.wing.forutona.FBall.Service.FBallReply;
 
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
@@ -27,16 +27,15 @@ public class FBallReplyService {
     FBallReplyQueryRepository fBallReplyQueryRepository;
 
     @Autowired
-    FUserInfoDataRepository fUserInfoDataRepository;
-
-    @Autowired
     FBallDataRepository fBallDataRepository;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public FBallReplyResDto insertFBallReply(FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto) {
+    public FBallReplyResDto insertFBallReply(FFireBaseToken fireBaseToken
+            ,FBallReplyInsertService fBallReplyInsertService
+            , FBallReplyInsertReqDto reqDto
+            ) {
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
         FUserInfo fUserInfo = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
-
         FBallReply saveFBallReplyItem = FBallReply.builder()
                 .replyUuid(reqDto.getReplyUuid())
                 .replyDepth(0L)
@@ -46,25 +45,10 @@ public class FBallReplyService {
                 .replyUploadDateTime(LocalDateTime.now())
                 .replyText(reqDto.getReplyText())
                 .build();
-        if (isInsertRootReply(reqDto.getReplyNumber())) {
-            Long maxReplyNumber = fBallReplyQueryRepository.getMaxReplyNumber(reqDto.getBallUuid());
-            long nextReplyNumber = maxReplyNumber + 1;
-            saveFBallReplyItem.setReplyNumber(nextReplyNumber);
-            saveFBallReplyItem.setReplySort(0);
-        } else {
-            Long maxSortNumber = fBallReplyQueryRepository.getMaxSortNumber(reqDto.getReplyNumber(), reqDto.getBallUuid());
-            saveFBallReplyItem.setReplyNumber(reqDto.getReplyNumber());
-            long nextSortNumber = maxSortNumber + 1;
-            saveFBallReplyItem.setReplySort(nextSortNumber);
-        }
-        FBallReply save = fBallReplyDataRepository.saveAndFlush(saveFBallReplyItem);
-        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(save);
-
+        FBallReply fBallReply = fBallReplyInsertService.insertReply(fireBaseToken, reqDto, saveFBallReplyItem);
+        FBallReply saveReply = fBallReplyDataRepository.saveAndFlush(fBallReply);
+        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply);
         return fBallReplyResDto;
-    }
-
-    public boolean isInsertRootReply(Long replyNumber) {
-        return replyNumber == -1;
     }
 
 

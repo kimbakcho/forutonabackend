@@ -49,10 +49,10 @@ public class FBallResDto {
         this.activationTime = fball.getActivationTime();
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
-        this.nickName = fball.getFBallUid().getNickName();
-        this.profilePictureUrl = fball.getFBallUid().getProfilePictureUrl();
-        this.uid = fball.getFBallUid().getUid();
-        this.userLevel = fball.getFBallUid().getUserLevel();
+        this.nickName = fball.getUid().getNickName();
+        this.profilePictureUrl = fball.getUid().getProfilePictureUrl();
+        this.uid = fball.getUid().getUid();
+        this.userLevel = fball.getUid().getUserLevel();
         this.influencePower = influencePower;
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.isBallDeleteFlag();
@@ -75,10 +75,10 @@ public class FBallResDto {
         this.activationTime = fball.getActivationTime();
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
-        this.nickName = fball.getFBallUid().getNickName();
-        this.profilePictureUrl = fball.getFBallUid().getProfilePictureUrl();
-        this.uid = fball.getFBallUid().getUid();
-        this.userLevel = fball.getFBallUid().getUserLevel();
+        this.nickName = fball.getUid().getNickName();
+        this.profilePictureUrl = fball.getUid().getProfilePictureUrl();
+        this.uid = fball.getUid().getUid();
+        this.userLevel = fball.getUid().getUserLevel();
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.isBallDeleteFlag();
     }

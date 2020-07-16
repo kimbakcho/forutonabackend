@@ -6,9 +6,9 @@ import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyUpdateReqDto;
-import com.wing.forutona.FBall.Service.FBallReplyService;
+import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertServiceFactory;
+import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -23,6 +23,7 @@ public class FBallReplyController {
 
     final FBallReplyService fBallReplyService;
 
+    final FBallReplyInsertServiceFactory fBallReplyInsertServiceFactory;
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBallReply")
@@ -49,7 +50,9 @@ public class FBallReplyController {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                emitter.send(fBallReplyService.insertFBallReply(fireBaseToken,reqDto));
+                emitter.send(fBallReplyService.insertFBallReply(fireBaseToken,
+                        fBallReplyInsertServiceFactory.getFBallReplyInsertServiceFactory(reqDto)
+                        ,reqDto));
                 emitter.complete();
             } catch (IOException e) {
                 e.printStackTrace();

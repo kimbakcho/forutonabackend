@@ -111,7 +111,7 @@ public class FBallValuationService {
         fBall.setBallLikesFromBallValuation(fBallValuation.getUpAndDown());
         fBall.setBallDisLikesFromBallValuation(fBallValuation.getUpAndDown());
         fBall.updateBallPower();
-        FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
+        FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getUid().getUid()).get();
         makerUid.updateCumulativeInfluence(fBallValuation.getUpAndDown());
     }
 
@@ -126,7 +126,7 @@ public class FBallValuationService {
                 emitter.completeWithError(new Throwable("over Active Time"));
             } else if (fireBaseToken.getUserFireBaseUid().equals(fBallValuation.getUid().getUid())) {
                 ballValuation(fBallValuation);
-                FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getFBallUid().getUid()).get();
+                FUserInfo makerUid = fUserInfoDataRepository.findById(fBall.getUid().getUid()).get();
                 fBallValuationDataRepository.deleteById(valueUuid);
                 contributorsControllerService.deleteContributorsByUidIsAndBallUuidIs(new ContributorReqDto(makerUid.getUid(), fBall.getBallUuid()));
                 emitter.send(valueUuid);

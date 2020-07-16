@@ -33,7 +33,7 @@ public class FBall {
     private String ballUuid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    private FUserInfo fBallUid;
+    private FUserInfo uid;
     private double longitude;
     private double latitude;
     @Column(columnDefinition = "geometry(Point,4326)")
@@ -69,13 +69,13 @@ public class FBall {
     private boolean ballDeleteFlag;
 
     @Builder
-    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo fBallUid,
+    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
                  long ballHits, double makeExp) {
         this.ballUuid = ballUuid;
         this.makeTime = makeTime;
         this.ballState = ballState;
-        this.fBallUid = fBallUid;
+        this.uid = uid;
         this.pointReward = pointReward;
         this.influenceReward = influenceReward;
         this.activationTime = activationTime;
@@ -107,8 +107,8 @@ public class FBall {
         return fBall;
     }
 
-    public void setFBallUid(FUserInfo fBallUid) {
-        this.fBallUid = fBallUid;
+    public void setUid(FUserInfo fBallUid) {
+        this.uid = fBallUid;
     }
 
     public void setMakeTime(LocalDateTime makeTime) {
@@ -207,5 +207,10 @@ public class FBall {
 
     public void setBallPower(int ballPower) {
         this.ballPower = ballPower;
+    }
+
+    public long addBallReplyCount(){
+        commentCount++;
+        return commentCount;
     }
 }

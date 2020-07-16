@@ -1,11 +1,9 @@
 package com.wing.forutona.ForutonaUser.Domain;
 
 
-import com.google.type.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoJoinReqDto;
 import lombok.*;
@@ -67,12 +65,12 @@ public class FUserInfo {
   private long alarmSponNewContent;
   private long deactivation;
 
-  @OneToMany(mappedBy = "fBallUid")
+  @OneToMany(mappedBy = "uid")
   private List<FBall> userBalls = new ArrayList<>();
 
   public void addBall(FBall fBall){
     this.userBalls.add(fBall);
-    fBall.setFBallUid(this);
+    fBall.setUid(this);
   }
 
   @Builder

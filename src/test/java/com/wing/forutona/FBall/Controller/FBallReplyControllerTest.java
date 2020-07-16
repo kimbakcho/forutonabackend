@@ -2,12 +2,9 @@ package com.wing.forutona.FBall.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.FBall.Service.FBallListUpService;
-import com.wing.forutona.FBall.Service.FBallReplyService;
-import org.junit.jupiter.api.BeforeEach;
+import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -17,14 +14,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;

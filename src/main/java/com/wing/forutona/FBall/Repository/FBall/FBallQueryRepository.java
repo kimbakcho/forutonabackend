@@ -138,7 +138,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         List<FBallResDto> fBallResDtos = queryFactory.select(
                 new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
-                .from(fBall).join(fBall.fBallUid, fUserInfo)
+                .from(fBall).join(fBall.uid, fUserInfo)
                 .where(stWithin.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballState.eq(FBallState.Play)
@@ -165,7 +165,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         return queryFactory.select(new QUserToMakerBallResDto(fBall))
                 .from(fBall)
-                .where(fBall.fBallUid.uid.eq(reqDto.getMakerUid()))
+                .where(fBall.uid.uid.eq(reqDto.getMakerUid()))
                 .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
 
