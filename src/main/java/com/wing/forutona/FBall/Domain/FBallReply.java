@@ -88,4 +88,14 @@ public class FBallReply {
     public long addFBallReplyCount(){
         return replyBallUuid.addBallReplyCount();
     }
+
+    public String getReplyUserNickName(){
+        return replyUid.getNickName();
+    }
+    public String getReplyUserProfileImageUrl(){
+        return replyUid.getProfilePictureUrl();
+    }
+    public String getReplyUserUid(){
+        return replyUid.getUid();
+    }
 }

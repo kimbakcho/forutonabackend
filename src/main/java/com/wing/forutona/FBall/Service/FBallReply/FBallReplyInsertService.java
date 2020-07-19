@@ -21,6 +21,7 @@ public interface FBallReplyInsertService {
 @Service("FBallReplyRootInsertService")
 @RequiredArgsConstructor
 class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
+
     final FBallReplyQueryRepository fBallReplyQueryRepository;
 
     @Override

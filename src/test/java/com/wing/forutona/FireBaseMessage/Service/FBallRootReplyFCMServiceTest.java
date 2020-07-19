@@ -54,8 +54,6 @@ class FBallRootReplyFCMServiceTest extends BaseTest {
         //when
         fBallReplyFCMService.sendFCM(fBallReply);
         //then
-        //TODO FCM 테스트 코드 마저 작성 필요
-
 
 
     }
