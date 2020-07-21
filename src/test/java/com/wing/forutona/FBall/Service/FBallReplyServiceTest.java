@@ -1,5 +1,7 @@
 package com.wing.forutona.FBall.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
@@ -10,6 +12,7 @@ import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertService;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
+import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -52,6 +55,10 @@ class FBallReplyServiceTest extends BaseTest {
     @Qualifier("FBallReplySubInsertService")
     FBallReplyInsertService fBallReplySubInsertService;
 
+    @MockBean
+    FBallReplyFCMService fBallReplyFCMService;
+
+
     @Autowired
     FBallReplyService fBallReplyService;
 
@@ -75,7 +82,7 @@ class FBallReplyServiceTest extends BaseTest {
 
     @Test
     @DisplayName("main reply insert call")
-    void insertMainFBallReply() {
+    void insertMainFBallReply() throws FirebaseMessagingException, JsonProcessingException {
         //given
         FUserInfo fUserInfo = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent().get(0);
         FBall fBall = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent().get(0);
@@ -86,7 +93,7 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, fBallReplyRootInsertService, reqDto);
+        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, fBallReplyRootInsertService,fBallReplyFCMService, reqDto);
         //then
         assertNotEquals(-1,fBallReplyResDto.getReplyNumber());
 
@@ -94,7 +101,7 @@ class FBallReplyServiceTest extends BaseTest {
 
     @Test
     @DisplayName("sub reply insert call")
-    void insertSubFBallReply() {
+    void insertSubFBallReply() throws FirebaseMessagingException, JsonProcessingException {
         //given
         FUserInfo fUserInfo = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent().get(0);
         FBall fBall = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent().get(0);
@@ -110,7 +117,7 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        fBallReplyService.insertFBallReply(fireBaseToken,fBallReplySubInsertService ,reqDto);
+        fBallReplyService.insertFBallReply(fireBaseToken,fBallReplySubInsertService ,fBallReplyFCMService,reqDto);
         //then
         List<FBallReply> thenReplyItems = fBallReplyDataRepository.findByReplyBallUuidIsAndReplyNumberIsOrderByReplyUploadDateTimeDesc(
                 fBall, fBallReply.getReplyNumber()

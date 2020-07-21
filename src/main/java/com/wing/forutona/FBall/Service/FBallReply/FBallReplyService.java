@@ -1,5 +1,7 @@
 package com.wing.forutona.FBall.Service.FBallReply;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
@@ -7,8 +9,8 @@ import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
+import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,11 +31,13 @@ public class FBallReplyService {
     @Autowired
     FBallDataRepository fBallDataRepository;
 
+
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public FBallReplyResDto insertFBallReply(FFireBaseToken fireBaseToken
-            ,FBallReplyInsertService fBallReplyInsertService
+            , FBallReplyInsertService fBallReplyInsertService
+            ,FBallReplyFCMService fBallReplyFCMService
             , FBallReplyInsertReqDto reqDto
-            ) {
+    ) throws FirebaseMessagingException, JsonProcessingException {
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
         FUserInfo fUserInfo = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
         FBallReply saveFBallReplyItem = FBallReply.builder()
@@ -47,7 +51,10 @@ public class FBallReplyService {
                 .build();
         FBallReply fBallReply = fBallReplyInsertService.insertReply(fireBaseToken, reqDto, saveFBallReplyItem);
         FBallReply saveReply = fBallReplyDataRepository.saveAndFlush(fBallReply);
+
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply);
+
+        fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
     }
 

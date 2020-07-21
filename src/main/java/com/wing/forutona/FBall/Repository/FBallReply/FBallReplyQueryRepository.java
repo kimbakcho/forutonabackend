@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyResDto;
 import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
@@ -100,6 +101,8 @@ public class FBallReplyQueryRepository {
         replyResWrapDto.setOnlySubReply(reqDto.isReqOnlySubReply());
         return replyResWrapDto;
     }
+
+
 
 
 }

@@ -1,35 +1,83 @@
 package com.wing.forutona.FireBaseMessage.Service;
 
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
+import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
+import com.wing.forutona.FireBaseMessage.Dto.FireBaseMessageSendDto;
+import com.wing.forutona.FireBaseMessage.PayloadDto.FCMReplyDto;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface FBallReplyFCMService {
-    void sendFCM(FBallReply fBallReply) throws FirebaseMessagingException;
+
+public abstract class FBallReplyFCMService {
+
+    @Autowired
+    FireBaseMessageAdapter fireBaseMessageAdapter;
+
+    abstract String getFCMToken(FBallReply fBallReply);
+
+    public void sendFCM(FBallReply fBallReply) throws FirebaseMessagingException, JsonProcessingException {
+        String fcmToken = getFCMToken(fBallReply);
+        FCMReplyDto fcmReplyDto = new FCMReplyDto();
+        fcmReplyDto.setReplyUserUid(fBallReply.getReplyUserUid());
+        fcmReplyDto.setNickName(fBallReply.getReplyUserNickName());
+        fcmReplyDto.setReplyText(fBallReply.getReplyText());
+        fcmReplyDto.setUserProfileImageUrl(fBallReply.getReplyUserProfileImageUrl());
+        fcmReplyDto.setBallUuid(fBallReply.getBallUuid());
+        if(isRootNode(fBallReply)){
+            fcmReplyDto.setReplyTitleType("COMMENT");
+        }else {
+            fcmReplyDto.setReplyTitleType("REPLY");
+        }
+
+        FireBaseMessageSendDto replyDtoFireBaseMessageSendDto =
+                FireBaseMessageSendDto.builder().commandKey("CommentChannelUseCase")
+                        .serviceKey("FBallReplyFCMService")
+                        .isNotification(true)
+                        .payLoad(fcmReplyDto)
+                        .fcmToken(fcmToken)
+                        .build();
+
+        fireBaseMessageAdapter.sendMessage(replyDtoFireBaseMessageSendDto);
+    }
+
+    public boolean isRootNode(FBallReply fBallReply) {
+        return fBallReply.getReplySort()  == 0;
+    }
+
 }
 
 @Service("FBallRootReplyFCMService")
-class FBallRootReplyFCMService implements FBallReplyFCMService {
+@Transactional
+class FBallRootReplyFCMService extends FBallReplyFCMService {
 
     @Override
-    public void sendFCM(FBallReply fBallReply) throws FirebaseMessagingException {
+    String getFCMToken(FBallReply fBallReply) {
         FUserInfo ballMaker = fBallReply.getBallMakerUerInfo();
-        String fcMtoken = ballMaker.getFCMtoken();
-        Message message = Message.builder()
-                .putData("commandKey","CommentChannelUseCase")
-                .putData("serviceKey","FBallRootReplyFCMService")
-                .putData("isNotification","true")
-                .putData("replyUserUid", fBallReply.getReplyUserUid())
-                .putData("nickName", fBallReply.getReplyUserNickName())
-                .putData("replyText", fBallReply.getReplyText())
-                .putData("userProfileImageUrl", fBallReply.getReplyUserProfileImageUrl())
-                .setToken(fcMtoken)
-                .build();
-        FirebaseMessaging.getInstance().send(message);
+        return ballMaker.getFCMtoken();
     }
+}
+
+
+@Service("FBallSubReplyFCMService")
+
+@Transactional
+class FBallSubReplyFCMService extends FBallReplyFCMService {
+
+    @Autowired
+    FBallReplyDataRepository fBallReplyDataRepository;
+
+    @Override
+    String getFCMToken(FBallReply fBallReply) {
+        FBallReply rootReply = fBallReplyDataRepository.findByReplyBallUuidAndReplyNumberAndReplySort(
+                fBallReply.getReplyBallUuid(),
+                fBallReply.getReplyNumber(), 0L);
+
+        String fcMtoken = rootReply.getReplyUid().getFCMtoken();
+        return fcMtoken;
+    }
+
 }

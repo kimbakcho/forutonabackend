@@ -8,20 +8,20 @@ import org.springframework.stereotype.Component;
 public class FBallReplyInsertServiceFactory {
 
     final
-    FBallReplyInsertService fBallReplyRootInsertServiceImpl;
+    FBallReplyInsertService fBallReplyRootInsertService;
 
     final
     FBallReplyInsertService fBallReplySubInsertService;
 
-    public FBallReplyInsertServiceFactory(@Qualifier("FBallReplyRootInsertService") FBallReplyInsertService fBallReplyRootInsertServiceImpl,
+    public FBallReplyInsertServiceFactory(@Qualifier("FBallReplyRootInsertService") FBallReplyInsertService fBallReplyRootInsertService,
                                           @Qualifier("FBallReplySubInsertService") FBallReplyInsertService fBallReplySubInsertService) {
-        this.fBallReplyRootInsertServiceImpl = fBallReplyRootInsertServiceImpl;
+        this.fBallReplyRootInsertService = fBallReplyRootInsertService;
         this.fBallReplySubInsertService = fBallReplySubInsertService;
     }
 
     public FBallReplyInsertService getFBallReplyInsertServiceFactory(FBallReplyInsertReqDto reqDto) {
         if (isRootReply(reqDto)) {
-            return fBallReplyRootInsertServiceImpl;
+            return fBallReplyRootInsertService;
         } else {
             return fBallReplySubInsertService;
         }

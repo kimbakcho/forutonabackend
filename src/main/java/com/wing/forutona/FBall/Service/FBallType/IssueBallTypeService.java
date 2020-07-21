@@ -36,16 +36,9 @@ public class IssueBallTypeService {
     @Transactional
     public void insertBall(ResponseBodyEmitter emitter, IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
         try {
-            FBall fBall = FBall.builder()
-                    .makeTime(LocalDateTime.now())
-                    .ballState(FBallState.Play)
-                    .uid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build())
-                    .activationTime(LocalDateTime.now().plusDays(7))
-                    //아래 지수는 액션에 의해 변해야 함으로 Client 단순 정보로 변하게 하지 않기 위해서 직접 BackEnd 에서 Defined
-                    .makeExp(300)
-                    .build();
-
-            FBall saveBall = fBallDataRepository.saveAndFlush(fBall);
+            FBall fBall1 = FBall.fromIssueBallInsertReqDto(reqDto);
+            fBall1.setUid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build());
+            FBall saveBall = fBallDataRepository.saveAndFlush(fBall1);
             FBallResDto fBallResDto = new FBallResDto(saveBall);
             emitter.send(fBallResDto);
         } catch (IOException e) {

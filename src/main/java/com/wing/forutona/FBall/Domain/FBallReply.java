@@ -1,7 +1,10 @@
 package com.wing.forutona.FBall.Domain;
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,14 +30,14 @@ public class FBallReply {
     Boolean deleteFlag = false;
 
     @Builder
-    public FBallReply(String replyUuid,FBall replyBallUuid
-            ,FUserInfo replyUid
-            ,Long replyNumber
-            ,Long replySort
-            ,String replyText
-            ,LocalDateTime replyUploadDateTime
-            ,LocalDateTime replyUpdateDateTime
-            ,Long replyDepth ){
+    public FBallReply(String replyUuid, FBall replyBallUuid
+            , FUserInfo replyUid
+            , Long replyNumber
+            , Long replySort
+            , String replyText
+            , LocalDateTime replyUploadDateTime
+            , LocalDateTime replyUpdateDateTime
+            , Long replyDepth) {
         this.replyUuid = replyUuid;
         this.replyBallUuid = replyBallUuid;
         this.replyUid = replyUid;
@@ -75,27 +78,33 @@ public class FBallReply {
         this.replyUpdateDateTime = replyUploadDateTime;
     }
 
-    public void delete(){
+    public void delete() {
         this.replyText = "Delete Text";
         this.replyUpdateDateTime = LocalDateTime.now();
         this.deleteFlag = true;
     }
 
-    public FUserInfo getBallMakerUerInfo(){
+    public FUserInfo getBallMakerUerInfo() {
         return replyBallUuid.getUid();
     }
 
-    public long addFBallReplyCount(){
+    public long addFBallReplyCount() {
         return replyBallUuid.addBallReplyCount();
     }
 
-    public String getReplyUserNickName(){
+    public String getReplyUserNickName() {
         return replyUid.getNickName();
     }
-    public String getReplyUserProfileImageUrl(){
+
+    public String getReplyUserProfileImageUrl() {
         return replyUid.getProfilePictureUrl();
     }
-    public String getReplyUserUid(){
+
+    public String getReplyUserUid() {
         return replyUid.getUid();
+    }
+
+    public String getBallUuid() {
+        return replyBallUuid.getBallUuid();
     }
 }

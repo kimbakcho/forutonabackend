@@ -1,5 +1,6 @@
 package com.wing.forutona.FBall.Controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
@@ -8,6 +9,7 @@ import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyUpdateReqDto;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertServiceFactory;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
+import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMServiceFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,8 @@ public class FBallReplyController {
     final FBallReplyService fBallReplyService;
 
     final FBallReplyInsertServiceFactory fBallReplyInsertServiceFactory;
+
+    final FBallReplyFCMServiceFactory fBallReplyFCMServiceFactory;
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBallReply")
@@ -51,10 +55,11 @@ public class FBallReplyController {
         executor.execute(() -> {
             try {
                 emitter.send(fBallReplyService.insertFBallReply(fireBaseToken,
-                        fBallReplyInsertServiceFactory.getFBallReplyInsertServiceFactory(reqDto)
-                        ,reqDto));
+                        fBallReplyInsertServiceFactory.getFBallReplyInsertServiceFactory(reqDto),
+                        fBallReplyFCMServiceFactory.getFBallReplyFCMServiceFactory(reqDto),
+                        reqDto));
                 emitter.complete();
-            } catch (IOException e) {
+            } catch (IOException | FirebaseMessagingException e) {
                 e.printStackTrace();
                 emitter.completeWithError(e);
             }

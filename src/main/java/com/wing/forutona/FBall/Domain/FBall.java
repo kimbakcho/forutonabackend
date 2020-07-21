@@ -87,8 +87,12 @@ public class FBall {
     public static FBall fromIssueBallInsertReqDto(IssueBallInsertReqDto reqDto) {
         FBall fBall = new FBall();
         fBall.ballUuid = reqDto.getBallUuid();
+        fBall.makeTime = LocalDateTime.now();
+        fBall.ballState = FBallState.Play;
         fBall.longitude = reqDto.getLongitude();
         fBall.latitude = reqDto.getLatitude();
+        fBall.activationTime= LocalDateTime.now().plusDays(7);
+        fBall.makeExp = 300;
         GeometryFactory geomFactory = new GeometryFactory();
         fBall.placePoint = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
         fBall.placePoint.setSRID(4326);
