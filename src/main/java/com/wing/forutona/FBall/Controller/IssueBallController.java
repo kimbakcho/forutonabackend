@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @RestController
 @RequiredArgsConstructor
 public class IssueBallController {
@@ -22,7 +26,16 @@ public class IssueBallController {
     @PostMapping(value = "/v1/FBall/Issue/Select")
     public ResponseBodyEmitter selectBall(FBallReqDto fBallReqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.selectBall(emitter,fBallReqDto);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(issueBallTypeService.selectBall(fBallReqDto));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -32,7 +45,16 @@ public class IssueBallController {
     @PostMapping(value = "/v1/FBall/Issue/Insert")
     public ResponseBodyEmitter insertBall(@RequestBody IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.insertBall(emitter,reqDto,fireBaseToken);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(issueBallTypeService.insertBall(reqDto,fireBaseToken));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -40,14 +62,33 @@ public class IssueBallController {
     @PostMapping(value = "/v1/FBall/Issue/Join")
     public ResponseBodyEmitter joinBall(@RequestBody FBallJoinReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.joinBall(emitter,reqDto,fireBaseToken);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+
+                emitter.send(issueBallTypeService.joinBall(reqDto,fireBaseToken));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
     @PostMapping(value = "/v1/FBall/Issue/BallHit")
     public ResponseBodyEmitter BallHit(@RequestBody FBallReqDto reqDto){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.ballHit(emitter,reqDto);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(issueBallTypeService.ballHit(reqDto));
+                emitter.complete();
+            } catch (IOException e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -55,7 +96,16 @@ public class IssueBallController {
     @PutMapping(value = "/v1/FBall/Issue/Update")
     public ResponseBodyEmitter updateBall(@RequestBody IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.updateBall(emitter,reqDto,fireBaseToken);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                emitter.send(issueBallTypeService.updateBall(reqDto,fireBaseToken));
+                emitter.complete();
+            } catch (Exception e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
     }
 
@@ -63,8 +113,19 @@ public class IssueBallController {
     @DeleteMapping(value = "/v1/FBall/Issue/Delete")
     public ResponseBodyEmitter deleteBall(FBallReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        issueBallTypeService.deleteBall(emitter,reqDto,fireBaseToken);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+
+                emitter.send(issueBallTypeService.deleteBall(reqDto,fireBaseToken));
+                emitter.complete();
+            } catch (Exception e) {
+                e.printStackTrace();
+                emitter.completeWithError(e);
+            }
+        });
         return emitter;
+
     }
 
 }

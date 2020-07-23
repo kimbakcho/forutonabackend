@@ -16,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,131 +30,93 @@ public class IssueBallTypeService {
     final GoogleStorgeAdmin googleStorgeAdmin;
     final FBallPlayerDataRepository fBallPlayerDataRepository;
 
-    @Async
+
     @Transactional
-    public void insertBall(ResponseBodyEmitter emitter, IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
-        try {
-            FBall fBall1 = FBall.fromIssueBallInsertReqDto(reqDto);
-            fBall1.setUid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build());
-            FBall saveBall = fBallDataRepository.saveAndFlush(fBall1);
-            FBallResDto fBallResDto = new FBallResDto(saveBall);
-            emitter.send(fBallResDto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
+    public FBallResDto insertBall(IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+        FBall fBall1 = FBall.fromIssueBallInsertReqDto(reqDto);
+        fBall1.setUid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build());
+        FBall saveBall = fBallDataRepository.saveAndFlush(fBall1);
+        FBallResDto fBallResDto = new FBallResDto(saveBall);
+        return fBallResDto;
     }
 
 
     @Async
     @Transactional
-    public void updateBall(ResponseBodyEmitter emitter, IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
-        try {
-            FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-            if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
-                throw new Exception("don't Have Permisstion");
-            }
-
-            fBall.updateIssueBallUpdateReqDto(reqDto);
-            List<FBalltag> tagCollect = reqDto.getTags().stream()
-                    .map(x -> FBalltag.builder()
-                            .ballUuid(fBall)
-                            .tagItem(x.getTagItem())
-                            .build()
-                    ).collect(Collectors.toList());
-
-            fBall.getTags().clear();
-            fBall.getTags().addAll(tagCollect);
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
+    public int updateBall(IssueBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) throws Exception {
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+        if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
+            throw new Exception("don't Have Permisstion");
         }
-    }
 
-    @Async
-    @Transactional
-    public void selectBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto) {
-        try {
-            FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
-            FBallResDto fBallResDto = new FBallResDto(fBall);
-            emitter.send(fBallResDto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
-
-    @Async
-    @Transactional
-    public void deleteBall(ResponseBodyEmitter emitter, FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
-        try {
-            FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
-            if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
-                throw new Exception("don't Have Permisstion");
-            }
-            fBall.delete();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            IssueBallDescriptionDto issueBallDescriptionDto = objectMapper.readValue(fBall.getDescription(), IssueBallDescriptionDto.class);
-            if (issueBallDescriptionDto.getDesimages() != null) {
-                deleteImageFile(issueBallDescriptionDto);
-            }
-
-            fBall.setActivationTime(LocalDateTime.now());
-            fBall.getTags().clear();
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
-
-    @Async
-    @Transactional
-    public void joinBall(ResponseBodyEmitter emitter, FBallJoinReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
-        try {
-            FUserInfo fBallPlayer = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
-            FBall fBall = FBall.builder().ballUuid(fBallReqDto.getBallUuid()).build();
-            FBallPlayer ballPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);
-            if (ballPlayer != null) {
-                emitter.send(1);
-            } else {
-                FBallPlayer joinBallPlayer = FBallPlayer.builder()
+        fBall.updateIssueBallUpdateReqDto(reqDto);
+        List<FBalltag> tagCollect = reqDto.getTags().stream()
+                .map(x -> FBalltag.builder()
                         .ballUuid(fBall)
-                        .playerUid(fBallPlayer)
-                        .startTime(LocalDateTime.now())
-                        .playState(FBallPlayState.Join).build();
-                fBallPlayerDataRepository.saveAndFlush(joinBallPlayer);
-                emitter.send(1);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
+                        .tagItem(x.getTagItem())
+                        .build()
+                ).collect(Collectors.toList());
+
+        fBall.getTags().clear();
+        fBall.getTags().addAll(tagCollect);
+        return 1;
     }
 
-    @Async
     @Transactional
-    public void ballHit(ResponseBodyEmitter emitter, FBallReqDto reqDto) {
-        try {
-            FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-            fBall.setBallHits(fBall.getBallHits() + 1);
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
+    public FBallResDto selectBall(FBallReqDto fBallReqDto) {
+        FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
+        FBallResDto fBallResDto = new FBallResDto(fBall);
+        return fBallResDto;
+    }
+
+    @Transactional
+    public int deleteBall(FBallReqDto fBallReqDto, FFireBaseToken fireBaseToken) throws Exception {
+        FBall fBall = fBallDataRepository.findById(fBallReqDto.getBallUuid()).get();
+        if (!fBall.getUid().getUid().equals(fireBaseToken.getUserFireBaseUid())) {
+            throw new Exception("don't Have Permisstion");
         }
+        fBall.delete();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        IssueBallDescriptionDto issueBallDescriptionDto = objectMapper.readValue(fBall.getDescription(), IssueBallDescriptionDto.class);
+        if (issueBallDescriptionDto.getDesimages() != null) {
+            deleteImageFile(issueBallDescriptionDto);
+        }
+
+        fBall.setActivationTime(LocalDateTime.now());
+        fBall.getTags().clear();
+        return 1;
+    }
+
+    @Transactional
+    public int joinBall(FBallJoinReqDto fBallReqDto, FFireBaseToken fireBaseToken) {
+        FUserInfo fBallPlayer = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
+        FBall fBall = FBall.builder().ballUuid(fBallReqDto.getBallUuid()).build();
+        FBallPlayer ballPlayer = fBallPlayerDataRepository.findFBallPlayerByPlayerUidIsAndBallUuidIs(fBallPlayer, fBall);
+        if (isNotYetJoined(ballPlayer)) {
+            FBallPlayer joinBallPlayer = FBallPlayer.builder()
+                    .ballUuid(fBall)
+                    .playerUid(fBallPlayer)
+                    .startTime(LocalDateTime.now())
+                    .playState(FBallPlayState.Join).build();
+            fBallPlayerDataRepository.saveAndFlush(joinBallPlayer);
+
+        }
+        return 1;
+
+    }
+
+    public boolean isNotYetJoined(FBallPlayer ballPlayer) {
+        return ballPlayer == null;
+    }
+
+    @Transactional
+    public int ballHit(FBallReqDto reqDto) {
+
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+        fBall.setBallHits(fBall.getBallHits() + 1);
+        return 1;
+
     }
 
 

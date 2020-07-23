@@ -27,6 +27,8 @@ public class BaseTest {
     @MockBean
     protected FireBaseHandlerMethodArgumentResolver fireBaseHandlerMethodArgumentResolver;
 
+    protected String testFireBaseUser = "Naver11467346";
+
     @BeforeEach
     public void BaseSetUp() throws Exception {
         given(fAuthHttpInterceptor.preHandle(any(),any(),any())).willReturn(true);

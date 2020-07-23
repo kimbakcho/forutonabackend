@@ -217,4 +217,12 @@ public class FBall {
         commentCount++;
         return commentCount;
     }
+
+    public String getMakerNickName() {
+        return this.uid.getNickName();
+    }
+
+    public String getMakerProfileImage() {
+        return this.uid.getProfilePictureUrl();
+    }
 }

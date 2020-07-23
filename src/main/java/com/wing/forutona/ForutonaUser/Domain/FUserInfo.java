@@ -27,43 +27,43 @@ public class FUserInfo {
   private long gender;
   private LocalDate ageDate;
   private String email;
-  private boolean forutonaAgree;
-  private boolean forutonaManagementAgree;
-  private boolean privateAgree;
-  private boolean positionAgree;
-  private boolean martketingAgree;
-  private boolean ageLimitAgree;
+  private Boolean forutonaAgree;
+  private Boolean forutonaManagementAgree;
+  private Boolean privateAgree;
+  private Boolean positionAgree;
+  private Boolean martketingAgree;
+  private Boolean ageLimitAgree;
   private String snsService;
   private String phoneNumber;
   private String isoCode;
-  private double latitude;
-  private double longitude;
+  private Double latitude;
+  private Double longitude;
   @Column(columnDefinition="geometry(Point,4326)")
   private Point placePoint;
   private LocalDateTime positionUpdateTime;
-  private double userLevel;
-  private double expPoint;
+  private Double userLevel;
+  private Double expPoint;
   private String fCMtoken;
   private LocalDateTime joinTime;
-  private long followCount;
-  private long backOut;
+  private Long followCount;
+  private Long backOut;
   private LocalDateTime lastBackOutTime;
   private String selfIntroduction;
-  private double cumulativeInfluence;
-  private double uPoint;
-  private double naPoint;
-  private long historyOpenAll;
-  private long historyOpenFollowSponsor;
-  private long historyOpenNoOpen;
-  private long sponsorHistoryOpenAll;
-  private long sponsorHistoryOpenSponAndFollowFromMe;
-  private long sponsorHistoryOpenSponNoOpen;
-  private long alarmChatMessage;
-  private long alarmContentReply;
-  private long alarmReplyAndReply;
-  private long alarmFollowNewContent;
-  private long alarmSponNewContent;
-  private long deactivation;
+  private Double cumulativeInfluence;
+  private Double uPoint;
+  private Double naPoint;
+  private Long historyOpenAll;
+  private Long historyOpenFollowSponsor;
+  private Long historyOpenNoOpen;
+  private Long sponsorHistoryOpenAll;
+  private Long sponsorHistoryOpenSponAndFollowFromMe;
+  private Long sponsorHistoryOpenSponNoOpen;
+  private Long alarmChatMessage;
+  private Long alarmContentReply;
+  private Long alarmReplyAndReply;
+  private Long alarmFollowNewContent;
+  private Long alarmSponNewContent;
+  private Long deactivation;
 
   @OneToMany(mappedBy = "uid")
   private List<FBall> userBalls = new ArrayList<>();
@@ -80,7 +80,7 @@ public class FUserInfo {
     this.nickName = nickName;
   }
 
-  public static FUserInfo fromFUserInfoJoinReqDto  (FUserInfoJoinReqDto reqDto){
+  public static FUserInfo fromFUserInfoJoinReqDto (FUserInfoJoinReqDto reqDto){
     FUserInfo fUserInfo = new FUserInfo();
     fUserInfo.uid = reqDto.getEmailUserUid();
     fUserInfo.snsService = reqDto.getSnsSupportService().name();
@@ -96,15 +96,16 @@ public class FUserInfo {
     fUserInfo.nickName = reqDto.getNickName();
     fUserInfo.profilePictureUrl = reqDto.getUserProfileImageUrl();
     GeometryFactory geomFactory = new GeometryFactory();
-    fUserInfo.placePoint = geomFactory.createPoint(new Coordinate(37.4402052,126.79369789999998));
-    fUserInfo.placePoint.setSRID(4326);
+    Point placePoint = geomFactory.createPoint(new Coordinate(126.79369789999998, 37.4402052));
+    placePoint.setSRID(4326);
+    fUserInfo.placePoint = placePoint;
     fUserInfo.phoneNumber = reqDto.getInternationalizedPhoneNumber();
     return fUserInfo;
   }
 
   public void updatePlacePoint(double latitude,double longitude){
     GeometryFactory geomFactory = new GeometryFactory();
-    Point point = geomFactory.createPoint(new Coordinate(latitude, longitude));
+    Point point = geomFactory.createPoint(new Coordinate(longitude,latitude));
     point.setSRID(4326);
     this.placePoint = point;
     this.latitude = latitude;
@@ -135,4 +136,6 @@ public class FUserInfo {
   public void setFCMtoken(String fCMtoken) {
     this.fCMtoken = fCMtoken;
   }
+
+
 }
