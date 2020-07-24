@@ -9,20 +9,17 @@ import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Transactional
-class FBalIInsertFCMServiceImplTest extends BaseTest {
+class FBallInsertFCMServiceImplTest extends BaseTest {
 
     @Autowired
     @Qualifier("IssueFBalIInsertFCMService")
-    FBalIInsertFCMService issueFBalIInsertFCMService;
+    FBallInsertFCMService issueFBallInsertFCMService;
 
     @Autowired
     FBallDataRepository fBallDataRepository;
@@ -38,7 +35,7 @@ class FBalIInsertFCMServiceImplTest extends BaseTest {
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(testFireBaseUser).get();
         fUserInfo.updatePlacePoint(fBall.getLatitude(),fBall.getLongitude());
         //when
-        issueFBalIInsertFCMService.sendInsertFCMMessage(fBall);
+        issueFBallInsertFCMService.sendInsertFCMMessage(fBall);
         //then
         //핸드폰에서 응답 받는지 체크 필요
 

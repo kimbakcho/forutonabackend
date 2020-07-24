@@ -1,5 +1,6 @@
 package com.wing.forutona.FBall.Controller;
 
+import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
@@ -8,6 +9,8 @@ import com.wing.forutona.FBall.Dto.FBallJoinReqDto;
 import com.wing.forutona.FBall.Dto.FBallReqDto;
 import com.wing.forutona.FBall.Dto.IssueBallUpdateReqDto;
 import com.wing.forutona.FBall.Service.FBallType.IssueBallTypeService;
+import com.wing.forutona.FireBaseMessage.Service.FBalIInsertFCMServiceFactory;
+import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -21,6 +24,8 @@ import java.util.concurrent.Executors;
 public class IssueBallController {
 
     final IssueBallTypeService issueBallTypeService;
+
+    final FBalIInsertFCMServiceFactory fBalIInsertFCMServiceFactory;
 
     @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/Issue/Select")
@@ -46,11 +51,13 @@ public class IssueBallController {
     public ResponseBodyEmitter insertBall(@RequestBody IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         ExecutorService executor = Executors.newSingleThreadExecutor();
+
         executor.execute(() -> {
             try {
-                emitter.send(issueBallTypeService.insertBall(reqDto,fireBaseToken));
+                emitter.send(issueBallTypeService.insertBall(reqDto,fireBaseToken,
+                        fBalIInsertFCMServiceFactory.getService(reqDto.getBallType())));
                 emitter.complete();
-            } catch (IOException e) {
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
                 emitter.completeWithError(e);
             }

@@ -2,6 +2,7 @@ package com.wing.forutona.FBall.Service.FBallType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.storage.BlobId;
+import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
@@ -9,6 +10,7 @@ import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallPlayer.FBallPlayerDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
@@ -32,11 +34,14 @@ public class IssueBallTypeService {
 
 
     @Transactional
-    public FBallResDto insertBall(IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) {
+    public FBallResDto insertBall(
+            IssueBallInsertReqDto reqDto, FFireBaseToken fireBaseToken,
+            FBallInsertFCMService fBallInsertFCMService) throws ParseException {
         FBall fBall1 = FBall.fromIssueBallInsertReqDto(reqDto);
         fBall1.setUid(FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build());
         FBall saveBall = fBallDataRepository.saveAndFlush(fBall1);
         FBallResDto fBallResDto = new FBallResDto(saveBall);
+        fBallInsertFCMService.sendInsertFCMMessage(saveBall);
         return fBallResDto;
     }
 

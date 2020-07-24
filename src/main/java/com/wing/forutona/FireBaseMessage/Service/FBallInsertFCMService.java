@@ -17,32 +17,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface FBalIInsertFCMService {
+public interface FBallInsertFCMService {
     void sendInsertFCMMessage(FBall fBall) throws ParseException;
 }
 
-@Component
-class FBalIInsertFCMServiceFactory {
-
-    final IssueFBalIInsertFCMServiceImpl issueFBalIInsertFCMService;
-
-    FBalIInsertFCMServiceFactory(
-            @Qualifier("IssueFBalIInsertFCMService") IssueFBalIInsertFCMServiceImpl issueFBalIInsertFCMService) {
-        this.issueFBalIInsertFCMService = issueFBalIInsertFCMService;
-    }
-
-    FBalIInsertFCMService getService(FBallType fBallType) {
-        if(fBallType.equals(FBallType.IssueBall)){
-            return issueFBalIInsertFCMService;
-        }else {
-            return null;
-        }
-    }
-}
 
 @Service("IssueFBalIInsertFCMService")
 @RequiredArgsConstructor
-class IssueFBalIInsertFCMServiceImpl implements FBalIInsertFCMService {
+class IssueFBallInsertFCMServiceImpl implements FBallInsertFCMService {
 
     final FUserInfoQueryRepository fUserInfoQueryRepository;
 
@@ -56,6 +38,8 @@ class IssueFBalIInsertFCMServiceImpl implements FBalIInsertFCMService {
                 .build();
         List<FUserInfoResDto> findNearUserFromGeoLocation =
                 fUserInfoQueryRepository.getFindNearUserFromGeoLocation(latLng, 1500);
+
+        receiveFCMListRemoveBallMakerUser(fBall, findNearUserFromGeoLocation);
 
         FCMFBallMakeDto fcmfBallMakeDto = new FCMFBallMakeDto();
         fcmfBallMakeDto.setBallMakerNickName(fBall.getMakerNickName());
@@ -80,5 +64,9 @@ class IssueFBalIInsertFCMServiceImpl implements FBalIInsertFCMService {
             }
         });
 
+    }
+
+    public boolean receiveFCMListRemoveBallMakerUser(FBall fBall, List<FUserInfoResDto> findNearUserFromGeoLocation) {
+        return findNearUserFromGeoLocation.removeIf(x-> x.getUid().equals(fBall.getMakerUid()));
     }
 }

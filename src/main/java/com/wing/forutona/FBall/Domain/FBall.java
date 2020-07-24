@@ -225,4 +225,8 @@ public class FBall {
     public String getMakerProfileImage() {
         return this.uid.getProfilePictureUrl();
     }
+
+    public String getMakerUid(){
+        return this.uid.getUid();
+    }
 }

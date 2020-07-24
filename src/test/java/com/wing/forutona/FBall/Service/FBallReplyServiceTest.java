@@ -28,10 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 @Transactional
 class FBallReplyServiceTest extends BaseTest {
 
@@ -56,6 +58,7 @@ class FBallReplyServiceTest extends BaseTest {
     FBallReplyInsertService fBallReplySubInsertService;
 
     @MockBean
+    @Qualifier("FBallRootReplyFCMService")
     FBallReplyFCMService fBallReplyFCMService;
 
 
@@ -70,13 +73,13 @@ class FBallReplyServiceTest extends BaseTest {
     void getFBallReply() {
         //given
         FBallReplyResWrapDto fBallReplyResWrapDto = new FBallReplyResWrapDto();
-        when(fBallReplyQueryRepository.getFBallReply(any(),any())).thenReturn(fBallReplyResWrapDto);
+        when(fBallReplyQueryRepository.getFBallReply(any(), any())).thenReturn(fBallReplyResWrapDto);
         FBallReplyReqDto reqDto = new FBallReplyReqDto();
         Pageable pageable = PageRequest.of(0, 10);
         //when
-        fBallReplyService.getFBallReply(reqDto,pageable);
+        fBallReplyService.getFBallReply(reqDto, pageable);
         //then
-        verify(fBallReplyQueryRepository).getFBallReply(any(),any());
+        verify(fBallReplyQueryRepository).getFBallReply(any(), any());
 
     }
 
@@ -93,9 +96,12 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(fireBaseToken, fBallReplyRootInsertService,fBallReplyFCMService, reqDto);
+        FBallReplyResDto fBallReplyResDto = fBallReplyService.insertFBallReply(
+                fireBaseToken,
+                fBallReplyRootInsertService,
+                fBallReplyFCMService, reqDto);
         //then
-        assertNotEquals(-1,fBallReplyResDto.getReplyNumber());
+        assertNotEquals(-1, fBallReplyResDto.getReplyNumber());
 
     }
 
@@ -117,12 +123,12 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyText("test");
         reqDto.setReplyUuid(UUID.randomUUID().toString());
         //when
-        fBallReplyService.insertFBallReply(fireBaseToken,fBallReplySubInsertService ,fBallReplyFCMService,reqDto);
+        fBallReplyService.insertFBallReply(fireBaseToken, fBallReplySubInsertService, fBallReplyFCMService, reqDto);
         //then
         List<FBallReply> thenReplyItems = fBallReplyDataRepository.findByReplyBallUuidIsAndReplyNumberIsOrderByReplyUploadDateTimeDesc(
                 fBall, fBallReply.getReplyNumber()
         );
-        assertEquals(chapterItemsLength+1,thenReplyItems.size());
+        assertEquals(chapterItemsLength + 1, thenReplyItems.size());
 
     }
 
@@ -135,9 +141,9 @@ class FBallReplyServiceTest extends BaseTest {
         reqDto.setReplyUuid(fBallReply.getReplyUuid());
         reqDto.setReplyText("testEdit");
         //when
-        fBallReplyService.updateFBallReply(fireBaseToken,reqDto);
+        fBallReplyService.updateFBallReply(fireBaseToken, reqDto);
         //then
-        assertEquals("testEdit",fBallReply.getReplyText());
+        assertEquals("testEdit", fBallReply.getReplyText());
     }
 
     @Test
@@ -147,8 +153,8 @@ class FBallReplyServiceTest extends BaseTest {
         when(fireBaseToken.getUserFireBaseUid()).thenReturn(fBallReply.getReplyUid().getUid());
 
         //when
-        fBallReplyService.deleteFBallReply(fireBaseToken,fBallReply.getReplyUuid());
+        fBallReplyService.deleteFBallReply(fireBaseToken, fBallReply.getReplyUuid());
         //then
-        assertEquals(true,fBallReply.getDeleteFlag());
+        assertEquals(true, fBallReply.getDeleteFlag());
     }
 }
