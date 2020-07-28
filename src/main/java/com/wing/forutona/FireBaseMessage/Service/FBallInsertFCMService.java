@@ -21,10 +21,9 @@ public interface FBallInsertFCMService {
     void sendInsertFCMMessage(FBall fBall) throws ParseException;
 }
 
-
-@Service("IssueFBalIInsertFCMService")
+@Service
 @RequiredArgsConstructor
-class IssueFBallInsertFCMServiceImpl implements FBallInsertFCMService {
+class FBallInsertFCMServiceImpl implements FBallInsertFCMService {
 
     final FUserInfoQueryRepository fUserInfoQueryRepository;
 

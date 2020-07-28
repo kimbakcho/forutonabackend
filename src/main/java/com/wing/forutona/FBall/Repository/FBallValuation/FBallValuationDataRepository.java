@@ -2,12 +2,11 @@ package com.wing.forutona.FBall.Repository.FBallValuation;
 
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallValuation;
-import com.wing.forutona.FBall.Dto.FBallValuationResDto;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface FBallValuationDataRepository extends JpaRepository<FBallValuation,String> {
-    List<FBallValuation> findByBallUuidIsAndUidIs(FBall ballUuid, FUserInfo uid);
+    Optional<FBallValuation> findByBallUuidIsAndUidIs(FBall ballUuid, FUserInfo uid);
 }

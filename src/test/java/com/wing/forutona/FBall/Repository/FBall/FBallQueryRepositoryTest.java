@@ -8,10 +8,12 @@ import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
+import com.wing.forutona.FBall.Dto.FBallResDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Propagation;
@@ -41,14 +43,14 @@ class FBallQueryRepositoryTest extends BaseTest {
 
         Pageable pageable = PageRequest.of(0, 9999999);
         //when
-        FBallListUpWrapDto ballListUpFromBallInfluencePower = fBallQueryRepository.getBallListUpFromBallInfluencePower(
+        Page<FBallResDto> ballListUpFromBallInfluencePower = fBallQueryRepository.getBallListUpFromBallInfluencePower(
                 GisGeometryUtil.createCenterPoint(37.50198846403655, 126.89106021076441),
                 GisGeometryUtil.createRect(37.50198846403655, 126.89106021076441, 100000.0),
                 pageable
         );
 
-        then(ballListUpFromBallInfluencePower.getBalls().size()).isGreaterThan(0);
-        then(ballListUpFromBallInfluencePower.getBalls().get(0).getBallUuid()).isEqualTo(choiceFBall.getBallUuid());
+        then(ballListUpFromBallInfluencePower.getSize()).isGreaterThan(0);
+        then(ballListUpFromBallInfluencePower.getContent().get(0).getBallUuid()).isEqualTo(choiceFBall.getBallUuid());
     }
 
     private FBall randomChoiceStringInfluencePowerBall(List<FBall> fBalls) {

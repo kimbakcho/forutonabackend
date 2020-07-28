@@ -18,7 +18,6 @@ import java.util.List;
 class FBallInsertFCMServiceImplTest extends BaseTest {
 
     @Autowired
-    @Qualifier("IssueFBalIInsertFCMService")
     FBallInsertFCMService issueFBallInsertFCMService;
 
     @Autowired

@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -21,6 +22,9 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.Querydsl4RepositorySupport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +34,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.wing.forutona.FBall.Domain.QFBall.fBall;
@@ -46,7 +51,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         super(FBall.class);
     }
 
-    public FBallListUpWrapDto getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
+    public Page<FBallResDto> getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
                                                        FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
@@ -69,7 +74,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset()).fetch();
 
-        return new FBallListUpWrapDto(LocalDateTime.now(), fBallList.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+        Page<FBallResDto> page = new PageImpl<FBallResDto>(fBallList.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+
+        return page;
     }
 
     public List<OrderSpecifier> getDistanceWithOrderSpecifiers(LatLng position, FSorts sorts) throws ParseException {
@@ -92,7 +99,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public FBallListUpWrapDto getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, FSorts sorts, Pageable pageable) throws ParseException {
+    public Page<FBallResDto> getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
@@ -112,11 +119,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .offset(pageable.getOffset())
                 .fetchResults();
 
-        FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
-        wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
-        wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
-
-        return wrapDto;
+        List<FBallResDto> collect = fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList());
+        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallQueryResults.getTotal());
+        return page;
     }
 
     public Long getFindBallCountInDistance(Geometry rect) {
@@ -129,7 +134,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         return count;
     }
 
-    public FBallListUpWrapDto getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
+    public Page<FBallResDto> getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         NumberTemplate stWithin = boundaryInBallsFilter(searchBoundary);
@@ -148,8 +153,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
-        
-        return new FBallListUpWrapDto(LocalDateTime.now(), fBallResDtos);
+
+        Page<FBallResDto> page = new PageImpl(fBallResDtos);
+        return page;
     }
 
     public NumberTemplate<Integer> boundaryInBallsFilter(Geometry searchBoundary) {
@@ -157,18 +163,19 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public List<UserToMakerBallResDto> getUserToMakerBalls(UserToMakerBallReqDto reqDto,
+    public Page<FBallResDto> getUserToMakerBalls(String makerUid,
                                                            FSorts sorts, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         List<OrderSpecifier> fBallOrderSpecifier = getAliveWithFBallOrderSpecifier(sorts);
-
-        return queryFactory.select(new QUserToMakerBallResDto(fBall))
+        QueryResults<FBallResDto> fBallResDtoQueryResults = queryFactory.select(new QFBallResDto(fBall))
                 .from(fBall)
-                .where(fBall.uid.uid.eq(reqDto.getMakerUid()))
+                .where(fBall.uid.uid.eq(makerUid))
                 .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
-                .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetch();
-
+                .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetchResults();
+        List<FBallResDto> collect = fBallResDtoQueryResults.getResults();
+        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallResDtoQueryResults.getTotal());
+        return page;
     }
 
     private List<OrderSpecifier> getAliveWithFBallOrderSpecifier(FSorts sorts) {
@@ -192,7 +199,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public FBallListUpWrapDto ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
+    public Page<FBallResDto> ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
                                                 FSorts sorts, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
@@ -208,11 +215,10 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .offset(pageable.getOffset())
                 .fetchResults();
 
-        FBallListUpWrapDto wrapDto = new FBallListUpWrapDto();
-        wrapDto.setSearchBallTotalCount(fBallQueryResults.getTotal());
-        wrapDto.setBalls(fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList()));
+        List<FBallResDto> collect = fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList());
+        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallQueryResults.getTotal());
 
-        return wrapDto;
+        return page;
     }
 
 

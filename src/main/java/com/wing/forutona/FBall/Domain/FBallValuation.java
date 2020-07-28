@@ -19,17 +19,20 @@ public class FBallValuation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
     FUserInfo uid;
-    Long upAndDown;
+
+    Integer point;
 
     @Builder
-    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid,Long upAndDown){
+    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid,Integer point){
         this.valueUuid = valueUuid;
         this.ballUuid = ballUuid;
         this.uid =uid;
-        this.upAndDown = upAndDown;
+        this.point = point;
     }
 
-    public void setUpAndDown(Long upAndDown) {
-        this.upAndDown = upAndDown;
+    public void setPoint(Integer point) {
+        this.point = point;
     }
+
+
 }

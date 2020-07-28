@@ -5,8 +5,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.wing.forutona.FBall.Dto.FBallState;
 import com.wing.forutona.FBall.Dto.FBallType;
-import com.wing.forutona.FBall.Dto.IssueBallInsertReqDto;
-import com.wing.forutona.FBall.Dto.IssueBallUpdateReqDto;
+import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
+import com.wing.forutona.FBall.Dto.FBallUpdateReqDto;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.AccessLevel;
@@ -25,9 +25,6 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FBall {
-
-    @OneToMany(mappedBy = "ballUuid", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    List<FBalltag> tags = new ArrayList<>();
     @Id
     @Column(unique = true)
     private String ballUuid;
@@ -54,8 +51,8 @@ public class FBall {
     private String ballPassword;
     private long hasPassword;
     private long ballHits = 0;
-    private long ballLikes = 0;
-    private long ballDisLikes = 0;
+    private Integer ballLikes = 0;
+    private Integer ballDisLikes = 0;
     private long ballPower = 0;
     private long joinPlayer = 0;
     private long maximumPlayers = -1;
@@ -64,17 +61,29 @@ public class FBall {
     private double makeExp;
     private long commentCount = 0;
     private double userExp = 0;
+
     private String description;
     private long contributor;
     private boolean ballDeleteFlag;
+    @OneToMany(mappedBy = "ballUuid", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<FBalltag> tags = new ArrayList<>();
 
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
+                 double longitude,double latitude,Point placePoint,String ballName,FBallType ballType,
+                 String placeAddress,String description,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
                  long ballHits, double makeExp) {
         this.ballUuid = ballUuid;
         this.makeTime = makeTime;
         this.ballState = ballState;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.placePoint = placePoint;
+        this.ballName = ballName;
+        this.ballType = ballType;
+        this.placeAddress = placeAddress;
+        this.description = description;
         this.uid = uid;
         this.pointReward = pointReward;
         this.influenceReward = influenceReward;
@@ -83,88 +92,25 @@ public class FBall {
         this.makeExp = makeExp;
     }
 
-
-    public static FBall fromIssueBallInsertReqDto(IssueBallInsertReqDto reqDto) {
-        FBall fBall = new FBall();
-        fBall.ballUuid = reqDto.getBallUuid();
-        fBall.makeTime = LocalDateTime.now();
-        fBall.ballState = FBallState.Play;
-        fBall.longitude = reqDto.getLongitude();
-        fBall.latitude = reqDto.getLatitude();
-        fBall.activationTime= LocalDateTime.now().plusDays(7);
-        fBall.makeExp = 300;
-        GeometryFactory geomFactory = new GeometryFactory();
-        fBall.placePoint = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
-        fBall.placePoint.setSRID(4326);
-        fBall.ballName = reqDto.getBallName();
-        fBall.ballType = reqDto.getBallType();
-        fBall.placeAddress = reqDto.getPlaceAddress();
-        fBall.description = reqDto.getDescription();
-        List<FBalltag> tagCollect = reqDto.getTags().stream()
-                .map(x -> FBalltag.builder()
-                        .ballUuid(fBall)
-                        .tagItem(x.getTagItem())
-                        .build()
-                ).collect(Collectors.toList());
-        fBall.tags = tagCollect;
-        fBall.ballDeleteFlag = false;
-        return fBall;
-    }
-
     public void setUid(FUserInfo fBallUid) {
         this.uid = fBallUid;
     }
 
-    public void setMakeTime(LocalDateTime makeTime) {
-        this.makeTime = makeTime;
+
+    public void setBallName(String ballName) {
+        this.ballName = ballName;
     }
 
-    public void setBallState(FBallState ballState) {
-        this.ballState = ballState;
-    }
-
-    public void setPointReward(long pointReward) {
-        this.pointReward = pointReward;
-    }
-
-    public void setInfluenceReward(long influenceReward) {
-        this.influenceReward = influenceReward;
+    public void setPlaceAddress(String placeAddress) {
+        this.placeAddress = placeAddress;
     }
 
     public void setActivationTime(LocalDateTime activationTime) {
         this.activationTime = activationTime;
     }
 
-    public void setBallHits(long ballHits) {
-        this.ballHits = ballHits;
-    }
-
-    public void setJoinPlayer(long joinPlayer) {
-        this.joinPlayer = joinPlayer;
-    }
-
-    public void setMaximumPlayers(long maximumPlayers) {
-        this.maximumPlayers = maximumPlayers;
-    }
-
-    public void setStarPoints(long starPoints) {
-        this.starPoints = starPoints;
-    }
-
-    public void setExpGiveFlag(long expGiveFlag) {
-        this.expGiveFlag = expGiveFlag;
-    }
-
-    public void setMakeExp(long makeExp) {
-        this.makeExp = makeExp;
-    }
-
-    public void setCommentCount(long commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public void setUserExp(long userExp) {
-        this.userExp = userExp;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setPlacePoint(double longitude, double latitude) {
@@ -176,35 +122,35 @@ public class FBall {
         this.latitude = latitude;
     }
 
-    public void updateIssueBallUpdateReqDto(IssueBallUpdateReqDto reqDto) {
-        setPlacePoint(reqDto.getLongitude(), reqDto.getLatitude());
-        ballName = reqDto.getBallName();
-        placeAddress = reqDto.getPlaceAddress();
-        description = reqDto.getDescription();
-    }
 
     public void delete() {
         ballDeleteFlag = true;
         description = "{}";
     }
 
+    public void actionBallHit(){
+        this.ballHits++;
+    }
 
     public void setContributor(long contributor) {
         this.contributor = contributor;
     }
 
-    public void setBallLikesFromBallValuation(long upAndDown) {
-        if (upAndDown > 0) {
-            this.ballLikes += Math.abs(upAndDown);
-        }
+    public Integer plusBallLike(Integer point) {
+        this.ballLikes += point;
+        return ballDisLikes;
     }
 
-    public void setBallDisLikesFromBallValuation(long upAndDown) {
-        if (upAndDown < 0) {
-            this.ballDisLikes += Math.abs(upAndDown);
-        }
+    public Integer plusBallDisLike(Integer point) {
+        this.ballDisLikes += point;
+        return this.ballDisLikes;
     }
-
+    public void minusBallLike(Integer point) {
+        this.ballLikes -= point;
+    }
+    public void minusBallDisLike(Integer point) {
+        this.ballDisLikes -= point;
+    }
     public void updateBallPower() {
         this.ballPower = this.ballLikes - this.ballDisLikes;
     }
@@ -229,4 +175,11 @@ public class FBall {
     public String getMakerUid(){
         return this.uid.getUid();
     }
+
+    public void setTags(List<FBalltag> tags) {
+        this.tags = tags;
+    }
+
+
+
 }

@@ -63,7 +63,6 @@ class FBallRootReplyFCMService extends FBallReplyFCMService {
 
 
 @Service("FBallSubReplyFCMService")
-
 @Transactional
 class FBallSubReplyFCMService extends FBallReplyFCMService {
 

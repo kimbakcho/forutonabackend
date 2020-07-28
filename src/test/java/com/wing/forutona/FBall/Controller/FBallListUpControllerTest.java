@@ -7,7 +7,6 @@ import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Dto.FBallListUpFromBallInfluencePowerReqDto;
 import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
-import com.wing.forutona.FBall.Service.FBallListUpService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,17 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class FBallListUpControllerTest extends BaseTest {
 
-    @MockBean
-    FBallListUpService fBallListUpService;
-
-    FBallListUpWrapDto fBallListUpWrapDto;
 
     @BeforeEach
     void setUp() throws ParseException {
-        List<FBallResDto> balls = new ArrayList<>();
-        fBallListUpWrapDto = new FBallListUpWrapDto(LocalDateTime.now(),balls);
-        given(fBallListUpService.ListUpBallInfluencePower(any(),any()))
-                .willReturn(fBallListUpWrapDto);
+
     }
 
     @Test
@@ -78,6 +70,6 @@ class FBallListUpControllerTest extends BaseTest {
                 .andExpect(status().isOk()).andReturn();
 
         //then
-        then(fBallListUpService).should().ListUpBallInfluencePower(any(),any());
+//        then(fBallListUpService).should().ListUpBallInfluencePower(any(),any());
     }
 }

@@ -5,19 +5,14 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
-import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.*;
 import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 

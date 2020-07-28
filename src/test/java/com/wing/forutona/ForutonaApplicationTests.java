@@ -19,7 +19,6 @@ import com.wing.forutona.FBall.Dto.NearBallFindDistanceReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
-import com.wing.forutona.FBall.Service.FBallService;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
@@ -49,8 +48,6 @@ class ForutonaApplicationTests {
     @Autowired
     FBallTagQueryRepository fBallTagQueryRepository;
 
-    @Autowired
-    FBallService fBallService;
 
     @Autowired
     DistanceOfBallCountToLimitService distanceOfBallCountToLimitService;
