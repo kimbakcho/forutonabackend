@@ -7,6 +7,7 @@ import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.*;
+import com.wing.forutona.FBall.Service.BallLikeService.BallLIkeServiceFactory;
 import com.wing.forutona.FBall.Service.BallListup.BallListUpServiceFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,11 +39,7 @@ public class FBallController {
 
     final  BallDeleteService ballDeleteService;
 
-    final BallLikeService ballLikeService;
-
-    final BallDisLikeService ballDisLikeService;
-
-    final BallCancelLikeService ballCancelLikeService;
+    final BallLIkeServiceFactory ballLIkeServiceFactory;
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public Page<FBallResDto> getListUpBallFromMapArea(@RequestParam BallFromMapAreaReqDto reqDto,
@@ -122,19 +119,21 @@ public class FBallController {
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/Like")
     public Integer ballLike(@RequestBody FBallLikeReqDto reqDto,FFireBaseToken fireBaseToken) throws Exception {
-        return ballLikeService.likeExecute(reqDto,fireBaseToken.getUserFireBaseUid());
+        return ballLIkeServiceFactory.create("Like").execute(reqDto,fireBaseToken.getUserFireBaseUid());
     }
 
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/DisLike")
-    public Integer ballDisLike(@RequestBody FBallDisLikeReqDto reqDto,FFireBaseToken fireBaseToken) throws Exception {
-        return ballDisLikeService.disLikeExecute(reqDto,fireBaseToken.getUserFireBaseUid());
+    public Integer ballDisLike(@RequestBody FBallLikeReqDto reqDto,FFireBaseToken fireBaseToken) throws Exception {
+        return ballLIkeServiceFactory.create("DisLike").execute(reqDto,fireBaseToken.getUserFireBaseUid());
     }
 
     @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBall/CancelLike")
-    public void ballCancelLike(@RequestParam String ballUuid,FFireBaseToken fireBaseToken) throws Exception {
-         ballCancelLikeService.cancelExecute(ballUuid,fireBaseToken.getUserFireBaseUid());
+    public Integer ballCancelLike(@RequestParam String ballUuid, FFireBaseToken fireBaseToken) throws Exception {
+        FBallLikeReqDto reqDto = new FBallLikeReqDto();
+        reqDto.setBallUuid(ballUuid);
+        return ballLIkeServiceFactory.create("Cancel").execute(reqDto,fireBaseToken.getUserFireBaseUid());
     }
 
 }

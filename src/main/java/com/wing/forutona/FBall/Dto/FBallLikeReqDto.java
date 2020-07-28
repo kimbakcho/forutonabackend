@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FBallLikeReqDto {
+    String valueUuid;
     String ballUuid;
     Integer point;
 }
