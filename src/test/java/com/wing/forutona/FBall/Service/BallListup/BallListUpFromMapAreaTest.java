@@ -3,6 +3,7 @@ package com.wing.forutona.FBall.Service.BallListup;
 import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.FBall.Dto.BallFromMapAreaReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Service.BallListUpService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.verify;
 class BallListUpFromMapAreaTest {
 
     @Autowired
-    BallListUpFromMapArea  ballListUpFromMapArea;
+    BallListUpService ballListUpService;
+
     @MockBean
     FBallQueryRepository fBallQueryRepository;
 
@@ -30,9 +32,9 @@ class BallListUpFromMapAreaTest {
         FSorts fSorts = new FSorts();
         Pageable pageable = PageRequest.of(0, 10);
         //when
-        ballListUpFromMapArea.search(reqDto,fSorts,pageable);
+        ballListUpService.searchBallListUpFromMapArea(reqDto,pageable);
         //then
-        verify(fBallQueryRepository).getBallListUpFromMapArea(reqDto,fSorts,pageable);
+        verify(fBallQueryRepository).getBallListUpFromMapArea(reqDto,pageable);
 
     }
 }

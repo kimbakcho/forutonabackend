@@ -8,7 +8,6 @@ import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.*;
 import com.wing.forutona.FBall.Service.BallLikeService.BallLIkeServiceFactory;
-import com.wing.forutona.FBall.Service.BallListup.BallListUpServiceFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,7 @@ public class FBallController {
 
     final BallHitService ballHitService;
 
-    final BallListUpServiceFactory ballListUpServiceFactory;
+    final BallListUpService ballListUpService;
 
     final BallImageUploadService ballImageUploadService;
 
@@ -42,32 +41,29 @@ public class FBallController {
     final BallLIkeServiceFactory ballLIkeServiceFactory;
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
-    public Page<FBallResDto> getListUpBallFromMapArea(@RequestParam BallFromMapAreaReqDto reqDto,
-                                                      @RequestParam FSorts sorts, Pageable pageable) throws Exception {
-        return ballListUpServiceFactory.create("ballListUpFromMapArea").search(reqDto,sorts,pageable);
+    public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpFromMapArea(reqDto,pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromSearchTitle")
-    public Page<FBallResDto>  getListUpBallFromSearchTitle(@RequestParam FBallListUpFromSearchTitleReqDto reqDto
-            , @RequestParam FSorts sorts, Pageable pageable) throws Exception {
-        return ballListUpServiceFactory.create("ballListUpFromSearchTitle").search(reqDto,sorts,pageable);
+    public Page<FBallResDto>  getListUpBallFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto
+            , Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpFromSearchTitle(reqDto,pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromTagName")
-    public Page<FBallResDto> ListUpFromTagName(@RequestParam FBallListUpFromTagReqDto reqDto,
-                                                 @RequestParam FSorts sorts, Pageable pageable) throws Exception {
-        return ballListUpServiceFactory.create("ballListUpFromTagName").search(reqDto,sorts,pageable);
+    public Page<FBallResDto> ListUpFromTagName(FBallListUpFromTagReqDto reqDto, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpFromTagName(reqDto,pageable);
     }
 
     @GetMapping(value = "/v1/FBall/UserToMakerBalls")
-    public Page<FBallResDto> getUserToMakerBalls(@RequestParam String makerUid,
-                                                   @RequestParam FSorts sorts, Pageable pageable) throws Exception {
-        return ballListUpServiceFactory.create("ballListUpUserMakerBall").search(makerUid,sorts,pageable);
+    public Page<FBallResDto> getUserToMakerBalls(String makerUid, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpUserMakerBall(makerUid,pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromBallInfluencePower")
-    public Page<FBallResDto> ListUpBallInfluencePower(@RequestParam FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpServiceFactory.create("ballListUpInfluencePower").search(reqDto,null,pageable);
+    public Page<FBallResDto> ListUpBallInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpInfluencePower(reqDto,pageable);
     }
 
     @ResponseAddJsonHeader

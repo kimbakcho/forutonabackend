@@ -60,7 +60,7 @@ public class FBallPlayerTests {
         sort.add(new FSort("makeTime", Order.DESC));
         sorts.setSorts(sort);
 
-        Page<FBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls("h2q2jl3nRPXZ8809Uvi9KdzSss83", sorts,pageable);
+        Page<FBallResDto> userToMakerBalls = fBallQueryRepository.getUserToMakerBalls("h2q2jl3nRPXZ8809Uvi9KdzSss83",pageable);
         for (FBallResDto fBallResDto : userToMakerBalls.getContent()) {
             System.out.println(fBallResDto.getBallName());
             System.out.println(fBallResDto.getMakeTime());

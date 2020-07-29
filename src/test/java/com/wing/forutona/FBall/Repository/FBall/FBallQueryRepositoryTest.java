@@ -49,7 +49,7 @@ class FBallQueryRepositoryTest extends BaseTest {
                 pageable
         );
 
-        then(ballListUpFromBallInfluencePower.getSize()).isGreaterThan(0);
+        then(ballListUpFromBallInfluencePower.getContent().size()).isGreaterThan(0);
         then(ballListUpFromBallInfluencePower.getContent().get(0).getBallUuid()).isEqualTo(choiceFBall.getBallUuid());
     }
 

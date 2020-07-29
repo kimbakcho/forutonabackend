@@ -4,6 +4,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.FBall.Dto.FBallListUpFromBallInfluencePowerReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Service.BallListUpService;
 import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class BallListUpInfluencePowerTest {
     DistanceOfBallCountToLimitService distanceOfBallCountToLimitService;
 
     @Autowired
-    BallListUpInfluencePower ballListUpInfluencePower;
+    BallListUpService ballListUpInfluencePower;
 
     @Test
     @DisplayName("Ball ListUp 범위 산정 후 영향력 ListUP Repository 호출")
@@ -50,7 +51,7 @@ class BallListUpInfluencePowerTest {
         reqDto.setLatitude(37);
         Pageable pageable = PageRequest.of(0, 20);
         //when
-        ballListUpInfluencePower.search(reqDto,null,pageable);
+        ballListUpInfluencePower.searchBallListUpInfluencePower(reqDto,pageable);
         //then
         InOrder inOrder = inOrder(distanceOfBallCountToLimitService, fBallQueryRepository);
         then(distanceOfBallCountToLimitService).should(inOrder).distanceOfBallCountToLimit(anyDouble(),anyDouble(),anyInt());

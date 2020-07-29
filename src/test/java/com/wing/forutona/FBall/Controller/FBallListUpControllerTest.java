@@ -55,6 +55,7 @@ class FBallListUpControllerTest extends BaseTest {
         Map<String, String> ReqDto = new ObjectMapper()
                 .convertValue(fBallListUpFromBallInfluencePowerReqDto,
                         new TypeReference<Map<String, String>>() {});
+
         ReqDto.put("limit","20");
         ReqDto.put("offset","0");
         params.setAll(ReqDto);
@@ -62,12 +63,8 @@ class FBallListUpControllerTest extends BaseTest {
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/v1/FBall/ListUpFromBallInfluencePower")
                 .contentType(MediaType.APPLICATION_JSON).params(params))
-                .andExpect(request().asyncStarted())
+                .andExpect(status().isOk())
                 .andReturn();
-
-        mockMvc.perform(asyncDispatch(mvcResult))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk()).andReturn();
 
         //then
 //        then(fBallListUpService).should().ListUpBallInfluencePower(any(),any());

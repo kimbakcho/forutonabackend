@@ -38,7 +38,7 @@ public class BallLikeCancelServiceImpl extends BallLikeService {
 
     @Override
     void setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo userInfo) {
-        fBallValuationDataRepository.deleteByBallAndBallUAndBallUuidAndUid(fBall, userInfo);
+        fBallValuationDataRepository.deleteByBallUuidAndUid(fBall, userInfo);
     }
 
     @Override
