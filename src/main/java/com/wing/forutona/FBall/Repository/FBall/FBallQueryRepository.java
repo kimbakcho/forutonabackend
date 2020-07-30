@@ -139,7 +139,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
 
-        List<FBallResDto> fBallResDtos = queryFactory.select(
+        QueryResults<FBallResDto> resDtoQueryResults = queryFactory.select(
                 new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
                 .from(fBall).join(fBall.uid, fUserInfo)
                 .where(stWithin.eq(1)
@@ -150,9 +150,9 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .orderBy(influence.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .fetch();
+                .fetchResults();
 
-        Page<FBallResDto> page = new PageImpl(fBallResDtos);
+        Page<FBallResDto> page = new PageImpl(resDtoQueryResults.getResults(),pageable,resDtoQueryResults.getTotal());
         return page;
     }
 

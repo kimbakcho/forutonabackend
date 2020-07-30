@@ -97,18 +97,18 @@ public class FBallController {
     }
 
     @GetMapping(value = "/v1/FBall")
-    public FBallResDto selectBall(@RequestParam String ballUuid){
+    public FBallResDto selectBall(String ballUuid){
         return ballSelectService.selectBall(ballUuid);
     }
 
     @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBall")
-    public String deleteBall(@RequestParam String ballUuid,FFireBaseToken fireBaseToken) throws Exception {
+    public String deleteBall(String ballUuid,FFireBaseToken fireBaseToken) throws Exception {
         return ballDeleteService.deleteBall(ballUuid,fireBaseToken.getUserFireBaseUid());
     }
 
     @PostMapping(value = "/v1/FBall/BallHit")
-    public Long deleteBall(@RequestParam String ballUuid){
+    public Long deleteBall(String ballUuid){
         return ballHitService.hit(ballUuid);
     }
 
@@ -126,7 +126,7 @@ public class FBallController {
 
     @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBall/CancelLike")
-    public Integer ballCancelLike(@RequestParam String ballUuid, FFireBaseToken fireBaseToken) throws Exception {
+    public Integer ballCancelLike(String ballUuid, FFireBaseToken fireBaseToken) throws Exception {
         FBallLikeReqDto reqDto = new FBallLikeReqDto();
         reqDto.setBallUuid(ballUuid);
         return ballLIkeServiceFactory.create("Cancel").execute(reqDto,fireBaseToken.getUserFireBaseUid());

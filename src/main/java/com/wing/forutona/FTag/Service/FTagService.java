@@ -10,10 +10,12 @@ import com.wing.forutona.FTag.Dto.*;
 import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface FTagService {
@@ -23,7 +25,7 @@ public interface FTagService {
 
     TagRankingWrapdto getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto);
 
-    TagResDtoWrap getTagFromBallUuid(TagFromBallReqDto reqDto);
+    List<TagResDto>  getTagFromBallUuid(TagFromBallReqDto reqDto);
 }
 
 @Service
@@ -63,13 +65,11 @@ class FTagServiceImpl implements FTagService {
     }
 
     @Transactional
-    public TagResDtoWrap getTagFromBallUuid(TagFromBallReqDto reqDto) {
+    public List<TagResDto>  getTagFromBallUuid(TagFromBallReqDto reqDto) {
         FBall fBall =  FBall.builder().ballUuid(reqDto.getBallUuid()).build();
-        List<FBalltag> fBalltagByBallUuidIs = fBallTagDataRepository.findFBalltagByBallUuidIs(fBall);
-        List<TagResDto> collect = fBalltagByBallUuidIs.stream().map(x -> new TagResDto(x)).collect(Collectors.toList());
-        TagResDtoWrap dtoWrap = new TagResDtoWrap();
-        dtoWrap.setTotalCount(collect.size());
-        dtoWrap.setTags(collect);
-        return dtoWrap;
+        List<FBalltag> fBallTags = fBallTagDataRepository.findByBallUuid(fBall);
+
+        List<TagResDto> collect = fBallTags.stream().map(x -> new TagResDto(x)).collect(Collectors.toList());
+        return collect;
     }
 }
