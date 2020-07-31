@@ -9,6 +9,7 @@ import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallUpdateReqDto;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class FBall {
     private String ballUuid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    private FUserInfo uid;
+    private FUserInfoSimple uid;
     private double longitude;
     private double latitude;
     @Column(columnDefinition = "geometry(Point,4326)")
@@ -65,11 +66,9 @@ public class FBall {
     private String description;
     private long contributor;
     private boolean ballDeleteFlag;
-    @OneToMany(mappedBy = "ballUuid", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    List<FBalltag> tags = new ArrayList<>();
 
     @Builder
-    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
+    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfoSimple uid,
                  double longitude,double latitude,Point placePoint,String ballName,FBallType ballType,
                  String placeAddress,String description,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
@@ -92,10 +91,9 @@ public class FBall {
         this.makeExp = makeExp;
     }
 
-    public void setUid(FUserInfo fBallUid) {
+    public void setUid(FUserInfoSimple fBallUid) {
         this.uid = fBallUid;
     }
-
 
     public void setBallName(String ballName) {
         this.ballName = ballName;
@@ -175,11 +173,6 @@ public class FBall {
     public String getMakerUid(){
         return this.uid.getUid();
     }
-
-    public void setTags(List<FBalltag> tags) {
-        this.tags = tags;
-    }
-
 
 
 }

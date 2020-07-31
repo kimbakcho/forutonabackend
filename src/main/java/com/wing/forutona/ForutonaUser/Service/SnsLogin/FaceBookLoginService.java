@@ -14,11 +14,11 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class FaceBookLoginService extends SnsLoginService {
 
-    @Autowired
-    FireBaseAdmin fireBaseAdmin;
+    final FireBaseAdmin fireBaseAdmin;
 
-    public FaceBookLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
+    public FaceBookLoginService(FUserInfoDataRepository fUserInfoDataRepository,FireBaseAdmin fireBaseAdmin) {
         super(fUserInfoDataRepository);
+        this.fireBaseAdmin = fireBaseAdmin;
     }
 
     @Override

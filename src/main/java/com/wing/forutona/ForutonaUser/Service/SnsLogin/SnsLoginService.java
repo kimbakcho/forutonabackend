@@ -27,8 +27,8 @@ abstract public class SnsLoginService {
         snSLoginReqDto.setSnsService(reqDto.getSnsSupportService());
         snSLoginReqDto.setAccessToken(reqDto.getSnsToken());
         FUserSnsCheckJoinResDto infoFromToken = getInfoFromToken(snSLoginReqDto);
-        String fireBaseuid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
-        reqDto.setEmailUserUid(fireBaseuid);
+        String fireBaseUid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
+        reqDto.setEmailUserUid(fireBaseUid);
         FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);
 
         String customToken = null;

@@ -11,9 +11,10 @@ import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
-import com.wing.forutona.ForutonaUser.Service.SnsLogin.*;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginService;
+import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginServiceFactory;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,33 +30,24 @@ public interface FAccountService {
 
     void userPwChange(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FUserInfoPwChangeReqDto reqDto);
 
-    void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken);
-
     void updateUserProfileImage(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken, MultipartFile file);
 
     void updateAccountUserInfo(ResponseBodyEmitter emitter, FFireBaseToken fFireBaseToken, FuserAccountUpdateReqdto reqdto);
 
-    void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto);
 
-    void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto);
-
-    void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto);
-
-    int updateFireBaseMessageToken(String uid, String token);
 }
 
 @Service
+@RequiredArgsConstructor
 class FAccountServiceImpl implements FAccountService {
 
-    @Autowired
-    FUserInfoQueryRepository fUserInfoQueryRepository;
+    final FUserInfoQueryRepository fUserInfoQueryRepository;
 
-    @Autowired
-    FUserInfoDataRepository fUserInfoDataRepository;
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
-    @Autowired
-    GoogleStorgeAdmin googleStorgeAdmin;
+    final GoogleStorgeAdmin googleStorgeAdmin;
 
+    final SnsLoginServiceFactory snsLoginServiceFactory;
 
     @Transactional
     public boolean checkNickNameDuplication(String nickName) {
@@ -75,19 +67,6 @@ class FAccountServiceImpl implements FAccountService {
             UserRecord userRecord = FirebaseAuth.getInstance().updateUser(updateRequest);
             emitter.send(1);
         } catch (FirebaseAuthException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
-
-    @Async
-    @Transactional
-    public void getMe(ResponseBodyEmitter emitter, FFireBaseToken fireBaseToken) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
-        try {
-            emitter.send(new FUserInfoResDto(fUserInfo));
-        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             emitter.complete();
@@ -147,84 +126,8 @@ class FAccountServiceImpl implements FAccountService {
         }
     }
 
-    /**
-     * 클라이언트 기기에서 개인 정보 해킹을 막기위한 최소한의 정보만 주기 위한 메소드
-     *
-     * @param emitter
-     * @param reqDto
-     */
-    @Async
-    @Transactional
-    public void getUserInfoSimple1(ResponseBodyEmitter emitter, FUserReqDto reqDto) {
-        try {
-            FUserInfo fUserInfo = fUserInfoDataRepository.findById(reqDto.getUid()).get();
-            FUserInfoSimple1ResDto fUserInfoSimple1ResDto = new FUserInfoSimple1ResDto();
-            fUserInfoSimple1ResDto.setNickName(fUserInfo.getNickName());
-            fUserInfoSimple1ResDto.setCumulativeInfluence(fUserInfo.getCumulativeInfluence());
-            fUserInfoSimple1ResDto.setFollowCount(fUserInfo.getFollowCount());
-            fUserInfoSimple1ResDto.setProfilePictureUrl(fUserInfo.getProfilePictureUrl());
-            emitter.send(fUserInfoSimple1ResDto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
 
-    @Async
-    @Transactional
-    public void getSnsUserJoinCheckInfo(ResponseBodyEmitter emitter, FUserSnSLoginReqDto snSLoginReqDto) {
-        try {
-            SnsLoginService snsLoginService = null;
-            if (snSLoginReqDto.getSnsService() == SnsSupportService.FaceBook) {
-                snsLoginService = new FaceBookLoginService(fUserInfoDataRepository);
-            } else if (snSLoginReqDto.getSnsService() == SnsSupportService.Kakao) {
-                snsLoginService = new KakaoLoginService(fUserInfoDataRepository);
-            } else if (snSLoginReqDto.getSnsService() == SnsSupportService.Naver) {
-                snsLoginService = new NaverLoginService(fUserInfoDataRepository);
-            } else {
-                throw new Exception("dont'have service");
-            }
-            emitter.send(snsLoginService.getInfoFromToken(snSLoginReqDto));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
 
-    @Async
-    @Transactional
-    public void joinUser(ResponseBodyEmitter emitter, FUserInfoJoinReqDto reqDto) {
-        try {
-            SnsLoginService snsLoginService = null;
-            if (reqDto.getSnsSupportService().equals(SnsSupportService.FaceBook)) {
-                snsLoginService = new FaceBookLoginService(fUserInfoDataRepository);
-            } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Naver)) {
-                snsLoginService = new NaverLoginService(fUserInfoDataRepository);
-            } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Kakao)) {
-                snsLoginService = new KakaoLoginService(fUserInfoDataRepository);
-            } else if (reqDto.getSnsSupportService().equals(SnsSupportService.Forutona)) {
-                snsLoginService = new ForutonaLoginService(fUserInfoDataRepository);
-            } else {
-                throw new Exception("Not Support SnsService");
-            }
-            FUserInfoJoinResDto join = snsLoginService.join(reqDto);
-            emitter.send(join);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            emitter.complete();
-        }
-    }
 
-    @Override
-    @Transactional
-    public int updateFireBaseMessageToken(String uid, String token) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(uid).get();
-        fUserInfo.setFCMtoken(token);
-        return 1;
-    }
+
 }

@@ -65,13 +65,6 @@ public class FUserInfo {
   private Long alarmSponNewContent;
   private Long deactivation;
 
-  @OneToMany(mappedBy = "uid")
-  private List<FBall> userBalls = new ArrayList<>();
-
-  public void addBall(FBall fBall){
-    this.userBalls.add(fBall);
-    fBall.setUid(this);
-  }
 
   @Builder
   public FUserInfo(String uid,String fCMtoken,String nickName){
