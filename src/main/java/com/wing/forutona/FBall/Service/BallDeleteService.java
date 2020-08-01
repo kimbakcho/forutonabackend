@@ -32,15 +32,12 @@ class BallDeleteServiceImpl implements BallDeleteService {
             throw new Exception("don't Have deleteBall Permisstion");
         }
         fBall.delete();
-
         ObjectMapper objectMapper = new ObjectMapper();
         IssueBallDescriptionDto issueBallDescriptionDto = objectMapper.readValue(fBall.getDescription(), IssueBallDescriptionDto.class);
         if (issueBallDescriptionDto.getDesimages() != null) {
             deleteImageFile(issueBallDescriptionDto);
         }
-
         fBall.setActivationTime(LocalDateTime.now());
-        fBall.getTags().clear();
         return ballUuid;
     }
 

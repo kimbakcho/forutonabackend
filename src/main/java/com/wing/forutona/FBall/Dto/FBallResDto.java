@@ -2,6 +2,9 @@ package com.wing.forutona.FBall.Dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FBall.Domain.FBallState;
+import com.wing.forutona.FBall.Domain.FBallType;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -23,9 +26,8 @@ public class FBallResDto {
     private LocalDateTime activationTime;
     private LocalDateTime makeTime;
     private String description;
-    private String nickName;
     private String profilePictureUrl;
-    private String uid;
+    private FUserInfoSimpleResDto uid;
     private Double userLevel;
     //해당 부분 BallPower/지도 중심과의 거리로 계산
     private double influencePower;
@@ -49,9 +51,8 @@ public class FBallResDto {
         this.activationTime = fball.getActivationTime();
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
-        this.nickName = fball.getUid().getNickName();
         this.profilePictureUrl = fball.getUid().getProfilePictureUrl();
-        this.uid = fball.getUid().getUid();
+        this.uid = new FUserInfoSimpleResDto(fball.getUid());
         this.userLevel = fball.getUid().getUserLevel();
         this.influencePower = influencePower;
         this.contributor = fball.getContributor();
@@ -75,9 +76,8 @@ public class FBallResDto {
         this.activationTime = fball.getActivationTime();
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
-        this.nickName = fball.getUid().getNickName();
         this.profilePictureUrl = fball.getUid().getProfilePictureUrl();
-        this.uid = fball.getUid().getUid();
+        this.uid = new FUserInfoSimpleResDto(fball.getUid());
         this.userLevel = fball.getUid().getUserLevel();
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.isBallDeleteFlag();

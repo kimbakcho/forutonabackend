@@ -1,6 +1,6 @@
 package com.wing.forutona.FireBaseMessage.PayloadDto;
 
-import com.wing.forutona.FBall.Dto.FBallType;
+import com.wing.forutona.FBall.Domain.FBallType;
 import lombok.Data;
 
 @Data

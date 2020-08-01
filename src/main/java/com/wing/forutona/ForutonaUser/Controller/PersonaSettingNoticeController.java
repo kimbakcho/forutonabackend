@@ -1,8 +1,11 @@
 package com.wing.forutona.ForutonaUser.Controller;
 
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
+import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeResDto;
 import com.wing.forutona.ForutonaUser.Service.PersonaSettingNoticeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -10,25 +13,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 
 
 @RestController
+@RequiredArgsConstructor
 public class PersonaSettingNoticeController {
 
-    @Autowired
-    PersonaSettingNoticeService personaSettingNoticeService;
+    final PersonaSettingNoticeService personaSettingNoticeService;
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/ForutonaUser/PersonaSettingNotice")
-    ResponseBodyEmitter getPersonaSettingNotice(Pageable pageable){
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        personaSettingNoticeService.getPersonaSettingNotice(emitter,pageable);
-        return emitter;
+    @GetMapping(value = "/v1/PersonaSettingNotice")
+    Page<PersonaSettingNoticeResDto> getPersonaSettingNotice(Pageable pageable){
+        return personaSettingNoticeService.getPersonaSettingNotice(pageable);
     }
 
     @ResponseAddJsonHeader
-    @GetMapping(value = "/v1/ForutonaUser/PersonaSettingNotice/{idx}")
-    ResponseBodyEmitter getPersonaSettingNoticePage(@PathVariable("idx") long idx){
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        personaSettingNoticeService.getPersonaSettingNoticePage(emitter,idx);
-        return emitter;
+    @GetMapping(value = "/v1/PersonaSettingNotice/{idx}")
+    PersonaSettingNoticeResDto getPersonaSettingNoticePage(@PathVariable("idx") long idx){
+        return personaSettingNoticeService.getPersonaSettingNoticePage(idx);
     }
 
     /** 여기는 추후 관리자 에서 DB에 입력 할것 이므로 혹시 몰라 샘플 코드만 작성 해둠.

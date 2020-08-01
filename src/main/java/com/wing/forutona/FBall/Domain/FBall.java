@@ -3,12 +3,6 @@ package com.wing.forutona.FBall.Domain;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.wing.forutona.FBall.Dto.FBallState;
-import com.wing.forutona.FBall.Dto.FBallType;
-import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
-import com.wing.forutona.FBall.Dto.FBallUpdateReqDto;
-import com.wing.forutona.FTag.Domain.FBalltag;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,9 +11,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Entity

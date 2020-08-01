@@ -20,13 +20,10 @@ abstract public class SnsLoginService {
     }
 
 
-    public abstract FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto);
+    public abstract FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService,String accessToken);
 
     public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) throws FirebaseAuthException {
-        FUserSnSLoginReqDto snSLoginReqDto = new FUserSnSLoginReqDto();
-        snSLoginReqDto.setSnsService(reqDto.getSnsSupportService());
-        snSLoginReqDto.setAccessToken(reqDto.getSnsToken());
-        FUserSnsCheckJoinResDto infoFromToken = getInfoFromToken(snSLoginReqDto);
+        FUserSnsCheckJoinResDto infoFromToken = getInfoFromToken(reqDto.getSnsSupportService(),reqDto.getSnsToken());
         String fireBaseUid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
         reqDto.setEmailUserUid(fireBaseUid);
         FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);

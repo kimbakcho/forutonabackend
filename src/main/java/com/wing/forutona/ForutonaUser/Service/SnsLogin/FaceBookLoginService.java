@@ -22,13 +22,13 @@ public class FaceBookLoginService extends SnsLoginService {
     }
 
     @Override
-    public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
-        String getUrl = "https://graph.facebook.com/v6.0/me?fields=name,first_name,last_name,email&access_token=" + reqDto.getAccessToken();
+    public FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService, String accessToken) {
+        String getUrl = "https://graph.facebook.com/v6.0/me?fields=name,first_name,last_name,email&access_token=" + accessToken;
         ResponseEntity<FaceBookGetMeResDto> response = new RestTemplate().getForEntity(getUrl, FaceBookGetMeResDto.class);
         FUserSnsCheckJoinResDto fUserSnsGetMeResDto = new FUserSnsCheckJoinResDto();
         UserRecord recode;
         try {
-            recode = FirebaseAuth.getInstance().getUser(reqDto.getSnsService().name()+response.getBody().getId());
+            recode = FirebaseAuth.getInstance().getUser(snsService.name()+response.getBody().getId());
         } catch (Exception ex) {
             recode = null;
         }
@@ -53,6 +53,7 @@ public class FaceBookLoginService extends SnsLoginService {
         }
         return fUserSnsGetMeResDto;
     }
+
 
 
 }

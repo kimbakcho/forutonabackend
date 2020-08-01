@@ -15,7 +15,6 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
-import com.wing.forutona.FBall.Dto.NearBallFindDistanceReqDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
 import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;

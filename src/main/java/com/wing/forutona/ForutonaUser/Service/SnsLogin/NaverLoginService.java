@@ -24,15 +24,15 @@ public class NaverLoginService extends SnsLoginService {
     }
 
     @Override
-    public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
+    public FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService, String accessToken) {
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.AUTHORIZATION, "Bearer " + reqDto.getAccessToken());
+        header.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         ResponseEntity<NaverGetMeResDto> response = new RestTemplate().exchange("https://openapi.naver.com/v1/nid/me",
                 HttpMethod.GET, new HttpEntity(header), NaverGetMeResDto.class);
         FUserSnsCheckJoinResDto fUserSnsGetMeResDto = new FUserSnsCheckJoinResDto();
         UserRecord recode;
         try {
-            recode = FirebaseAuth.getInstance().getUser(reqDto.getSnsService().name()+response.getBody().getResponse().getId());
+            recode = FirebaseAuth.getInstance().getUser(snsService.name()+response.getBody().getResponse().getId());
         } catch (Exception ex) {
             recode = null;
         }

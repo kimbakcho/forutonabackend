@@ -34,14 +34,6 @@ class BallUpdateServiceImpl implements BallUpdateService {
         fBall.setBallName(reqDto.getBallName());
         fBall.setPlaceAddress(reqDto.getPlaceAddress());
         fBall.setDescription(reqDto.getDescription());
-        List<FBalltag> tagCollect = reqDto.getTags().stream()
-                .map(x -> FBalltag.builder()
-                        .ballUuid(fBall)
-                        .tagItem(x.getTagItem())
-                        .build()
-                ).collect(Collectors.toList());
-        fBall.getTags().clear();
-        fBall.setTags(tagCollect);
         return new FBallResDto(fBall);
     }
 }

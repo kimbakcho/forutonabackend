@@ -7,7 +7,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
-import com.wing.forutona.FBall.Dto.FBallState;
+import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;

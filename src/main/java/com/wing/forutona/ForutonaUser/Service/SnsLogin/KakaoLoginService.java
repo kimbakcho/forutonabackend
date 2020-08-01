@@ -24,16 +24,16 @@ public class KakaoLoginService extends SnsLoginService{
     }
 
     @Override
-    public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
+    public FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService, String accessToken) {
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.AUTHORIZATION, "Bearer " + reqDto.getAccessToken());
+        header.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         header.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
         ResponseEntity<KakaoGetMeResDto> response = new RestTemplate().exchange("https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST, new HttpEntity(header), KakaoGetMeResDto.class);
         FUserSnsCheckJoinResDto fUserSnsGetMeResDto = new FUserSnsCheckJoinResDto();
         UserRecord recode;
         try {
-            recode = FirebaseAuth.getInstance().getUser(reqDto.getSnsService().name()+response.getBody().getId());
+            recode = FirebaseAuth.getInstance().getUser(snsService.name()+response.getBody().getId());
         } catch (Exception ex) {
             recode = null;
         }

@@ -19,14 +19,8 @@ public class UserPolicyService {
 
     @Async
     @Transactional
-    public void getPolicy(ResponseBodyEmitter emitter, String policy) {
+    public UserPolicyResDto getPolicy(String policy) {
         UserPolicy userPolicy = userPolicyDataRepository.findById(policy).get();
-        try {
-            emitter.send(new UserPolicyResDto(userPolicy));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
+        return new UserPolicyResDto(userPolicy);
     }
 }

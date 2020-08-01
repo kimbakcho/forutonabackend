@@ -1,9 +1,9 @@
 package com.wing.forutona.FBall.Dto;
 
+import com.wing.forutona.FBall.Domain.FBallType;
 import com.wing.forutona.FTag.Dto.TagInsertReqDto;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data

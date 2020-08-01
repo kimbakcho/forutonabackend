@@ -2,7 +2,11 @@ package com.wing.forutona.FBall.Domain;
 
 import com.wing.forutona.FBall.Dto.FBallPlayState;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.*;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,23 +26,14 @@ public class FBallPlayer {
     private FBall ballUuid;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playerUid")
-    private FUserInfo playerUid;
-    private boolean hasLike;
-    private boolean hasDisLike;
-    private boolean hasGiveUp;
-    private boolean hasExit;
+    private FUserInfoSimple playerUid;
+    private Boolean hasLike;
+    private Boolean hasDisLike;
+    private Boolean hasGiveUp;
+    private Boolean hasExit;
     private LocalDateTime startTime;
     @Enumerated(EnumType.STRING)
     private FBallPlayState playState;
 
-    @Builder
-    public FBallPlayer(long idx, FBall ballUuid, FUserInfo playerUid,
-                       LocalDateTime startTime, FBallPlayState playState) {
-        this.idx = idx;
-        this.ballUuid = ballUuid;
-        this.playerUid = playerUid;
-        this.startTime = startTime;
-        this.playState = playState;
-    }
 
 }

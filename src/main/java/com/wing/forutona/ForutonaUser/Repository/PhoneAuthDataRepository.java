@@ -7,6 +7,6 @@ import java.util.List;
 
 
 public interface PhoneAuthDataRepository extends JpaRepository<PhoneAuth,Long> {
-    public List<PhoneAuth> findPhoneAuthByInternationalizedPhoneNumberIs(String internationalizedPhoneNumber);
+    List<PhoneAuth> findPhoneAuthByInternationalizedPhoneNumberIs(String internationalizedPhoneNumber);
 
 }

@@ -5,14 +5,11 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Dto.FBallType;
 import com.wing.forutona.FireBaseMessage.Dto.FireBaseMessageSendDto;
 import com.wing.forutona.FireBaseMessage.PayloadDto.FCMFBallMakeDto;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

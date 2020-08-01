@@ -27,7 +27,7 @@ public class ForutonaLoginService extends SnsLoginService {
     }
 
     @Override
-    public FUserSnsCheckJoinResDto getInfoFromToken(FUserSnSLoginReqDto reqDto) {
+    public FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService,String accessToken) {
         return null;
     }
 

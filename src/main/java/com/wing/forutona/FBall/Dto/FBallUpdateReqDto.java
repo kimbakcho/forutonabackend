@@ -1,9 +1,7 @@
 package com.wing.forutona.FBall.Dto;
 
-import com.wing.forutona.FTag.Dto.TagInsertReqDto;
+import com.wing.forutona.FBall.Domain.FBallType;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class FBallUpdateReqDto {
@@ -14,5 +12,4 @@ public class FBallUpdateReqDto {
     private FBallType ballType;
     private String placeAddress;
     private String description;
-    List<TagInsertReqDto> tags;
 }

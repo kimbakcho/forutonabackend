@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.ForutonaUser.Dto.UserPositionUpdateReqDto;
-import com.wing.forutona.ForutonaUser.Service.FAccountService;
 import com.wing.forutona.ForutonaUser.Service.UserPositionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;

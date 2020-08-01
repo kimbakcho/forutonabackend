@@ -57,7 +57,7 @@ public class FBallController {
     }
 
     @GetMapping(value = "/v1/FBall/UserToMakerBalls")
-    public Page<FBallResDto> getUserToMakerBalls(String makerUid, Pageable pageable) throws Exception {
+    public Page<FBallResDto> searchUserToMakerBalls(String makerUid, Pageable pageable) throws Exception {
         return ballListUpService.searchBallListUpUserMakerBall(makerUid,pageable);
     }
 

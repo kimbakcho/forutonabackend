@@ -6,6 +6,7 @@ import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeInsertReqDto;
 import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeResDto;
 import com.wing.forutona.ForutonaUser.Dto.PersonaSettingNoticeUpdateReqDto;
 import com.wing.forutona.ForutonaUser.Repository.PersonaSettingNoticeDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,78 +22,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class PersonaSettingNoticeService {
 
-    @Autowired
-    private PersonaSettingNoticeDataRepository personaSettingNoticeDataRepository;
+    final PersonaSettingNoticeDataRepository personaSettingNoticeDataRepository;
 
-    @Async
-    @Transactional
-    public void getPersonaSettingNotice(ResponseBodyEmitter emitter, Pageable pageable) {
-        Slice<PersonaSettingNotice> findAll = personaSettingNoticeDataRepository.findAll(pageable);
-
-        Slice<PersonaSettingNoticeResDto> result = findAll.map(x -> new PersonaSettingNoticeResDto(x));
-        try {
-            emitter.send(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
-
+    public Page<PersonaSettingNoticeResDto> getPersonaSettingNotice(Pageable pageable) {
+        Page<PersonaSettingNotice> findAll = personaSettingNoticeDataRepository.findAll(pageable);
+        Page<PersonaSettingNoticeResDto> result = findAll.map(x -> new PersonaSettingNoticeResDto(x));
+        return result;
     }
 
-    @Async
-    @Transactional
-    public void getPersonaSettingNoticePage(ResponseBodyEmitter emitter, long idx) {
+    public PersonaSettingNoticeResDto getPersonaSettingNoticePage(long idx) {
         PersonaSettingNotice personaSettingNotice = personaSettingNoticeDataRepository.findById(idx).get();
-        PersonaSettingNoticeResDto personaSettingNoticeResDto = new PersonaSettingNoticeResDto(personaSettingNotice);
-        try {
-            emitter.send(personaSettingNoticeResDto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
+        return new PersonaSettingNoticeResDto(personaSettingNotice);
     }
 
-    @Async
-    @Transactional
-    public void insertPersonaSettingNotice(ResponseBodyEmitter emitter, PersonaSettingNoticeInsertReqDto reqDto) {
+
+    public PersonaSettingNoticeResDto insertPersonaSettingNotice(PersonaSettingNoticeInsertReqDto reqDto) {
         PersonaSettingNotice personaSettingNotice =  PersonaSettingNotice.fromPersonaSettingNoticeInsertReqDto(reqDto);
-        personaSettingNoticeDataRepository.save(personaSettingNotice);
-        try {
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
+        PersonaSettingNotice save = personaSettingNoticeDataRepository.save(personaSettingNotice);
+        return new PersonaSettingNoticeResDto(save);
     }
 
-    @Async
-    @Transactional
-    public void updatePersonaSettingNotice(ResponseBodyEmitter emitter, PersonaSettingNoticeUpdateReqDto reqDto) {
+    public PersonaSettingNoticeResDto updatePersonaSettingNotice(PersonaSettingNoticeUpdateReqDto reqDto) {
         PersonaSettingNotice personaSettingNotice = personaSettingNoticeDataRepository.findById(reqDto.getIdx()).get();
         personaSettingNotice.updatePersonaSettingNotice(reqDto);
-        try {
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
+        return new PersonaSettingNoticeResDto(personaSettingNotice);
     }
-    @Async
-    @Transactional
-    public void deletePersonaSettingNotice(ResponseBodyEmitter emitter, long idx) {
+
+    public Long deletePersonaSettingNotice(long idx) {
         personaSettingNoticeDataRepository.deleteById(idx);
-        try {
-            emitter.send(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            emitter.complete();
-        }
+        return idx;
     }
 }
