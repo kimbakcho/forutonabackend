@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,8 +24,8 @@ public class FBall {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
     private FUserInfoSimple uid;
-    private double longitude;
-    private double latitude;
+    private Double longitude;
+    private Double latitude;
     @Column(columnDefinition = "geometry(Point,4326)")
     private Point placePoint;
     //ALTER TABLE `Fball` ADD FULLTEXT INDEX `BallNameindex` (`ballName`) WITH PARSER ngram; ngram index 사용
@@ -37,30 +38,46 @@ public class FBall {
     private String placeAddress;
     private String administrativeArea;
     private String country;
-    private double pointReward = 0;
-    private double influenceReward = 0;
+    @ColumnDefault("0")
+    private Double pointReward = 0.0;
+    @ColumnDefault("0")
+    private Double influenceReward = 0.0;
     private LocalDateTime activationTime;
-    private String ballPassword;
-    private long hasPassword;
-    private long ballHits = 0;
-    private Integer ballLikes = 0;
-    private Integer ballDisLikes = 0;
-    private long ballPower = 0;
-    private long joinPlayer = 0;
-    private long maximumPlayers = -1;
-    private double starPoints = 0;
-    private long expGiveFlag = 0;
-    private double makeExp;
-    private long commentCount = 0;
-    private double userExp = 0;
+    @ColumnDefault("")
+    private String ballPassword ;
+    @ColumnDefault("0")
+    private Long hasPassword = 0L;
+    @ColumnDefault("0")
+    private Long ballHits = 0L;
+    @ColumnDefault("0")
+    private Long ballLikes = 0L;
+    @ColumnDefault("0")
+    private Long ballDisLikes = 0L;
+    @ColumnDefault("0")
+    private Long ballPower = 0L;
+    @ColumnDefault("0")
+    private Long joinPlayer = 0L;
+    private Long maximumPlayers = -1L;
+    @ColumnDefault("0")
+    private Double starPoints = 0.0;
+    @ColumnDefault("0")
+    private Long expGiveFlag = 0L;
+    @ColumnDefault("0")
+    private Double makeExp = 0.0;
+    @ColumnDefault("0")
+    private Long commentCount = 0L;
+    @ColumnDefault("0")
+    private Double userExp = 0.0;
 
     private String description;
-    private long contributor;
-    private boolean ballDeleteFlag;
+    @ColumnDefault("0")
+    private Long contributor = 0L;
+    @ColumnDefault("0")
+    private Boolean ballDeleteFlag = false;
 
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfoSimple uid,
-                 double longitude,double latitude,Point placePoint,String ballName,FBallType ballType,
+                 Double longitude,Double latitude,String ballName,FBallType ballType,
                  String placeAddress,String description,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
                  long ballHits, double makeExp) {
@@ -69,7 +86,7 @@ public class FBall {
         this.ballState = ballState;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.placePoint = placePoint;
+        this.setPlacePoint(this.longitude,longitude);
         this.ballName = ballName;
         this.ballType = ballType;
         this.placeAddress = placeAddress;
@@ -125,26 +142,28 @@ public class FBall {
         this.contributor = contributor;
     }
 
-    public Integer plusBallLike(Integer point) {
+    public Long plusBallLike(Long point) {
         this.ballLikes += point;
-        return ballDisLikes;
+        return ballLikes;
     }
 
-    public Integer plusBallDisLike(Integer point) {
+    public Long plusBallDisLike(Long point) {
         this.ballDisLikes += point;
         return this.ballDisLikes;
     }
-    public void minusBallLike(Integer point) {
+    public void minusBallLike(Long point) {
         this.ballLikes -= point;
     }
-    public void minusBallDisLike(Integer point) {
+
+    public void minusBallDisLike(Long point) {
         this.ballDisLikes -= point;
     }
+
     public void updateBallPower() {
         this.ballPower = this.ballLikes - this.ballDisLikes;
     }
 
-    public void setBallPower(int ballPower) {
+    public void setBallPower(Long ballPower) {
         this.ballPower = ballPower;
     }
 

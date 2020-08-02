@@ -1,5 +1,6 @@
 package com.wing.forutona.FBall.Service.BallLikeService;
 
+import com.wing.forutona.FBall.Domain.LikeActionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,12 @@ public class BallLIkeServiceFactory {
     final BallDisLikeServiceImpl ballDisLikeService;
     final BallLikeCancelServiceImpl ballLikeCancelService;
 
-    public BallLikeService create(String serviceType) throws Exception {
-        if(serviceType.equals("Like")){
+    public BallLikeService create(LikeActionType serviceType) throws Exception {
+        if(LikeActionType.LIKE.equals(serviceType)){
             return ballLikeService;
-        }else if (serviceType.equals("DisLike")){
+        }else if (LikeActionType.DISLIKE.equals(serviceType)){
             return ballDisLikeService;
-        }else if(serviceType.equals("Cancel")){
+        }else if(LikeActionType.CANCEL.equals(serviceType)){
             return ballLikeCancelService;
         } else {
             throw new Exception("Don't have Service BallLIkeServiceFactory");

@@ -7,9 +7,13 @@ import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FireBaseMessage.Dto.FireBaseMessageSendDto;
 import com.wing.forutona.FireBaseMessage.PayloadDto.FCMReplyDto;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 public abstract class FBallReplyFCMService {
@@ -52,22 +56,28 @@ public abstract class FBallReplyFCMService {
 
 @Service("FBallRootReplyFCMService")
 @Transactional
+@RequiredArgsConstructor
 class FBallRootReplyFCMService extends FBallReplyFCMService {
+
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
     @Override
     String getFCMToken(FBallReply fBallReply) {
-        FUserInfo ballMaker = fBallReply.getBallMakerUerInfo();
-        return ballMaker.getFCMtoken();
+        Optional<FUserInfo> ballMakerOptional = fUserInfoDataRepository.findById(fBallReply.getBallMakerUerInfo().getUid());
+        return ballMakerOptional.get().getFCMtoken();
     }
 }
 
 
 @Service("FBallSubReplyFCMService")
 @Transactional
+@RequiredArgsConstructor
 class FBallSubReplyFCMService extends FBallReplyFCMService {
 
-    @Autowired
-    FBallReplyDataRepository fBallReplyDataRepository;
+
+    final private FBallReplyDataRepository fBallReplyDataRepository;
+
+    final private FUserInfoDataRepository fUserInfoDataRepository;
 
     @Override
     String getFCMToken(FBallReply fBallReply) {
@@ -75,8 +85,9 @@ class FBallSubReplyFCMService extends FBallReplyFCMService {
                 fBallReply.getReplyBallUuid(),
                 fBallReply.getReplyNumber(), 0L);
 
-        String fcMtoken = rootReply.getReplyUid().getFCMtoken();
-        return fcMtoken;
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(rootReply.getReplyUid().getUid()).get();
+
+        return fUserInfo.getFCMtoken();
     }
 
 }

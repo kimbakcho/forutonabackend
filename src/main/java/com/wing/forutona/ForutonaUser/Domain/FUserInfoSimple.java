@@ -27,8 +27,9 @@ public class FUserInfoSimple {
     private Double cumulativeInfluence;
 
     @Builder
-    FUserInfoSimple(String uid){
+    FUserInfoSimple(String uid,String nickName){
         this.uid = uid;
+        this.nickName = nickName;
     }
 
 }

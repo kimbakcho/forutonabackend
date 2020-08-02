@@ -7,42 +7,47 @@ import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepositor
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class BallLikeCancelServiceImpl extends BallLikeService {
-    final FBallValuationDataRepository fBallValuationDataRepository;
 
     final ContributorsDataRepository contributorsDataRepository;
 
     public BallLikeCancelServiceImpl(FBallDataRepository fBallDataRepository,
-                                     FUserInfoDataRepository fUserInfoDataRepository,
+                                     FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository,
                                      FBallValuationDataRepository fBallValuationDataRepository,
                                      ContributorsDataRepository contributorsDataRepository) {
-        super(fBallDataRepository, fUserInfoDataRepository);
-        this.fBallValuationDataRepository = fBallValuationDataRepository;
+        super(fBallDataRepository, fUserInfoSimpleDataRepository, fBallValuationDataRepository);
         this.contributorsDataRepository = contributorsDataRepository;
     }
 
     @Override
-    Integer setBallLikeData(FBall fBall, Integer point,FUserInfo userInfo) {
-        FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, userInfo).get();
-        if(fBallValuation.getPoint() > 0){
-            fBall.minusBallLike(fBallValuation.getPoint());
-        }else {
-            fBall.minusBallDisLike(fBallValuation.getPoint());
+    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+        fBall.minusBallLike(reqDto.getLikePoint());
+        fBall.minusBallDisLike(reqDto.getDisLikePoint());
+    }
+
+    @Override
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+        FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfoSimple).get();
+        fBallValuation.setPoint(fBallValuation.getPoint() - reqDto.getLikePoint());
+        fBallValuation.setPoint(fBallValuation.getPoint() + reqDto.getDisLikePoint());
+        fBallValuation.setBallLike(fBallValuation.getBallLike() - reqDto.getLikePoint());
+        fBallValuation.setBallLike(fBallValuation.getBallDislike() - reqDto.getDisLikePoint());
+        return fBallValuation;
+    }
+
+    @Override
+    void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation) {
+        if(fBallValuation.getPoint() == 0){
+            contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(fUserInfoSimple,fBall);
         }
-        return 0;
     }
 
-    @Override
-    void setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo userInfo) {
-        fBallValuationDataRepository.deleteByBallUuidAndUid(fBall, userInfo);
-    }
-
-    @Override
-    void setContributors(FBall fBall, FUserInfo userInfo) {
-        contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(userInfo,fBall);
-    }
 }

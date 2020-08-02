@@ -1,23 +1,24 @@
 package com.wing.forutona.FBall.Repository.FBallReply;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Domain.FBallReply;
+import com.wing.forutona.FBall.Domain.QFBallValuation;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
 import com.wing.forutona.FBall.Dto.QFBallReplyResDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 import static com.wing.forutona.FBall.Domain.QFBallReply.fBallReply;
-import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
+import static com.wing.forutona.FBall.Domain.QFBallValuation.*;
 
 @Repository
 public class FBallReplyQueryRepository {
@@ -33,8 +34,6 @@ public class FBallReplyQueryRepository {
                 .from(fBallReply)
                 .where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replyNumber.eq(replyNumber))
                 .fetchOne();
-
-
     }
 
 
@@ -53,56 +52,49 @@ public class FBallReplyQueryRepository {
         }
     }
 
-
-    public FBallReplyResWrapDto getFBallReply(FBallReplyReqDto reqDto, Pageable pageable) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    public Page<FBallReplyResDto> getFBallRootNodeReply(FBallReplyReqDto reqDto, Pageable pageable) {
 
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         OrderSpecifier orderSpecifier;
+        orderSpecifier = fBallReply.replyNumber.desc();
+        booleanBuilder.and(fBallReply.replySort.eq(0L));
 
-        if (reqDto.isReqOnlySubReply()) {
-            orderSpecifier = fBallReply.replySort.asc();
-            booleanBuilder.and(fBallReply.replySort.ne(0L));
-            booleanBuilder.and(fBallReply.replyNumber.eq(reqDto.getReplyNumber()));
-        } else {
-            orderSpecifier = fBallReply.replyNumber.desc();
-            booleanBuilder.and(fBallReply.replySort.eq(0L));
-        }
-
-        List<FBallReplyResDto> fBallReplyResDto = queryFactory.select(new QFBallReplyResDto(fBallReply))
-                .from(fBallReply)
-                .join(fBallReply.replyUid, fUserInfo).fetchJoin()
-                .where(fBallReply.replyBallUuid.eq(fBall), booleanBuilder)
-                .orderBy(orderSpecifier).limit(pageable.getPageSize()).offset(pageable.getOffset())
-                .fetch();
-
-
-        fBallReplyResDto.forEach(item -> {
-            if (item.getReplySort() == 0) {
-                Long subReplyCount = queryFactory.select(fBallReply.count()).from(fBallReply)
-                        .where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replyNumber.eq(item.getReplyNumber()), fBallReply.replySort.ne(0L))
-                        .fetchOne();
-                item.setSubReplyCount(subReplyCount);
-            }
-        });
-
-        Long totalReplyCount = queryFactory.
-                select(fBallReply.count()).from(fBallReply).
-                where(fBallReply.replyBallUuid.eq(fBall), fBallReply.replySort.eq(0L))
-                .fetchOne();
-
-        FBallReplyResWrapDto replyResWrapDto = new FBallReplyResWrapDto();
-        replyResWrapDto.setReplyTotalCount(totalReplyCount);
-        replyResWrapDto.setContents(fBallReplyResDto);
-        replyResWrapDto.setCount(fBallReplyResDto.size());
-        replyResWrapDto.setOffset(pageable.getOffset());
-        replyResWrapDto.setPageSize(pageable.getPageSize());
-        replyResWrapDto.setOnlySubReply(reqDto.isReqOnlySubReply());
-        return replyResWrapDto;
+        return getFBallReplySearch(pageable, fBall, booleanBuilder, orderSpecifier);
     }
 
 
+    public Page<FBallReplyResDto> getFBallSubNodeReply(FBallReplyReqDto reqDto, Pageable pageable) {
 
+
+        FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        OrderSpecifier orderSpecifier;
+        orderSpecifier = fBallReply.replySort.asc();
+        booleanBuilder.and(fBallReply.replySort.ne(0L));
+        booleanBuilder.and(fBallReply.replyNumber.eq(reqDto.getReplyNumber()));
+
+        return getFBallReplySearch(pageable, fBall, booleanBuilder, orderSpecifier);
+    }
+
+    public Page<FBallReplyResDto> getFBallReplySearch(
+                                                      Pageable pageable,
+                                                      FBall fBall,
+                                                      BooleanBuilder booleanBuilder,
+                                                      OrderSpecifier orderSpecifier) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QueryResults<FBallReplyResDto> fBallReplyResDtoQueryResults = queryFactory.select(new QFBallReplyResDto(fBallReply,fBallValuation))
+                .from(fBallReply)
+                .leftJoin(fBallValuation)
+                .on(fBallReply.replyBallUuid.eq(fBallValuation.ballUuid))
+                .on(fBallReply.replyUid.eq(fBallValuation.uid))
+                .where(fBallReply.replyBallUuid.eq(fBall), booleanBuilder)
+                .orderBy(orderSpecifier).limit(pageable.getPageSize()).offset(pageable.getOffset()).fetchResults();
+
+        Page<FBallReplyResDto> pageWrap = new PageImpl<FBallReplyResDto>(fBallReplyResDtoQueryResults.getResults(),
+                pageable, fBallReplyResDtoQueryResults.getTotal());
+
+        return pageWrap;
+    }
 
 }

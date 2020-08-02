@@ -14,7 +14,7 @@ public class FUserInfoResDto {
     private String uid;
     private String nickName;
     private String profilePictureUrl;
-    private Long gender;
+    private Integer gender;
     private LocalDate ageDate;
     private String email;
     private Boolean forutonaAgree;

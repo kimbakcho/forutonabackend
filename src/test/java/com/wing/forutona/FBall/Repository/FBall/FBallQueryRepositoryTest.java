@@ -68,7 +68,7 @@ class FBallQueryRepositoryTest extends BaseTest {
     }
 
     private void makeStrongInfluencePowerBall(FBall fBall) {
-        fBall.setBallPower(100);
+        fBall.setBallPower(100L);
         fBall.setPlacePoint(126.89706021076441,37.50298846403655);
 
     }

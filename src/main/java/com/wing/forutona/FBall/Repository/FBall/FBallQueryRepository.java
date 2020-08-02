@@ -4,9 +4,11 @@ import com.google.type.LatLng;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -16,34 +18,38 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.*;
+import com.wing.forutona.FBall.Service.BallCustomOrderService.BallCustomOrderFactory;
 import com.wing.forutona.Querydsl4RepositorySupport;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.wing.forutona.FBall.Domain.QFBall.fBall;
 import static com.wing.forutona.FTag.Domain.QFBalltag.fBalltag;
-import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
 @Repository
 public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
+    final BallCustomOrderFactory ballCustomOrderFactory;
     @PersistenceContext
     EntityManager em;
 
-    public FBallQueryRepository() {
+    public FBallQueryRepository(BallCustomOrderFactory ballCustomOrderFactory) {
         super(FBall.class);
+        this.ballCustomOrderFactory = ballCustomOrderFactory;
     }
 
     public Page<FBallResDto> getBallListUpFromMapArea(BallFromMapAreaReqDto reqDto,
-                                                        Pageable pageable) throws ParseException {
+                                                      Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         String mapAreaGeoRectStr = GisGeometryUtil.createRectPOLYGONStr(reqDto.getSouthwestLng(),
@@ -61,34 +67,22 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .where(stWithin.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballDeleteFlag.isFalse())
-                .orderBy(getDistanceWithOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
+                .orderBy(makeOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset()).fetchResults();
         List<FBall> results = fBallQueryResults.getResults();
         List<FBallResDto> collect = results.stream().map(x -> new FBallResDto(x)).collect(Collectors.toList());
-        Page<FBallResDto> page = new PageImpl<FBallResDto>(collect,pageable,fBallQueryResults.getTotal());;
+        Page<FBallResDto> page = new PageImpl<FBallResDto>(collect, pageable, fBallQueryResults.getTotal());
+        ;
 
         return page;
     }
 
-    public List<OrderSpecifier> getDistanceWithOrderSpecifiers(LatLng position, Sort sort) throws ParseException {
+    public List<OrderSpecifier> makeOrderSpecifiers(LatLng position, Sort sort) throws ParseException {
         List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
         List<Sort.Order> collect = sort.get().collect(Collectors.toList());
-        for (var item : collect ) {
-                if (item.getProperty().equals("distance")) {
-                    NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
-                            "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                            GisGeometryUtil.createCenterPoint(position.getLatitude(), position.getLongitude()));
-                    if (item.getDirection().equals(Order.DESC)) {
-                        orderSpecifiers.add(st_distance_sphere.desc());
-                    } else {
-                        orderSpecifiers.add(st_distance_sphere.asc());
-                    }
-                } else {
-                    PathBuilder<QFBall> entityPath = new PathBuilder(FBall.class, "fBall");
-                    PathBuilder<Object> path = entityPath.get(item.getProperty());
-                    orderSpecifiers.add(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(item.getDirection().name()), path));
-                }
+        for (var item : collect) {
+            orderSpecifiers.addAll(ballCustomOrderFactory.makeOrder(position, item).make());
         }
         return orderSpecifiers;
     }
@@ -109,13 +103,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .where(matchTemplate.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballDeleteFlag.isFalse()
-                ).orderBy(getDistanceWithOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
+                ).orderBy(makeOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchResults();
 
         List<FBallResDto> collect = fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList());
-        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallQueryResults.getTotal());
+        Page<FBallResDto> page = new PageImpl(collect, pageable, fBallQueryResults.getTotal());
         return page;
     }
 
@@ -138,7 +132,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
         QueryResults<FBallResDto> resDtoQueryResults = queryFactory.select(
                 new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
-                .from(fBall).join(fBall.uid, fUserInfo)
+                .from(fBall)
                 .where(stWithin.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballState.eq(FBallState.Play)
@@ -149,7 +143,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .offset(pageable.getOffset())
                 .fetchResults();
 
-        Page<FBallResDto> page = new PageImpl(resDtoQueryResults.getResults(),pageable,resDtoQueryResults.getTotal());
+        Page<FBallResDto> page = new PageImpl(resDtoQueryResults.getResults(), pageable, resDtoQueryResults.getTotal());
         return page;
     }
 
@@ -159,30 +153,19 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
 
     public Page<FBallResDto> getUserToMakerBalls(String makerUid,
-                                                            Pageable pageable) {
+                                                 Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
-        List<OrderSpecifier> fBallOrderSpecifier = getAliveWithFBallOrderSpecifier(pageable.getSort());
+        List<OrderSpecifier> fBallOrderSpecifier = makeOrderSpecifiers(null,pageable.getSort());
+
         QueryResults<FBallResDto> fBallResDtoQueryResults = queryFactory.select(new QFBallResDto(fBall))
                 .from(fBall)
                 .where(fBall.uid.uid.eq(makerUid))
                 .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetchResults();
         List<FBallResDto> collect = fBallResDtoQueryResults.getResults();
-        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallResDtoQueryResults.getTotal());
+        Page<FBallResDto> page = new PageImpl(collect, pageable, fBallResDtoQueryResults.getTotal());
         return page;
-    }
-
-    private List<OrderSpecifier> getAliveWithFBallOrderSpecifier(Sort sort) {
-        List<OrderSpecifier> orderBys = new LinkedList<>();
-//        for (FSort sort : sorts.getSorts()) {
-//            if (sort.getSort().equals("Alive")) {
-//                orderBys.add(getAliveCaseBuilder().desc());
-//            } else {
-//                orderBys.add(sort.toOrderSpecifier(fBall));
-//            }
-//        }
-        return orderBys;
     }
 
 
@@ -195,7 +178,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
 
     public Page<FBallResDto> ListUpFromTagName(FBallListUpFromTagReqDto reqDto,
-                                                 Pageable pageable) throws ParseException {
+                                               Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
 
@@ -206,13 +189,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                 .join(fBalltag.ballUuid, fBall)
                 .where(fBalltag.tagItem.eq(reqDto.getSearchTag())
                         .and(fBall.activationTime.after(LocalDateTime.now())))
-                .orderBy(getDistanceWithOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
+                .orderBy(makeOrderSpecifiers(centerLatLng, pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetchResults();
 
         List<FBallResDto> collect = fBallQueryResults.getResults().stream().map(x -> new FBallResDto(x)).collect(Collectors.toList());
-        Page<FBallResDto> page = new PageImpl(collect,pageable,fBallQueryResults.getTotal());
+        Page<FBallResDto> page = new PageImpl(collect, pageable, fBallQueryResults.getTotal());
 
         return page;
     }

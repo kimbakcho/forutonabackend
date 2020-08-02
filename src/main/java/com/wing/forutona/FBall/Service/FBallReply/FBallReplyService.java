@@ -5,31 +5,42 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
+import com.wing.forutona.FBall.Domain.FBallValuation;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
+import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class FBallReplyService {
 
-    @Autowired
-    FBallReplyDataRepository fBallReplyDataRepository;
+    final FBallReplyDataRepository fBallReplyDataRepository;
 
-    @Autowired
-    FBallReplyQueryRepository fBallReplyQueryRepository;
+    final FBallReplyQueryRepository fBallReplyQueryRepository;
 
-    @Autowired
-    FBallDataRepository fBallDataRepository;
+    final FBallDataRepository fBallDataRepository;
+
+    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+
+    final FBallReplyListUpFactory fBallReplyListUpFactory;
+
+    final FBallValuationDataRepository fBallValuationDataRepository;
 
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -38,21 +49,27 @@ public class FBallReplyService {
             ,FBallReplyFCMService fBallReplyFCMService
             , FBallReplyInsertReqDto reqDto
     ) throws FirebaseMessagingException, JsonProcessingException {
-        FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid()).build();
-        FUserInfo fUserInfo = FUserInfo.builder().uid(fireBaseToken.getUserFireBaseUid()).build();
+        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
+        FUserInfoSimple replyUser = fUserInfoSimpleDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+
         FBallReply saveFBallReplyItem = FBallReply.builder()
                 .replyUuid(reqDto.getReplyUuid())
                 .replyDepth(0L)
                 .replyBallUuid(fBall)
-                .replyUid(fUserInfo)
+                .replyUid(replyUser)
                 .replyUpdateDateTime(LocalDateTime.now())
                 .replyUploadDateTime(LocalDateTime.now())
                 .replyText(reqDto.getReplyText())
                 .build();
+
         FBallReply fBallReply = fBallReplyInsertService.insertReply(fireBaseToken, reqDto, saveFBallReplyItem);
         FBallReply saveReply = fBallReplyDataRepository.saveAndFlush(fBallReply);
-
-        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply);
+        FBallValuation fBallValuation = null;
+        Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
+        if(valuationOptional.isPresent()){
+            fBallValuation = valuationOptional.get();
+        }
+        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
 
         fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
@@ -60,10 +77,9 @@ public class FBallReplyService {
 
 
     @Transactional
-    public FBallReplyResWrapDto getFBallReply(FBallReplyReqDto reqDto, Pageable pageable) {
-        return fBallReplyQueryRepository.getFBallReply(reqDto, pageable);
+    public Page<FBallReplyResDto> getFBallReply(FBallReplyReqDto reqDto, Pageable pageable) {
+        return fBallReplyListUpFactory.getListUpService(reqDto.isReqOnlySubReply()).listUpReply(reqDto,pageable);
     }
-
 
     @Transactional
     public FBallReplyResDto updateFBallReply(FFireBaseToken fireBaseToken, FBallReplyUpdateReqDto reqDto) throws Throwable {
@@ -74,7 +90,14 @@ public class FBallReplyService {
         } else {
             throw new Throwable("missMatchUid");
         }
-        return new FBallReplyResDto(fBallReply);
+        FBall fBall = fBallDataRepository.findById(fBallReply.getBallUuid()).get();
+        FUserInfoSimple replyUser = fUserInfoSimpleDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+        FBallValuation fBallValuation = null;
+        Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
+        if(valuationOptional.isPresent()){
+            fBallValuation = valuationOptional.get();
+        }
+        return new FBallReplyResDto(fBallReply,fBallValuation);
     }
 
     @Transactional
@@ -85,7 +108,7 @@ public class FBallReplyService {
         } else {
             throw new Throwable("missMatchUid");
         }
-        return new FBallReplyResDto(fBallReply);
+        return new FBallReplyResDto(fBallReply,null);
     }
 
 }

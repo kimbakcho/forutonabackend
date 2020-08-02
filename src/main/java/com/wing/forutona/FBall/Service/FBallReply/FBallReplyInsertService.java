@@ -22,7 +22,7 @@ public interface FBallReplyInsertService {
 }
 
 
-@Service("FBallReplyRootInsertService")
+@Service()
 @RequiredArgsConstructor
 class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
 
@@ -39,7 +39,7 @@ class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
     }
 }
 
-@Service("FBallReplySubInsertService")
+@Service()
 @RequiredArgsConstructor
 class FBallReplySubInsertServiceImpl implements FBallReplyInsertService{
     final FBallReplyQueryRepository fBallReplyQueryRepository;

@@ -1,14 +1,14 @@
 package com.wing.forutona.FBall.Service.BallLikeService;
 
-import com.wing.forutona.FBall.Domain.Contributors;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallValuation;
 import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
-import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
+import com.wing.forutona.FBall.Dto.FBallLikeResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,27 +22,40 @@ public abstract class BallLikeService {
 
     final FBallDataRepository fBallDataRepository;
 
-    final FUserInfoDataRepository fUserInfoDataRepository;
+    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
 
-    abstract Integer setBallLikeData(FBall fBall,Integer point,FUserInfo userInfo);
+    final FBallValuationDataRepository fBallValuationDataRepository;
 
-    abstract void setFBallValuation(FBall fBall,FBallLikeReqDto reqDto,FUserInfo userInfo);
+    abstract void setBallLikeData(FBall fBall, FBallLikeReqDto point,FUserInfoSimple fUserInfoSimple);
 
-    abstract void setContributors(FBall fBall,FUserInfo userInfo);
+    abstract FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple);
 
-    public Integer execute(FBallLikeReqDto reqDto, String userUid) throws Exception {
+    abstract void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation);
+
+    void setBallPower(FBall fBall){
+        fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
+    };
+
+    public FBallLikeResDto execute(FBallLikeReqDto reqDto, String userUid) throws Exception {
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
         if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
             throw new Exception("over Active Time can't not likeExecute");
         }
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(userUid).get();
+        FUserInfoSimple fUserInfoSimple = fUserInfoSimpleDataRepository.findById(userUid).get();
 
-        setFBallValuation(fBall,reqDto,fUserInfo);
+        FBallValuation fBallValuation = setFBallValuation(fBall, reqDto, fUserInfoSimple);
 
-        setContributors(fBall,fUserInfo);
+        setBallLikeData(fBall, reqDto,fUserInfoSimple);
 
-        Integer result = setBallLikeData(fBall, reqDto.getPoint(),fUserInfo);
-        return result;
+        setBallPower(fBall);
+
+        setContributors(fBall,fUserInfoSimple,fBallValuation);
+
+        FBallLikeResDto fBallLikeResDto = new FBallLikeResDto();
+        fBallLikeResDto.setLike(fBall.getBallLikes());
+        fBallLikeResDto.setDislike(fBall.getBallDisLikes());
+
+        return fBallLikeResDto;
     }
 }
 

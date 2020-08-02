@@ -12,7 +12,9 @@ import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ class BallInsertServiceImpl implements BallInsertService {
 
     final FBallInsertFCMService fBallInsertFCMService;
 
-    final FUserInfoDataRepository fUserInfoDataRepository;
+    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
 
 
     @Override
@@ -44,7 +46,7 @@ class BallInsertServiceImpl implements BallInsertService {
         Point placePoint = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
         placePoint.setSRID(4326);
 
-        Optional<FUserInfo> userInfo = fUserInfoDataRepository.findById(userUid);
+        Optional<FUserInfoSimple> userInfoSimple = fUserInfoSimpleDataRepository.findById(userUid);
 
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid())
                 .makeTime(LocalDateTime.now())
@@ -52,28 +54,18 @@ class BallInsertServiceImpl implements BallInsertService {
                 .longitude(reqDto.getLongitude())
                 .latitude(reqDto.getLatitude())
                 .activationTime(LocalDateTime.now().plusDays(7))
-                .placePoint(placePoint)
                 .ballName(reqDto.getBallName())
                 .ballType(reqDto.getBallType())
                 .placeAddress(reqDto.getPlaceAddress())
                 .description(reqDto.getDescription())
                 .makeExp(300)
-                .uid(userInfo.get())
+                .uid(userInfoSimple.get())
                 .build();
-
-        List<FBalltag> tagCollect = reqDto.getTags().stream()
-                .map(x -> FBalltag.builder()
-                        .ballUuid(fBall)
-                        .tagItem(x.getTagItem())
-                        .build()
-                ).collect(Collectors.toList());
-
-        fBall.setTags(tagCollect);
-
 
         FBall saveBall = fBallDataRepository.saveAndFlush(fBall);
 
         fBallInsertFCMService.sendInsertFCMMessage(saveBall);
+
         return new FBallResDto(saveBall);
     }
 }

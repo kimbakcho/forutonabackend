@@ -2,8 +2,8 @@ package com.wing.forutona.FBall.Dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import lombok.Data;
+import com.wing.forutona.FBall.Domain.FBallValuation;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 public class FBallReplyResDto {
     String replyUuid;
-    String ballUuid;
-    String uid;
+    FBallResDto ballUuid;
+    FUserInfoSimpleResDto uid;
     Long replyNumber;
     Long replySort;
     Long replyDepth;
@@ -24,14 +24,16 @@ public class FBallReplyResDto {
     String userNickName;
     String userProfilePictureUrl;
     Boolean deleteFlag;
-    Long subReplyCount = 0L;
+    Long ballLike = 0L;
+    Long ballDislike = 0L;
+    Long point = 0L;
 
 
     @QueryProjection
-    public FBallReplyResDto(FBallReply fBallReply){
+    public FBallReplyResDto(FBallReply fBallReply, FBallValuation fBallValuation) {
         this.replyUuid = fBallReply.getReplyUuid();
-        this.ballUuid = fBallReply.getReplyBallUuid().getBallUuid();
-        this.uid = fBallReply.getReplyUid().getUid();
+        this.ballUuid = new FBallResDto(fBallReply.getReplyBallUuid());
+        this.uid = new FUserInfoSimpleResDto(fBallReply.getReplyUid());
         this.replyNumber = fBallReply.getReplyNumber();
         this.replySort = fBallReply.getReplySort();
         this.replyDepth = fBallReply.getReplyDepth();
@@ -41,7 +43,11 @@ public class FBallReplyResDto {
         this.userProfilePictureUrl = fBallReply.getReplyUid().getProfilePictureUrl();
         this.replyUpdateDateTime = fBallReply.getReplyUpdateDateTime();
         this.deleteFlag = fBallReply.getDeleteFlag();
-
+        if(fBallValuation != null){
+            this.ballLike = fBallValuation.getBallLike() == null ? 0 : fBallValuation.getBallLike();
+            this.ballLike = fBallValuation.getBallDislike() == null ? 0 : fBallValuation.getBallDislike();
+            this.point = fBallValuation.getPoint() == null ? 0 : fBallValuation.getPoint();
+        }
     }
 
 }

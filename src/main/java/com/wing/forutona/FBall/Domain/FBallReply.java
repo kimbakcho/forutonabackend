@@ -1,6 +1,7 @@
 package com.wing.forutona.FBall.Domain;
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class FBallReply {
     FBall replyBallUuid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    FUserInfo replyUid;
+    FUserInfoSimple replyUid;
     Long replyNumber;
     Long replySort;
     Long replyDepth;
@@ -31,7 +32,7 @@ public class FBallReply {
 
     @Builder
     public FBallReply(String replyUuid, FBall replyBallUuid
-            , FUserInfo replyUid
+            , FUserInfoSimple replyUid
             , Long replyNumber
             , Long replySort
             , String replyText
@@ -62,7 +63,7 @@ public class FBallReply {
         this.replyDepth = replyDepth;
     }
 
-    public void setReplyUid(FUserInfo replyUid) {
+    public void setReplyUid(FUserInfoSimple replyUid) {
         this.replyUid = replyUid;
     }
 
@@ -79,12 +80,12 @@ public class FBallReply {
     }
 
     public void delete() {
-        this.replyText = "Delete Text";
+        this.replyText = "";
         this.replyUpdateDateTime = LocalDateTime.now();
         this.deleteFlag = true;
     }
 
-    public FUserInfo getBallMakerUerInfo() {
+    public FUserInfoSimple getBallMakerUerInfo() {
         return replyBallUuid.getUid();
     }
 

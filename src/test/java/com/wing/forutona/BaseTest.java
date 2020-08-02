@@ -2,6 +2,7 @@ package com.wing.forutona;
 
 import com.wing.forutona.CustomUtil.FAuthHttpInterceptor;
 import com.wing.forutona.CustomUtil.FireBaseHandlerMethodArgumentResolver;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +29,7 @@ public class BaseTest {
     protected FireBaseHandlerMethodArgumentResolver fireBaseHandlerMethodArgumentResolver;
 
     protected String testFireBaseUser = "Naver11467346";
+
 
     @BeforeEach
     public void BaseSetUp() throws Exception {

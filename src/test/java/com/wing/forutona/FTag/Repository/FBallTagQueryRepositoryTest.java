@@ -74,7 +74,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
 
     private void makeTagBallPowerStrong(FBalltag fBalltag) {
         FBall fBall = fBalltag.getBallUuid();
-        fBall.setBallPower(10000);
+        fBall.setBallPower(10000L);
         fBall.setPlacePoint(126.89716021076441,37.50298846403655);
     }
 }

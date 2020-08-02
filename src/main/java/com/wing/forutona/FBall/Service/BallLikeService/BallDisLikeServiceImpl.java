@@ -8,47 +8,62 @@ import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepositor
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static java.lang.Math.abs;
 
 @Service
-public class BallDisLikeServiceImpl extends BallLikeService{
-    final FBallValuationDataRepository fBallValuationDataRepository;
+@Transactional
+public class BallDisLikeServiceImpl extends BallLikeService {
 
     final ContributorsDataRepository contributorsDataRepository;
-    public BallDisLikeServiceImpl(FBallDataRepository fBallDataRepository, FUserInfoDataRepository fUserInfoDataRepository, FBallValuationDataRepository fBallValuationDataRepository, ContributorsDataRepository contributorsDataRepository) {
-        super(fBallDataRepository, fUserInfoDataRepository);
-        this.fBallValuationDataRepository = fBallValuationDataRepository;
+
+    public BallDisLikeServiceImpl(FBallDataRepository fBallDataRepository,
+                                  FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository,
+                                  FBallValuationDataRepository fBallValuationDataRepository,
+                                  ContributorsDataRepository contributorsDataRepository) {
+        super(fBallDataRepository, fUserInfoSimpleDataRepository, fBallValuationDataRepository);
         this.contributorsDataRepository = contributorsDataRepository;
     }
 
     @Override
-    Integer setBallLikeData(FBall fBall, Integer point,FUserInfo userInfo) {
-        Integer totalBallLike = fBall.plusBallDisLike(point);
-        return totalBallLike;
+    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+        fBall.plusBallDisLike(reqDto.getDisLikePoint());
     }
 
     @Override
-    void setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo userInfo) {
-        FBallValuation fBallValuation = FBallValuation.builder()
-                .valueUuid(reqDto.getBallUuid())
-                .ballUuid(fBall)
-                .point(changeMinusValue(reqDto.getPoint()))
-                .uid(userInfo)
-                .build();
-
-        fBallValuationDataRepository.save(fBallValuation);
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfoSimple);
+        if(fBallValuationOptional.isPresent()){
+            FBallValuation fBallValuation = fBallValuationOptional.get();
+            fBallValuation.setPoint(fBallValuation.getPoint() - reqDto.getDisLikePoint());
+            return fBallValuation;
+        }else {
+            FBallValuation fBallValuation = FBallValuation.builder()
+                    .valueUuid(reqDto.getValueUuid())
+                    .ballUuid(fBall)
+                    .point(0 - reqDto.getDisLikePoint())
+                    .uid(fUserInfoSimple)
+                    .build();
+            fBallValuationDataRepository.save(fBallValuation);
+            return fBallValuation;
+        }
     }
 
     @Override
-    void setContributors(FBall fBall, FUserInfo userInfo) {
-        if(contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(userInfo,fBall).isEmpty()){
-            Contributors contributors =  Contributors.builder().uid(userInfo).ballUuid(fBall).build();
+    void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation) {
+        if (contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfoSimple, fBall).isEmpty()) {
+            Contributors contributors = Contributors.builder().uid(fUserInfoSimple).ballUuid(fBall).build();
             contributorsDataRepository.save(contributors);
         }
     }
 
-    int changeMinusValue(Integer value) {
-        return value * -1;
-    }
+
+
 }

@@ -1,32 +1,28 @@
 package com.wing.forutona.FireBaseMessage.Service;
 
 import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FBallReplyFCMServiceFactory {
 
     final
-    FBallReplyFCMService fBallReplyRootInsertService;
+    FBallRootReplyFCMService fBallReplyRootInsertService;
 
     final
-    FBallReplyFCMService fBallReplySubInsertService;
+    FBallSubReplyFCMService fBallReplySubInsertService;
 
 
-    public FBallReplyFCMServiceFactory(@Qualifier("FBallRootReplyFCMService") FBallReplyFCMService fBallReplyRootInsertService
-            ,@Qualifier("FBallSubReplyFCMService") FBallReplyFCMService fBallReplySubInsertService) {
-        this.fBallReplyRootInsertService = fBallReplyRootInsertService;
-        this.fBallReplySubInsertService = fBallReplySubInsertService;
-    }
-
-    public FBallReplyFCMService getFBallReplyFCMServiceFactory(FBallReplyInsertReqDto reqDto){
-        if(isRootReply(reqDto)){
+    public FBallReplyFCMService getFBallReplyFCMServiceFactory(FBallReplyInsertReqDto reqDto) {
+        if (isRootReply(reqDto)) {
             return fBallReplyRootInsertService;
-        }else {
+        } else {
             return fBallReplySubInsertService;
         }
     }
+
     public boolean isRootReply(FBallReplyInsertReqDto reqDto) {
         return reqDto.getReplyNumber() == -1;
     }

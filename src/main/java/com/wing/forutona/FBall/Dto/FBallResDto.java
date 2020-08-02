@@ -56,7 +56,7 @@ public class FBallResDto {
         this.userLevel = fball.getUid().getUserLevel();
         this.influencePower = influencePower;
         this.contributor = fball.getContributor();
-        this.ballDeleteFlag = fball.isBallDeleteFlag();
+        this.ballDeleteFlag = fball.getBallDeleteFlag();
     }
 
     @QueryProjection
@@ -80,7 +80,7 @@ public class FBallResDto {
         this.uid = new FUserInfoSimpleResDto(fball.getUid());
         this.userLevel = fball.getUid().getUserLevel();
         this.contributor = fball.getContributor();
-        this.ballDeleteFlag = fball.isBallDeleteFlag();
+        this.ballDeleteFlag = fball.getBallDeleteFlag();
     }
 
 }

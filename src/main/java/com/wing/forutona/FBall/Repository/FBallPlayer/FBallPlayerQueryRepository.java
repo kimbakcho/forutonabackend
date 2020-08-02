@@ -11,7 +11,6 @@ import com.wing.forutona.CustomUtil.FSorts;
 
 import com.wing.forutona.FBall.Domain.FBallPlayer;
 import com.wing.forutona.FBall.Dto.FBallPlayerResDto;
-import com.wing.forutona.FBall.Dto.QUserToPlayBallResDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

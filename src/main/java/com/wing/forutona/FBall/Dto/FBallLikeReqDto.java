@@ -1,10 +1,13 @@
 package com.wing.forutona.FBall.Dto;
 
+import com.wing.forutona.FBall.Domain.LikeActionType;
 import lombok.Data;
 
 @Data
 public class FBallLikeReqDto {
     String valueUuid;
     String ballUuid;
-    Integer point;
+    Long likePoint;
+    Long disLikePoint;
+    LikeActionType likeActionType;
 }

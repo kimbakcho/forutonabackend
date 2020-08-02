@@ -6,11 +6,13 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBall.Dto.FBallReplyResDto;
 import com.wing.forutona.FBall.Dto.FBallReplyUpdateReqDto;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertServiceFactory;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
 import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMServiceFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -31,19 +33,8 @@ public class FBallReplyController {
 
     @ResponseAddJsonHeader
     @GetMapping(value = "/v1/FBallReply")
-    public ResponseBodyEmitter getFBallReply(FBallReplyReqDto reqDto, Pageable pageable){
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            try {
-                emitter.send(fBallReplyService.getFBallReply(reqDto,pageable));
-                emitter.complete();
-            } catch (IOException e) {
-                e.printStackTrace();
-                emitter.completeWithError(e);
-            }
-        });
-        return emitter;
+    public Page<FBallReplyResDto> getFBallReply(FBallReplyReqDto reqDto, Pageable pageable){
+        return fBallReplyService.getFBallReply(reqDto,pageable);
     }
 
     @ResponseAddJsonHeader

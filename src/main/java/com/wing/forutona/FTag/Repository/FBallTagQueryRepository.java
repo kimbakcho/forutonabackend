@@ -38,7 +38,7 @@ public class FBallTagQueryRepository {
 
         List<TagRankingDto> tagRankingDtos = queryFactory.select(
                 new QTagRankingDto(fBalltag.tagItem, influence))
-                .from(fBall).join(fBall.tags, fBalltag)
+                .from(fBall)
                 .where(stWithin.eq(1).and(fBall.activationTime.after(LocalDateTime.now())))
                 .groupBy(fBalltag.tagItem)
                 .orderBy(influence.desc())

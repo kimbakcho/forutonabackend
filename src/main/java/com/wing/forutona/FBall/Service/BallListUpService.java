@@ -20,7 +20,7 @@ public interface BallListUpService {
 
     Page<FBallResDto> searchBallListUpInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException;
 
-    Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid,Pageable pageable);
+    Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid,Pageable pageable) throws ParseException;
 }
 
 @Service
@@ -62,7 +62,7 @@ class BallListUpServiceImpl implements BallListUpService {
     }
 
     @Override
-    public Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid, Pageable pageable) {
+    public Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid, Pageable pageable) throws ParseException {
         return fBallQueryRepository.getUserToMakerBalls(ballUuid, pageable);
     }
 

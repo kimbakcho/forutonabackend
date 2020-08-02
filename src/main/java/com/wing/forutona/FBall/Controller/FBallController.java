@@ -38,7 +38,7 @@ public class FBallController {
 
     final  BallDeleteService ballDeleteService;
 
-    final BallLIkeServiceFactory ballLIkeServiceFactory;
+
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
@@ -112,24 +112,6 @@ public class FBallController {
         return ballHitService.hit(ballUuid);
     }
 
-    @AuthFireBaseJwtCheck
-    @PostMapping(value = "/v1/FBall/Like")
-    public Integer ballLike(@RequestBody FBallLikeReqDto reqDto,FFireBaseToken fireBaseToken) throws Exception {
-        return ballLIkeServiceFactory.create("Like").execute(reqDto,fireBaseToken.getUserFireBaseUid());
-    }
 
-    @AuthFireBaseJwtCheck
-    @PostMapping(value = "/v1/FBall/DisLike")
-    public Integer ballDisLike(@RequestBody FBallLikeReqDto reqDto,FFireBaseToken fireBaseToken) throws Exception {
-        return ballLIkeServiceFactory.create("DisLike").execute(reqDto,fireBaseToken.getUserFireBaseUid());
-    }
-
-    @AuthFireBaseJwtCheck
-    @DeleteMapping(value = "/v1/FBall/CancelLike")
-    public Integer ballCancelLike(String ballUuid, FFireBaseToken fireBaseToken) throws Exception {
-        FBallLikeReqDto reqDto = new FBallLikeReqDto();
-        reqDto.setBallUuid(ballUuid);
-        return ballLIkeServiceFactory.create("Cancel").execute(reqDto,fireBaseToken.getUserFireBaseUid());
-    }
 
 }

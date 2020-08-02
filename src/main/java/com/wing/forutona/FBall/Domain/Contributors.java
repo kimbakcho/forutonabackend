@@ -2,6 +2,7 @@ package com.wing.forutona.FBall.Domain;
 
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,14 +19,14 @@ public class Contributors {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    FUserInfo uid;
+    FUserInfoSimple uid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballUuid")
     FBall ballUuid;
 
     @Builder
-    public Contributors(FUserInfo uid,FBall ballUuid){
+    public Contributors(FUserInfoSimple uid,FBall ballUuid){
         this.uid = uid;
         this.ballUuid = ballUuid;
 
