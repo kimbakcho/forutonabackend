@@ -1,23 +1,17 @@
 package com.wing.forutona.FTag.Repository;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
-import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
-import org.junit.jupiter.api.Disabled;
+import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,14 +40,14 @@ class FBallTagQueryRepositoryTest extends BaseTest {
         FBalltag fBalltag = randomChoiceTag();
         makeTagBallPowerStrong(fBalltag);
         //when
-        TagRankingWrapdto influencePowerRankingDto = fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(
+        List<TagRankingResDto> influencePowerRankingDto = fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(
                 GisGeometryUtil.createCenterPoint(37.50298846403655, 126.89706021076441)
                 , GisGeometryUtil.createRect(37.50298846403655, 126.89706021076441, 10000),
                 1000);
         //then
         System.out.println(fBalltag.getTagItem());
-        System.out.println(influencePowerRankingDto.getContents().get(0).getTagName());
-        assertEquals(influencePowerRankingDto.getContents().get(0).getTagName(),fBalltag.getTagItem());
+        System.out.println(influencePowerRankingDto.get(0).getTagName());
+        assertEquals(influencePowerRankingDto.get(0).getTagName(),fBalltag.getTagItem());
 
     }
 

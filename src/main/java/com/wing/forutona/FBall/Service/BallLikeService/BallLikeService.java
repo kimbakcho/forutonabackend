@@ -4,10 +4,10 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallValuation;
 import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
 import com.wing.forutona.FBall.Dto.FBallLikeResDto;
+import com.wing.forutona.FBall.Dto.FBallValuationResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,8 +52,9 @@ public abstract class BallLikeService {
         setContributors(fBall,fUserInfoSimple,fBallValuation);
 
         FBallLikeResDto fBallLikeResDto = new FBallLikeResDto();
-        fBallLikeResDto.setLike(fBall.getBallLikes());
-        fBallLikeResDto.setDislike(fBall.getBallDisLikes());
+        fBallLikeResDto.setBallLike(fBall.getBallLikes());
+        fBallLikeResDto.setBallDislike(fBall.getBallDisLikes());
+        fBallLikeResDto.setFBallValuationResDto(new FBallValuationResDto(fBallValuation));
 
         return fBallLikeResDto;
     }

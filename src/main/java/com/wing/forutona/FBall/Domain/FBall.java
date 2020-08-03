@@ -151,6 +151,7 @@ public class FBall {
         this.ballDisLikes += point;
         return this.ballDisLikes;
     }
+
     public void minusBallLike(Long point) {
         this.ballLikes -= point;
     }

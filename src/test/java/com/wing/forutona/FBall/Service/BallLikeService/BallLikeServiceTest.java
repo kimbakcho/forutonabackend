@@ -34,6 +34,10 @@ class BallLikeServiceTest {
     FUserInfoDataRepository fUserInfoDataRepository;
 
     @Autowired
+    FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+
+
+    @Autowired
     FBallDataRepository fBallDataRepository;
 
     @Autowired
@@ -93,7 +97,7 @@ class BallLikeServiceTest {
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(5L,fBall.getBallLikes());
@@ -122,7 +126,7 @@ class BallLikeServiceTest {
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(0,fBall.getBallLikes());
@@ -160,7 +164,7 @@ class BallLikeServiceTest {
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(0L,fBall.getBallLikes());

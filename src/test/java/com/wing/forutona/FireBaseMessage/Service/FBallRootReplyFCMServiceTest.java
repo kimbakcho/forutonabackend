@@ -7,7 +7,9 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,10 +34,14 @@ class FBallRootReplyFCMServiceTest extends BaseTest {
     @Autowired
     FUserInfoDataRepository fUserInfoDataRepository;
 
+    @Autowired
+    FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+
+
     @Test
     void sendFCM() throws FirebaseMessagingException, JsonProcessingException {
         //given
-        FUserInfo testReplyUser = fUserInfoDataRepository.findById("usSMKjNv62eJLkXzFpQux8jWqkT2").get();
+        FUserInfoSimple testReplyUser = fUserInfoSimpleDataRepository.findById("usSMKjNv62eJLkXzFpQux8jWqkT2").get();
         FUserInfo testBallUser = fUserInfoDataRepository.findById("h2q2jl3nRPXZ8809Uvi9KdzSss83").get();
         List<FBall> testFBalls = fBallDataRepository.findByUid(testBallUser);
         FBall testBall = testFBalls.get(0);

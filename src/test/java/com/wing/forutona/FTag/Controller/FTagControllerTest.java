@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
-import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
+import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import com.wing.forutona.FTag.Service.FTagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +18,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -46,8 +47,8 @@ class FTagControllerTest extends BaseTest {
     @DisplayName("fTagService 호출")
     void getFTagRankingFromBallInfluencePower() throws Exception {
         //given
-        TagRankingWrapdto tagRankingWrapdto = new TagRankingWrapdto();
-        given(fTagService.getFTagRankingFromBallInfluencePower(any())).willReturn(tagRankingWrapdto);
+        List<TagRankingResDto> tagRankingResDtos = new ArrayList<>();
+        given(fTagService.getFTagRankingFromBallInfluencePower(any())).willReturn(tagRankingResDtos);
 
         TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto = new TagRankingFromBallInfluencePowerReqDto();
         tagRankingFromBallInfluencePowerReqDto.setLatitude(127.0);

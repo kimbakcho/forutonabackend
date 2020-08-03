@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagRankingDto {
+public class TagRankingResDto {
     int ranking;
     String tagName;
     double tagPower;
     Long tagBallPower;
 
     @QueryProjection
-    public TagRankingDto(String tagName, double tagPower) {
+    public TagRankingResDto(String tagName, double tagPower) {
         this.tagName = tagName;
         this.tagPower = tagPower;
     }

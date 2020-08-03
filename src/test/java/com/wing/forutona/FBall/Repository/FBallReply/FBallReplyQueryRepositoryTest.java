@@ -4,14 +4,18 @@ import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBall.Dto.FBallReplyResDto;
 import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,9 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     FUserInfoDataRepository fUserInfoDataRepository;
 
     @Autowired
+    FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+
+    @Autowired
     FBallReplyQueryRepository fBallReplyQueryRepository;
 
     @Autowired
@@ -51,7 +58,7 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     void getFBallReplyReqOnlyMain() {
         //given
         List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
-        List<FUserInfo> users = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent();
+        List<FUserInfoSimple> users = fUserInfoSimpleDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<10;j++){
@@ -73,9 +80,9 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         reqDto.setBallUuid(fBalls.get(0).getBallUuid());
         reqDto.setReqOnlySubReply(false);
         //when
-        FBallReplyResWrapDto fBallReply = fBallReplyQueryRepository.getFBallReply(reqDto, PageRequest.of(0, 20));
+        Page<FBallReplyResDto> pageItem = fBallReplyQueryRepository.getFBallRootNodeReply(reqDto, PageRequest.of(0, 20));
         //then
-        assertEquals(10,fBallReply.getContents().size());
+        assertEquals(10,pageItem.getSize());
     }
 
     @Test
@@ -83,7 +90,7 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     void getFBallReplyReqOnlySubReply() {
         //given
         List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
-        List<FUserInfo> users = fUserInfoDataRepository.findAll(PageRequest.of(0, 1)).getContent();
+        List<FUserInfoSimple> users = fUserInfoSimpleDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<2;j++){
@@ -106,9 +113,9 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         reqDto.setReplyNumber(replyNumber);
         reqDto.setReqOnlySubReply(true);
         //when
-        FBallReplyResWrapDto fBallReply = fBallReplyQueryRepository.getFBallReply(reqDto, PageRequest.of(0, 20));
+        Page<FBallReplyResDto> fBallReply = fBallReplyQueryRepository.getFBallSubNodeReply(reqDto, PageRequest.of(0, 20));
         //then
-        assertEquals(9,fBallReply.getContents().size());
+        assertEquals(9,fBallReply.getSize());
     }
 
 

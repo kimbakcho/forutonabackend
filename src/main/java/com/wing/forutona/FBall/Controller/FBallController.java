@@ -38,7 +38,7 @@ public class FBallController {
 
     final  BallDeleteService ballDeleteService;
 
-
+    final BallLIkeServiceFactory ballLIkeServiceFactory;
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
@@ -111,7 +111,6 @@ public class FBallController {
     public Long deleteBall(String ballUuid){
         return ballHitService.hit(ballUuid);
     }
-
 
 
 }

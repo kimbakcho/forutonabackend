@@ -1,5 +1,7 @@
 package com.wing.forutona.FTag.Repository;
 
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -7,10 +9,7 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.wing.forutona.FTag.Dto.QTagRankingDto;
-import com.wing.forutona.FTag.Dto.RelationTagRankingFromTagNameReqDto;
-import com.wing.forutona.FTag.Dto.TagRankingDto;
-import com.wing.forutona.FTag.Dto.TagRankingWrapdto;
-import com.wing.forutona.FBall.Dto.FBallListUpFromTagReqDto;
+import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,7 +26,7 @@ public class FBallTagQueryRepository {
     @PersistenceContext
     EntityManager em;
 
-    public TagRankingWrapdto getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit) {
+    public List<TagRankingResDto> getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class, "function('st_distance_sphere',{0},{1})", fBall.placePoint, centerPoint);
@@ -36,49 +35,48 @@ public class FBallTagQueryRepository {
 
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
 
-        List<TagRankingDto> tagRankingDtos = queryFactory.select(
+        List<TagRankingResDto> tagRankingResDtos = queryFactory.select(
                 new QTagRankingDto(fBalltag.tagItem, influence))
-                .from(fBall)
+                .from(fBalltag)
+                .join(fBall).on(fBalltag.ballUuid.eq(fBall))
                 .where(stWithin.eq(1).and(fBall.activationTime.after(LocalDateTime.now())))
                 .groupBy(fBalltag.tagItem)
                 .orderBy(influence.desc())
                 .limit(limit)
                 .fetch();
 
-        makeTagRankingIndex(tagRankingDtos);
+        makeTagRankingIndex(tagRankingResDtos);
 
-        TagRankingWrapdto tagRankingWrapdto = new TagRankingWrapdto(LocalDateTime.now(), tagRankingDtos);
-        return tagRankingWrapdto;
+        return tagRankingResDtos;
     }
 
-    public void makeTagRankingIndex(List<TagRankingDto> tagRankingDtos) {
+    public void makeTagRankingIndex(List<TagRankingResDto> tagRankingResDtos) {
         int i = 1;
-        for (TagRankingDto tagRankingDto : tagRankingDtos) {
-            tagRankingDto.setRanking(i++);
+        for (TagRankingResDto tagRankingResDto : tagRankingResDtos) {
+            tagRankingResDto.setRanking(i++);
         }
     }
 
 
-    public TagRankingWrapdto getRelationTagRankingFromTagNameOrderByBallPower(RelationTagRankingFromTagNameReqDto reqDto) {
+    public List<TagRankingResDto> getRelationTagRankingFromTagNameOrderByBallPower(String searchTag) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
                 "function('match',{0},{1})",
-                fBalltag.tagItem, "+" + reqDto.getSearchTagName() + "*");
-        List<TagRankingDto> fetchlists = queryFactory.select(
-                Projections.bean(TagRankingDto.class,
-                        fBalltag.tagItem.as("tagName"), fBall.ballPower.sum().as("tagBallPower"))
-        )
+                fBalltag.tagItem, "+" + searchTag + "*");
+
+        List<TagRankingResDto> tagRankingResDtos = queryFactory.select(
+                Projections.bean(TagRankingResDto.class,
+                        fBalltag.tagItem.as("tagName"), fBall.ballPower.sum().as("tagBallPower")))
                 .from(fBalltag)
-                .join(fBalltag.ballUuid, fBall)
                 .where(matchTemplate.eq(1)
                         .and(fBall.activationTime.after(LocalDateTime.now())))
                 .groupBy(fBalltag.tagItem)
                 .orderBy(fBall.ballPower.sum().desc())
                 .limit(11).offset(0).fetch();
-        TagRankingWrapdto tagRankingWrapdto = new TagRankingWrapdto();
-        tagRankingWrapdto.setContents(fetchlists);
-        tagRankingWrapdto.setSearchTime(LocalDateTime.now());
-        return tagRankingWrapdto;
+
+        makeTagRankingIndex(tagRankingResDtos);
+
+        return tagRankingResDtos;
     }
 
 

@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FBallLikeResDto {
-    Long like;
-    Long dislike;
+    Long ballLike;
+    Long ballDislike;
+    FBallValuationResDto fBallValuationResDto;
 }
