@@ -12,6 +12,7 @@ public class FUserInfoSimpleResDto {
     Double userLevel;
     String selfIntroduction;
     Double cumulativeInfluence;
+    Long followCount;
 
     public FUserInfoSimpleResDto(FUserInfoSimple fUserInfoSimple){
         this.uid = fUserInfoSimple.getUid();
@@ -21,5 +22,6 @@ public class FUserInfoSimpleResDto {
         this.userLevel = fUserInfoSimple.getUserLevel();
         this.selfIntroduction = fUserInfoSimple.getSelfIntroduction();
         this.cumulativeInfluence = fUserInfoSimple.getCumulativeInfluence();
+        this.followCount = fUserInfoSimple.getFollowCount();
     }
 }

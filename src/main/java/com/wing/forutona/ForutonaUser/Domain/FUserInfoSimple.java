@@ -25,6 +25,7 @@ public class FUserInfoSimple {
     private Double userLevel;
     private String selfIntroduction;
     private Double cumulativeInfluence;
+    private Long followCount;
 
     @Builder
     FUserInfoSimple(String uid,String nickName){
