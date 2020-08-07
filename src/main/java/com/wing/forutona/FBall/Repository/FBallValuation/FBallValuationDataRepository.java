@@ -10,5 +10,6 @@ import java.util.Optional;
 
 public interface FBallValuationDataRepository extends JpaRepository<FBallValuation,String> {
     Optional<FBallValuation> findByBallUuidIsAndUidIs(FBall ballUuid, FUserInfoSimple uid);
+    Long countByBallUuidAndBallLikeNotOrBallDislikeNot(FBall ballUuid,Long likeCount,Long disLikeCount);
     void deleteByBallUuidAndUid(FBall ballUuid, FUserInfo uid);
 }

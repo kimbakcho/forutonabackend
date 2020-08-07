@@ -38,17 +38,6 @@ public abstract class BallLikeService {
         fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
     }
 
-    FBallValuation cancelLikeValuation(FBall fBall, FUserInfoSimple fUserInfoSimple) {
-        FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfoSimple).get();
-        fBallValuation.setPoint(fBallValuation.getPoint() - fBallValuation.getBallLike());
-        fBallValuation.setPoint(fBallValuation.getPoint() + fBallValuation.getBallDislike());
-        fBall.minusBallLike(fBallValuation.getBallLike());
-        fBall.minusBallDisLike(fBallValuation.getBallDislike());
-        fBallValuation.setBallLike(0L);
-        fBallValuation.setBallLike(0L);
-        return fBallValuation;
-    }
-
     public FBallLikeResDto execute(FBallLikeReqDto reqDto, String userUid) throws Exception {
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
         if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
@@ -68,9 +57,13 @@ public abstract class BallLikeService {
 
         setContributors(fBall, fUserInfoSimple, saveFBallValuation);
 
+        Long likeServiceUseUserCount = fBallValuationDataRepository.countByBallUuidAndBallLikeNotOrBallDislikeNot(fBall, 0L, 0L);
+
         FBallLikeResDto fBallLikeResDto = new FBallLikeResDto();
         fBallLikeResDto.setBallLike(fBall.getBallLikes());
         fBallLikeResDto.setBallDislike(fBall.getBallDisLikes());
+        fBallLikeResDto.setLikeServiceUseUserCount(likeServiceUseUserCount);
+        fBallLikeResDto.setBallPower(fBall.getBallPower());
         fBallLikeResDto.setFballValuationResDto(new FBallValuationResDto(saveFBallValuation));
 
         return fBallLikeResDto;
@@ -105,5 +98,6 @@ public abstract class BallLikeService {
     public boolean isBeforeDisLikeState(FBallValuation fBallValuation) {
         return fBallValuation.getBallDislike() > 0;
     }
+
 }
 
