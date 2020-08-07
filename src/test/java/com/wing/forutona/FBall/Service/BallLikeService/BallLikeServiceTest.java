@@ -55,13 +55,14 @@ class BallLikeServiceTest {
     @ColumnDefault("126.79369789999998")
     private Double longitude;
 
+    String testFireBaseUser = "Naver11467346";
+
     @BeforeEach
     void beforeEach(){
-        FUserInfo testSaveUsers = FUserInfo.builder().uid("TESTUserUid").nickName("TESTNickName").fCMtoken("TEST")
-                .latitude(37.4402052).longitude(126.79369789999998).build();
 
-        fUserInfoDataRepository.save(testSaveUsers);
-        this.testUser = FUserInfoSimple.builder().uid("TESTUserUid").nickName("TESTNickName").build();
+
+        this.testUser = fUserInfoSimpleDataRepository.findById(testFireBaseUser).get();
+
         testBall = FBall.builder()
                 .ballUuid("TESTBBallUuid")
                 .ballName("TESTBall")
@@ -93,11 +94,11 @@ class BallLikeServiceTest {
         BallLikeService likeService = ballLIkeServiceFactory.create(reqDto.getLikeActionType());
 
         //when
-        likeService.execute(reqDto,"TESTUserUid");
+        likeService.execute(reqDto,testFireBaseUser);
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById(testFireBaseUser).get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(5L,fBall.getBallLikes());
@@ -122,11 +123,11 @@ class BallLikeServiceTest {
         BallLikeService likeService = ballLIkeServiceFactory.create(reqDto.getLikeActionType());
 
         //when
-        likeService.execute(reqDto,"TESTUserUid");
+        likeService.execute(reqDto,testFireBaseUser);
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById(testFireBaseUser).get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(0,fBall.getBallLikes());
@@ -149,7 +150,7 @@ class BallLikeServiceTest {
 
         BallLikeService likeService = ballLIkeServiceFactory.create(reqDto.getLikeActionType());
 
-        likeService.execute(reqDto,"TESTUserUid");
+        likeService.execute(reqDto,testFireBaseUser);
 
         FBallLikeReqDto cancelReqDto = new FBallLikeReqDto();
         cancelReqDto.setBallUuid("TESTBBallUuid");
@@ -160,11 +161,11 @@ class BallLikeServiceTest {
 
         BallLikeService cancelService = ballLIkeServiceFactory.create(cancelReqDto.getLikeActionType());
         //when
-        cancelService.execute(cancelReqDto,"TESTUserUid");
+        cancelService.execute(cancelReqDto,testFireBaseUser);
 
         //then
         FBall fBall = fBallDataRepository.findById("TESTBBallUuid").get();
-        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById("TESTUserUid").get();
+        FUserInfoSimple fUserInfo = fUserInfoSimpleDataRepository.findById(testFireBaseUser).get();
         FBallValuation fBallValuation = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo).get();
         Optional<Contributors> contributorsOptional = contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall);
         assertEquals(0L,fBall.getBallLikes());

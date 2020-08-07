@@ -28,9 +28,12 @@ public class FUserInfoSimple {
     private Long followCount;
 
     @Builder
-    FUserInfoSimple(String uid,String nickName){
+    FUserInfoSimple(String uid,String nickName,Double cumulativeInfluence,Long followCount,Double userLevel){
         this.uid = uid;
         this.nickName = nickName;
+        this.cumulativeInfluence = cumulativeInfluence;
+        this.followCount = followCount;
+        this.userLevel = userLevel;
     }
 
 }

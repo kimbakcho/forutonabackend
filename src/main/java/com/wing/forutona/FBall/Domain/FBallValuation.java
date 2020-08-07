@@ -26,11 +26,13 @@ public class FBallValuation {
     Long point = 0L;
 
     @Builder
-    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfoSimple uid,Long point){
+    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfoSimple uid,Long ballLike,Long ballDislike,Long point){
         this.valueUuid = valueUuid;
         this.ballUuid = ballUuid;
         this.uid =uid;
         this.point = point;
+        this.ballLike = ballLike;
+        this.ballDislike = ballDislike;
     }
 
     public void setPoint(Long point) {

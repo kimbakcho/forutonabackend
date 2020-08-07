@@ -24,6 +24,7 @@ public class PhoneAuth {
 
 
     public static PhoneAuth fromPhoneAuthReqDto (PhoneAuthReqDto reqDto){
+        //TODO 서비스로 옮겨 준다.
         PhoneAuth phoneAuth = new PhoneAuth();
         phoneAuth.phoneNumber = reqDto.getPhoneNumber();
         phoneAuth.internationalizedPhoneNumber = reqDto.getInternationalizedPhoneNumber();

@@ -7,16 +7,12 @@ import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
 import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static java.lang.Math.abs;
 
 @Service
 @Transactional
@@ -38,21 +34,25 @@ public class BallDisLikeServiceImpl extends BallLikeService {
     }
 
     @Override
-    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
-        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfoSimple);
-        if(fBallValuationOptional.isPresent()){
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple,
+                                     Optional<FBallValuation> fBallValuationOptional) {
+        if (fBallValuationOptional.isPresent()) {
             FBallValuation fBallValuation = fBallValuationOptional.get();
+            fBallValuation.setBallLike(0L);
+            fBallValuation.setBallDislike(reqDto.getDisLikePoint());
             fBallValuation.setPoint(fBallValuation.getPoint() - reqDto.getDisLikePoint());
             return fBallValuation;
-        }else {
+        } else {
             FBallValuation fBallValuation = FBallValuation.builder()
                     .valueUuid(reqDto.getValueUuid())
                     .ballUuid(fBall)
                     .point(0 - reqDto.getDisLikePoint())
                     .uid(fUserInfoSimple)
+                    .ballLike(0L)
+                    .ballDislike(reqDto.getDisLikePoint())
                     .build();
-            fBallValuationDataRepository.save(fBallValuation);
-            return fBallValuation;
+            FBallValuation saveFBallValuation = fBallValuationDataRepository.save(fBallValuation);
+            return saveFBallValuation;
         }
     }
 
@@ -63,7 +63,6 @@ public class BallDisLikeServiceImpl extends BallLikeService {
             contributorsDataRepository.save(contributors);
         }
     }
-
 
 
 }

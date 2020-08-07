@@ -6,5 +6,5 @@ import lombok.Data;
 public class FBallLikeResDto {
     Long ballLike;
     Long ballDislike;
-    FBallValuationResDto fBallValuationResDto;
+    FBallValuationResDto fballValuationResDto;
 }

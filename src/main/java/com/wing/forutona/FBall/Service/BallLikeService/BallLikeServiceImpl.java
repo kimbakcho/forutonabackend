@@ -7,9 +7,7 @@ import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
 import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +33,13 @@ public class BallLikeServiceImpl extends BallLikeService {
     }
 
     @Override
-    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
-        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository
-                .findByBallUuidIsAndUidIs(fBall, fUserInfoSimple);
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple,
+                                     Optional<FBallValuation> fBallValuationOptional) {
         if(fBallValuationOptional.isPresent()){
+
             FBallValuation fBallValuation = fBallValuationOptional.get();
+            fBallValuation.setBallLike(reqDto.getLikePoint());
+            fBallValuation.setBallDislike(0L);
             fBallValuation.setPoint(fBallValuation.getPoint() + reqDto.getLikePoint());
             return fBallValuation;
         }else {
@@ -48,9 +48,11 @@ public class BallLikeServiceImpl extends BallLikeService {
                     .ballUuid(fBall)
                     .point(0 + reqDto.getLikePoint())
                     .uid(fUserInfoSimple)
+                    .ballLike(reqDto.getLikePoint())
+                    .ballDislike(0L)
                     .build();
-            fBallValuationDataRepository.save(fBallValuation);
-            return fBallValuation;
+            FBallValuation saveItem = fBallValuationDataRepository.save(fBallValuation);
+            return saveItem;
         }
     }
 
