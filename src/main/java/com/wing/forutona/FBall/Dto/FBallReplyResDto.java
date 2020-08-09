@@ -24,9 +24,8 @@ public class FBallReplyResDto {
     String userNickName;
     String userProfilePictureUrl;
     Boolean deleteFlag;
-    Long ballLike = 0L;
-    Long ballDislike = 0L;
-    Long point = 0L;
+    FBallValuationResDto fBallValuationResDto;
+
 
 
     @QueryProjection
@@ -44,9 +43,7 @@ public class FBallReplyResDto {
         this.replyUpdateDateTime = fBallReply.getReplyUpdateDateTime();
         this.deleteFlag = fBallReply.getDeleteFlag();
         if(fBallValuation != null){
-            this.ballLike = fBallValuation.getBallLike() == null ? 0 : fBallValuation.getBallLike();
-            this.ballLike = fBallValuation.getBallDislike() == null ? 0 : fBallValuation.getBallDislike();
-            this.point = fBallValuation.getPoint() == null ? 0 : fBallValuation.getPoint();
+            this.fBallValuationResDto = new FBallValuationResDto(fBallValuation);
         }
     }
 

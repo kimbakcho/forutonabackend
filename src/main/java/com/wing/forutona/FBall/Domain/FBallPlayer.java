@@ -2,9 +2,7 @@ package com.wing.forutona.FBall.Domain;
 
 import com.wing.forutona.FBall.Dto.FBallPlayState;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +24,7 @@ public class FBallPlayer {
     private FBall ballUuid;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playerUid")
-    private FUserInfoSimple playerUid;
+    private FUserInfo playerUid;
     private Boolean hasLike;
     private Boolean hasDisLike;
     private Boolean hasGiveUp;

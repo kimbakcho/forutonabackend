@@ -7,8 +7,8 @@ import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
 import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +24,16 @@ public class BallLikeServiceImpl extends BallLikeService {
     final ContributorsDataRepository contributorsDataRepository;
 
     public BallLikeServiceImpl(FBallDataRepository fBallDataRepository,
-                               FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository,
+                               FUserInfoDataRepository fUserInfoDataRepository,
                                FBallValuationDataRepository fBallValuationDataRepository,
                                ContributorsDataRepository contributorsDataRepository
     ) {
-        super(fBallDataRepository, fUserInfoSimpleDataRepository, fBallValuationDataRepository);
+        super(fBallDataRepository, fUserInfoDataRepository, fBallValuationDataRepository);
         this.contributorsDataRepository = contributorsDataRepository;
     }
 
     @Override
-    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple,
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo fUserInfo,
                                      Optional<FBallValuation> fBallValuationOptional) {
         if(fBallValuationOptional.isPresent()){
 
@@ -47,7 +47,7 @@ public class BallLikeServiceImpl extends BallLikeService {
                     .valueUuid(reqDto.getValueUuid())
                     .ballUuid(fBall)
                     .point(0 + reqDto.getLikePoint())
-                    .uid(fUserInfoSimple)
+                    .uid(fUserInfo)
                     .ballLike(reqDto.getLikePoint())
                     .ballDislike(0L)
                     .build();
@@ -57,15 +57,15 @@ public class BallLikeServiceImpl extends BallLikeService {
     }
 
     @Override
-    void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation) {
-        if (contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfoSimple, fBall).isEmpty()) {
-            Contributors contributors = Contributors.builder().uid(fUserInfoSimple).ballUuid(fBall).build();
+    void setContributors(FBall fBall, FUserInfo fUserInfo, FBallValuation fBallValuation) {
+        if (contributorsDataRepository.findContributorsByUidIsAndBallUuidIs(fUserInfo, fBall).isEmpty()) {
+            Contributors contributors = Contributors.builder().uid(fUserInfo).ballUuid(fBall).build();
             contributorsDataRepository.save(contributors);
         }
     }
 
     @Override
-    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfo fUserInfo) {
         fBall.plusBallLike(reqDto.getLikePoint());
     }
 

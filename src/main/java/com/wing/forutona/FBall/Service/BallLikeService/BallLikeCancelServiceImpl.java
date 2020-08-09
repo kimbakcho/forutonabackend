@@ -6,8 +6,8 @@ import com.wing.forutona.FBall.Dto.FBallLikeReqDto;
 import com.wing.forutona.FBall.Repository.Contributors.ContributorsDataRepository;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,28 +20,28 @@ public class BallLikeCancelServiceImpl extends BallLikeService {
     final ContributorsDataRepository contributorsDataRepository;
 
     public BallLikeCancelServiceImpl(FBallDataRepository fBallDataRepository,
-                                     FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository,
+                                     FUserInfoDataRepository fUserInfoDataRepository,
                                      FBallValuationDataRepository fBallValuationDataRepository,
                                      ContributorsDataRepository contributorsDataRepository) {
-        super(fBallDataRepository, fUserInfoSimpleDataRepository, fBallValuationDataRepository);
+        super(fBallDataRepository, fUserInfoDataRepository, fBallValuationDataRepository);
         this.contributorsDataRepository = contributorsDataRepository;
     }
 
     @Override
-    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple) {
+    void setBallLikeData(FBall fBall, FBallLikeReqDto reqDto, FUserInfo fUserInfo) {
 
     }
 
     @Override
-    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple,
+    FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo fUserInfoSimple,
                                      Optional<FBallValuation> fBallValuationOptional) {
         return fBallValuationOptional.get();
     }
 
     @Override
-    void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation) {
+    void setContributors(FBall fBall, FUserInfo fUserInfo, FBallValuation fBallValuation) {
         if(fBallValuation.getPoint() == 0){
-            contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(fUserInfoSimple,fBall);
+            contributorsDataRepository.deleteContributorsByUidIsAndBallUuidIs(fUserInfo,fBall);
         }
     }
 

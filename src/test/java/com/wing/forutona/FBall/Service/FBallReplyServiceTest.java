@@ -4,32 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
-import com.wing.forutona.FBall.Service.FBallReply.FBallReplyInsertService;
 import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
-import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -52,12 +40,10 @@ class FBallReplyServiceTest extends BaseTest {
     @MockBean
     FBallReplyQueryRepository fBallReplyQueryRepository;
 
-    @Autowired
-    FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
 
-    @MockBean
-    @Qualifier("FBallRootReplyFCMService")
-    FBallReplyFCMService fBallReplyFCMService;
+//    @MockBean
+//    @Qualifier("FBallRootReplyFCMService")
+//    FBallReplyFCMService fBallReplyFCMService;
 
 
     @Autowired

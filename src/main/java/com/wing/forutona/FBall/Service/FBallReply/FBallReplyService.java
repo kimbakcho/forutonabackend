@@ -13,10 +13,8 @@ import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
 import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +34,7 @@ public class FBallReplyService {
 
     final FBallDataRepository fBallDataRepository;
 
-    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
     final FBallReplyListUpFactory fBallReplyListUpFactory;
 
@@ -50,7 +48,7 @@ public class FBallReplyService {
             , FBallReplyInsertReqDto reqDto
     ) throws FirebaseMessagingException, JsonProcessingException {
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-        FUserInfoSimple replyUser = fUserInfoSimpleDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+        FUserInfo replyUser = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
 
         FBallReply saveFBallReplyItem = FBallReply.builder()
                 .replyUuid(reqDto.getReplyUuid())
@@ -63,12 +61,14 @@ public class FBallReplyService {
                 .build();
 
         FBallReply fBallReply = fBallReplyInsertService.insertReply(fireBaseToken, reqDto, saveFBallReplyItem);
-        FBallReply saveReply = fBallReplyDataRepository.saveAndFlush(fBallReply);
+        FBallReply saveReply = fBallReplyDataRepository.save(fBallReply);
         FBallValuation fBallValuation = null;
+
         Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
         if(valuationOptional.isPresent()){
             fBallValuation = valuationOptional.get();
         }
+
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
 
         fBallReplyFCMService.sendFCM(saveReply);
@@ -91,7 +91,7 @@ public class FBallReplyService {
             throw new Throwable("missMatchUid");
         }
         FBall fBall = fBallDataRepository.findById(fBallReply.getBallUuid()).get();
-        FUserInfoSimple replyUser = fUserInfoSimpleDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+        FUserInfo replyUser = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
         FBallValuation fBallValuation = null;
         Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
         if(valuationOptional.isPresent()){
@@ -111,4 +111,8 @@ public class FBallReplyService {
         return new FBallReplyResDto(fBallReply,null);
     }
 
+    public Long getFBallReplyCount(String ballUuid) {
+        FBall fBall = fBallDataRepository.findById(ballUuid).get();
+        return fBallReplyDataRepository.countByReplyBallUuid(fBall);
+    }
 }

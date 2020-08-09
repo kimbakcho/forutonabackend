@@ -32,6 +32,11 @@ public class FBallReplyController {
         return fBallReplyService.getFBallReply(reqDto, pageable);
     }
 
+    @GetMapping(value = "/v1/FBallReply/Count")
+    public Long getFBallReply(String ballUuid) {
+        return fBallReplyService.getFBallReplyCount(ballUuid);
+    }
+
 
     @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBallReply")

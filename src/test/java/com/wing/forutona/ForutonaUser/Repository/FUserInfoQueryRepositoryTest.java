@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Transactional
 class FUserInfoQueryRepositoryTest extends BaseTest {
 
     @Autowired

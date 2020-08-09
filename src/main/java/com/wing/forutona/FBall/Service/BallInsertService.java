@@ -9,20 +9,15 @@ import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
-import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public interface BallInsertService {
     FBallResDto insertBall(FBallInsertReqDto reqDto, String userUid) throws ParseException;
@@ -36,7 +31,7 @@ class BallInsertServiceImpl implements BallInsertService {
 
     final FBallInsertFCMService fBallInsertFCMService;
 
-    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
 
     @Override
@@ -46,7 +41,7 @@ class BallInsertServiceImpl implements BallInsertService {
         Point placePoint = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
         placePoint.setSRID(4326);
 
-        Optional<FUserInfoSimple> userInfoSimple = fUserInfoSimpleDataRepository.findById(userUid);
+        Optional<FUserInfo> userInfo = fUserInfoDataRepository.findById(userUid);
 
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid())
                 .makeTime(LocalDateTime.now())
@@ -59,7 +54,7 @@ class BallInsertServiceImpl implements BallInsertService {
                 .placeAddress(reqDto.getPlaceAddress())
                 .description(reqDto.getDescription())
                 .makeExp(300)
-                .uid(userInfoSimple.get())
+                .uid(userInfo.get())
                 .build();
 
         FBall saveBall = fBallDataRepository.saveAndFlush(fBall);

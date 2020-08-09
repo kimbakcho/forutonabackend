@@ -63,12 +63,9 @@ class FTagControllerTest extends BaseTest {
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/v1/FTag/RankingFromBallInfluencePower")
                 .contentType(MediaType.APPLICATION_JSON).params(params))
-                .andExpect(request().asyncStarted())
+                .andExpect(status().isOk())
                 .andReturn();
 
-        mockMvc.perform(asyncDispatch(mvcResult))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk()).andReturn();
         //then
         then(fTagService).should().getFTagRankingFromBallInfluencePower(any());
     }

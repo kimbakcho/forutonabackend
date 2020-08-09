@@ -31,8 +31,7 @@ class FBallInsertFCMServiceImplTest extends BaseTest {
         //given
         List<FBall> content = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         FBall fBall = content.get(0);
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(testFireBaseUser).get();
-        fUserInfo.updatePlacePoint(fBall.getLatitude(),fBall.getLongitude());
+        testUser.updatePlacePoint(fBall.getLatitude(),fBall.getLongitude());
         //when
         issueFBallInsertFCMService.sendInsertFCMMessage(fBall);
         //then

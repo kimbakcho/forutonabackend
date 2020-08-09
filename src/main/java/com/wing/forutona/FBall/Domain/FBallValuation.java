@@ -1,7 +1,6 @@
 package com.wing.forutona.FBall.Domain;
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,14 +18,14 @@ public class FBallValuation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    FUserInfoSimple uid;
+    FUserInfo uid;
 
     Long ballLike = 0L;
     Long ballDislike = 0L;
     Long point = 0L;
 
     @Builder
-    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfoSimple uid,Long ballLike,Long ballDislike,Long point){
+    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid,Long ballLike,Long ballDislike,Long point){
         this.valueUuid = valueUuid;
         this.ballUuid = ballUuid;
         this.uid =uid;

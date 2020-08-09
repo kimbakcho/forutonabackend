@@ -6,6 +6,5 @@ import lombok.Data;
 public class FBallReplyInsertReqDto {
     String replyUuid;
     String ballUuid;
-    Long replyNumber;
     String replyText;
 }

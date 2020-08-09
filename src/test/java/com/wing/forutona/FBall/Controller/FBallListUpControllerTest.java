@@ -60,13 +60,11 @@ class FBallListUpControllerTest extends BaseTest {
         ReqDto.put("offset","0");
         params.setAll(ReqDto);
 
-        //when
+        //when then
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/v1/FBall/ListUpFromBallInfluencePower")
                 .contentType(MediaType.APPLICATION_JSON).params(params))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        //then
-//        then(fBallListUpService).should().ListUpBallInfluencePower(any(),any());
     }
 }

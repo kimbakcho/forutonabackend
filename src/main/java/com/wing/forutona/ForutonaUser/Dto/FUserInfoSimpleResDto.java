@@ -1,6 +1,6 @@
 package com.wing.forutona.ForutonaUser.Dto;
 
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.Data;
 
 @Data
@@ -14,14 +14,14 @@ public class FUserInfoSimpleResDto {
     Double cumulativeInfluence;
     Long followCount;
 
-    public FUserInfoSimpleResDto(FUserInfoSimple fUserInfoSimple){
-        this.uid = fUserInfoSimple.getUid();
-        this.nickName = fUserInfoSimple.getNickName();
-        this.profilePictureUrl = fUserInfoSimple.getProfilePictureUrl();
-        this.isoCode = fUserInfoSimple.getIsoCode();
-        this.userLevel = fUserInfoSimple.getUserLevel();
-        this.selfIntroduction = fUserInfoSimple.getSelfIntroduction();
-        this.cumulativeInfluence = fUserInfoSimple.getCumulativeInfluence();
-        this.followCount = fUserInfoSimple.getFollowCount();
+    public FUserInfoSimpleResDto(FUserInfo fUserInfo){
+        this.uid = fUserInfo.getUid();
+        this.nickName = fUserInfo.getNickName();
+        this.profilePictureUrl = fUserInfo.getProfilePictureUrl();
+        this.isoCode = fUserInfo.getIsoCode();
+        this.userLevel = fUserInfo.getUserLevel();
+        this.selfIntroduction = fUserInfo.getSelfIntroduction();
+        this.cumulativeInfluence = fUserInfo.getCumulativeInfluence();
+        this.followCount = fUserInfo.getFollowCount();
     }
 }

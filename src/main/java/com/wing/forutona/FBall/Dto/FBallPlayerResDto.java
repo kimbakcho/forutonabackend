@@ -1,12 +1,9 @@
 package com.wing.forutona.FBall.Dto;
 
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallPlayer;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data

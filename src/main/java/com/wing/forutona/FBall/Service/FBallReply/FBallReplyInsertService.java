@@ -6,6 +6,7 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
 import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
+import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
 import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyQueryRepository;
 import com.wing.forutona.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -22,8 +24,9 @@ public interface FBallReplyInsertService {
 }
 
 
-@Service()
+@Service
 @RequiredArgsConstructor
+@Transactional
 class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
 
     final FBallReplyQueryRepository fBallReplyQueryRepository;
@@ -39,14 +42,17 @@ class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
     }
 }
 
-@Service()
+@Service
 @RequiredArgsConstructor
+@Transactional
 class FBallReplySubInsertServiceImpl implements FBallReplyInsertService{
     final FBallReplyQueryRepository fBallReplyQueryRepository;
+    final FBallReplyDataRepository fBallReplyDataRepository;
     @Override
     public FBallReply insertReply(FFireBaseToken fireBaseToken, FBallReplyInsertReqDto reqDto, FBallReply saveFBallReplyItem) {
-        Long maxSortNumber = fBallReplyQueryRepository.getMaxSortNumber(reqDto.getReplyNumber(), reqDto.getBallUuid());
-        saveFBallReplyItem.setReplyNumber(reqDto.getReplyNumber());
+        Long maxSortNumber = fBallReplyQueryRepository.getMaxSortNumber(reqDto.getReplyUuid());
+        FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
+        saveFBallReplyItem.setReplyNumber(fBallReply.getReplyNumber());
         long nextSortNumber = maxSortNumber + 1;
         saveFBallReplyItem.setReplySort(nextSortNumber);
         return saveFBallReplyItem;

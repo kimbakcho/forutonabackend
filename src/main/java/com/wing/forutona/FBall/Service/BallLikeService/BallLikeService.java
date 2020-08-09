@@ -7,8 +7,8 @@ import com.wing.forutona.FBall.Dto.FBallLikeResDto;
 import com.wing.forutona.FBall.Dto.FBallValuationResDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallValuation.FBallValuationDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +23,16 @@ public abstract class BallLikeService {
 
     final FBallDataRepository fBallDataRepository;
 
-    final FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
     final FBallValuationDataRepository fBallValuationDataRepository;
 
 
-    abstract void setBallLikeData(FBall fBall, FBallLikeReqDto point, FUserInfoSimple fUserInfoSimple);
+    abstract void setBallLikeData(FBall fBall, FBallLikeReqDto point, FUserInfo fUserInfo);
 
-    abstract FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfoSimple fUserInfoSimple, Optional<FBallValuation> fBallValuationOptional);
+    abstract FBallValuation setFBallValuation(FBall fBall, FBallLikeReqDto reqDto, FUserInfo fUserInfo, Optional<FBallValuation> fBallValuationOptional);
 
-    abstract void setContributors(FBall fBall, FUserInfoSimple fUserInfoSimple, FBallValuation fBallValuation);
+    abstract void setContributors(FBall fBall, FUserInfo fUserInfoSimple, FBallValuation fBallValuation);
 
     void setBallPower(FBall fBall) {
         fBall.setBallPower(fBall.getBallLikes() - fBall.getBallDisLikes());
@@ -43,19 +43,19 @@ public abstract class BallLikeService {
         if (LocalDateTime.now().isAfter(fBall.getActivationTime())) {
             throw new Exception("over Active Time can't not likeExecute");
         }
-        FUserInfoSimple fUserInfoSimple = fUserInfoSimpleDataRepository.findById(userUid).get();
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(userUid).get();
 
-        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfoSimple);
+        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, fUserInfo);
 
         beforeValuationCancel(fBall,fBallValuationOptional);
 
-        FBallValuation saveFBallValuation = setFBallValuation(fBall, reqDto, fUserInfoSimple, fBallValuationOptional);
+        FBallValuation saveFBallValuation = setFBallValuation(fBall, reqDto, fUserInfo, fBallValuationOptional);
 
-        setBallLikeData(fBall, reqDto, fUserInfoSimple);
+        setBallLikeData(fBall, reqDto, fUserInfo);
 
         setBallPower(fBall);
 
-        setContributors(fBall, fUserInfoSimple, saveFBallValuation);
+        setContributors(fBall, fUserInfo, saveFBallValuation);
 
         Long likeServiceUseUserCount = fBallValuationDataRepository.countByBallUuidAndBallLikeNotOrBallDislikeNot(fBall, 0L, 0L);
 

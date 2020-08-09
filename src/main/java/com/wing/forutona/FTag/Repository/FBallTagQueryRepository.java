@@ -8,7 +8,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
-import com.wing.forutona.FTag.Dto.QTagRankingDto;
+import com.wing.forutona.FTag.Dto.QTagRankingResDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +36,7 @@ public class FBallTagQueryRepository {
         NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
 
         List<TagRankingResDto> tagRankingResDtos = queryFactory.select(
-                new QTagRankingDto(fBalltag.tagItem, influence))
+                new QTagRankingResDto(fBalltag.tagItem, influence))
                 .from(fBalltag)
                 .join(fBall).on(fBalltag.ballUuid.eq(fBall))
                 .where(stWithin.eq(1).and(fBall.activationTime.after(LocalDateTime.now())))

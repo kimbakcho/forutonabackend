@@ -3,7 +3,7 @@ package com.wing.forutona.FBall.Domain;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class FBall {
     private String ballUuid;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
-    private FUserInfoSimple uid;
+    private FUserInfo uid;
     private Double longitude;
     private Double latitude;
     @Column(columnDefinition = "geometry(Point,4326)")
@@ -76,7 +76,7 @@ public class FBall {
     private Boolean ballDeleteFlag = false;
 
     @Builder
-    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfoSimple uid,
+    public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
                  Double longitude,Double latitude,String ballName,FBallType ballType,
                  String placeAddress,String description,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
@@ -86,7 +86,7 @@ public class FBall {
         this.ballState = ballState;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.setPlacePoint(this.longitude,longitude);
+        this.setPlacePoint(this.longitude,this.latitude);
         this.ballName = ballName;
         this.ballType = ballType;
         this.placeAddress = placeAddress;
@@ -99,7 +99,7 @@ public class FBall {
         this.makeExp = makeExp;
     }
 
-    public void setUid(FUserInfoSimple fBallUid) {
+    public void setUid(FUserInfo fBallUid) {
         this.uid = fBallUid;
     }
 

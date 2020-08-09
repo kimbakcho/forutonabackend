@@ -7,19 +7,23 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 @Transactional
-class FBallTagQueryRepositoryTest extends BaseTest {
+class FBallTagQueryRepositoryTest extends BaseTest{
+
 
     @Autowired
     FBallTagDataRepository fBallTagDataRepository;
@@ -30,6 +34,10 @@ class FBallTagQueryRepositoryTest extends BaseTest {
     @Autowired
     FBallTagQueryRepository fBallTagQueryRepository;
 
+    @BeforeEach
+    void BeforeEach(){
+
+    }
 
     @Test
     @DisplayName("태그에 관련된 볼에 강한 영향력을 주입 후 해당 태그로 결과 받기")
@@ -47,6 +55,7 @@ class FBallTagQueryRepositoryTest extends BaseTest {
         //then
         System.out.println(fBalltag.getTagItem());
         System.out.println(influencePowerRankingDto.get(0).getTagName());
+
         assertEquals(influencePowerRankingDto.get(0).getTagName(),fBalltag.getTagItem());
 
     }

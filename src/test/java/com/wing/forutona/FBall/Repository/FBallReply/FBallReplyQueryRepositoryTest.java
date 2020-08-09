@@ -3,14 +3,13 @@ package com.wing.forutona.FBall.Repository.FBallReply;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallReply;
+import com.wing.forutona.FBall.Domain.FBallState;
+import com.wing.forutona.FBall.Domain.FBallType;
 import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
 import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResWrapDto;
 import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoSimpleDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,16 +30,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class FBallReplyQueryRepositoryTest extends BaseTest {
 
     @Autowired
-    EntityManager em;
-
-    @Autowired
     FBallDataRepository fBallDataRepository;
 
     @Autowired
     FUserInfoDataRepository fUserInfoDataRepository;
-
-    @Autowired
-    FUserInfoSimpleDataRepository fUserInfoSimpleDataRepository;
 
     @Autowired
     FBallReplyQueryRepository fBallReplyQueryRepository;
@@ -48,41 +41,53 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     @Autowired
     FBallReplyDataRepository fBallReplyDataRepository;
 
+
+    FBall testBall;
+
     @BeforeEach
     void BeforeEach(){
-        em.clear();
+        testBall = FBall.builder()
+                .ballUuid("TESTBBallUuid")
+                .ballName("TESTBall")
+                .ballState(FBallState.Play)
+                .ballType(FBallType.IssueBall)
+                .activationTime(LocalDateTime.now().plusDays(7))
+                .description("{}")
+                .latitude(37.4402052)
+                .longitude(126.79369789999998)
+                .uid(testUser)
+                .makeTime(LocalDateTime.now())
+                .build();
+        fBallDataRepository.save(testBall);
     }
 
     @Test
     @DisplayName("메인 댓글만 가져오기 테스트")
     void getFBallReplyReqOnlyMain() {
         //given
-        List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
-        List<FUserInfoSimple> users = fUserInfoSimpleDataRepository.findAll(PageRequest.of(0, 1)).getContent();
-        fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<10;j++){
             for(int i=0;i<2;i++){
                 FBallReply fBallReply = FBallReply.builder()
                         .replyUuid(UUID.randomUUID().toString())
-                        .replyBallUuid(fBalls.get(0))
+                        .replyBallUuid(testBall)
                         .replyNumber(replyNumber+j)
                         .replySort((long)i)
                         .replyDepth(0L)
                         .replyText("test")
-                        .replyUid(users.get(0))
+                        .replyUid(testUser)
                         .replyUpdateDateTime(LocalDateTime.now().minusHours(1))
                         .build();
-                em.persist(fBallReply);
+                fBallReplyDataRepository.save(fBallReply);
             }
         }
         FBallReplyReqDto reqDto = new FBallReplyReqDto();
-        reqDto.setBallUuid(fBalls.get(0).getBallUuid());
+        reqDto.setBallUuid(testBall.getBallUuid());
         reqDto.setReqOnlySubReply(false);
         //when
-        Page<FBallReplyResDto> pageItem = fBallReplyQueryRepository.getFBallRootNodeReply(reqDto, PageRequest.of(0, 20));
+        Page<FBallReplyResDto> pageItem = fBallReplyQueryRepository.getFBallRootNodeReply(testBall, PageRequest.of(0, 20));
         //then
-        assertEquals(10,pageItem.getSize());
+        assertEquals(10,pageItem.getContent().size());
     }
 
     @Test
@@ -90,7 +95,6 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
     void getFBallReplyReqOnlySubReply() {
         //given
         List<FBall> fBalls = fBallDataRepository.findAll(PageRequest.of(0, 1)).getContent();
-        List<FUserInfoSimple> users = fUserInfoSimpleDataRepository.findAll(PageRequest.of(0, 1)).getContent();
         fBallReplyDataRepository.deleteByReplyBallUuid(fBalls.get(0));
         Long replyNumber = 999990L;
         for(int j=0;j<2;j++){
@@ -102,10 +106,10 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
                         .replySort((long)i)
                         .replyDepth(0L)
                         .replyText("test")
-                        .replyUid(users.get(0))
+                        .replyUid(testUser)
                         .replyUpdateDateTime(LocalDateTime.now().minusHours(1))
                         .build();
-                em.persist(fBallReply);
+                fBallReplyDataRepository.save(fBallReply);
             }
         }
         FBallReplyReqDto reqDto = new FBallReplyReqDto();
@@ -113,10 +117,75 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         reqDto.setReplyNumber(replyNumber);
         reqDto.setReqOnlySubReply(true);
         //when
-        Page<FBallReplyResDto> fBallReply = fBallReplyQueryRepository.getFBallSubNodeReply(reqDto, PageRequest.of(0, 20));
+        Page<FBallReplyResDto> fBallReply = fBallReplyQueryRepository.getFBallSubNodeReply(fBalls.get(0),reqDto.getReplyNumber(), PageRequest.of(0, 20));
         //then
-        assertEquals(9,fBallReply.getSize());
+        assertEquals(9,fBallReply.getContent().size());
     }
 
 
+    @Test
+    void getMaxReplyNumber() {
+
+        Long maxReplyNumber = fBallReplyQueryRepository.getMaxReplyNumber(testBall.getBallUuid());
+
+        assertEquals(-1,maxReplyNumber);
+
+        FBallReply testReply = FBallReply.builder()
+                .replyUid(testUser)
+                .replyUploadDateTime(LocalDateTime.now())
+                .replySort(0L)
+                .replyText("TEST")
+                .replyNumber(0L)
+                .replyUpdateDateTime(LocalDateTime.now())
+                .replyUuid(UUID.randomUUID().toString())
+                .replyDepth(0L)
+                .replyBallUuid(testBall)
+                .build();
+
+        fBallReplyDataRepository.save(testReply);
+
+        Long maxReplyNumber1 = fBallReplyQueryRepository.getMaxReplyNumber(testBall.getBallUuid());
+
+        assertEquals(0,maxReplyNumber1);
+
+    }
+
+    @Test
+    void getMaxSortNumber() {
+        String replyUuid = UUID.randomUUID().toString();
+        FBallReply testReply = FBallReply.builder()
+                .replyUid(testUser)
+                .replyUploadDateTime(LocalDateTime.now())
+                .replySort(0L)
+                .replyText("TEST")
+                .replyNumber(0L)
+                .replyUpdateDateTime(LocalDateTime.now())
+                .replyUuid(replyUuid)
+                .replyDepth(0L)
+                .replyBallUuid(testBall)
+                .build();
+
+        fBallReplyDataRepository.save(testReply);
+
+        Long maxSortNumber = fBallReplyQueryRepository.getMaxSortNumber(replyUuid);
+        assertEquals(0,maxSortNumber);
+
+
+        FBallReply testSubReply = FBallReply.builder()
+                .replyUid(testUser)
+                .replyUploadDateTime(LocalDateTime.now())
+                .replySort(1L)
+                .replyText("TEST")
+                .replyNumber(0L)
+                .replyUpdateDateTime(LocalDateTime.now())
+                .replyUuid(replyUuid)
+                .replyDepth(0L)
+                .replyBallUuid(testBall)
+                .build();
+
+        fBallReplyDataRepository.save(testSubReply);
+
+        Long maxSortNumber1 = fBallReplyQueryRepository.getMaxSortNumber(replyUuid);
+        assertEquals(1,maxSortNumber1);
+    }
 }

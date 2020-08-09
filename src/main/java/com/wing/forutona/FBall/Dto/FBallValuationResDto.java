@@ -1,15 +1,8 @@
 package com.wing.forutona.FBall.Dto;
 
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallValuation;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfoSimple;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import lombok.Data;
-
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Data
 public class FBallValuationResDto {
@@ -20,6 +13,10 @@ public class FBallValuationResDto {
     Long ballLike = 0L;
     Long ballDislike = 0L;
     Long point = 0L;
+
+    public FBallValuationResDto(){
+
+    }
 
     public FBallValuationResDto (FBallValuation fBallValuation){
         this.valueUuid = fBallValuation.getValueUuid();

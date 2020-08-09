@@ -23,7 +23,7 @@ public class FBallReplyInsertServiceFactory {
     }
 
     public boolean isRootReply(FBallReplyInsertReqDto reqDto) {
-        return reqDto.getReplyNumber() == -1;
+        return reqDto.getReplyUuid() == null;
     }
 
 }
