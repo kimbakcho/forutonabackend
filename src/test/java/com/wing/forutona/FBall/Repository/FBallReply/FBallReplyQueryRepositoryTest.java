@@ -88,6 +88,7 @@ class FBallReplyQueryRepositoryTest extends BaseTest {
         Page<FBallReplyResDto> pageItem = fBallReplyQueryRepository.getFBallRootNodeReply(testBall, PageRequest.of(0, 20));
         //then
         assertEquals(10,pageItem.getContent().size());
+        assertEquals(1,pageItem.getContent().get(0).getChildCount());
     }
 
     @Test

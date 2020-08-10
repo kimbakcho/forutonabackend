@@ -104,6 +104,17 @@ public class FBallReplyQueryRepository {
         Page<FBallReplyResDto> pageWrap = new PageImpl<FBallReplyResDto>(fBallReplyResDtoQueryResults.getResults(),
                 pageable, fBallReplyResDtoQueryResults.getTotal());
 
+        pageWrap.map(x->{
+            Long childReplyCount = queryFactory
+                    .select(fBallReply.count())
+                    .from(fBallReply)
+                    .where(fBallReply.replyBallUuid.eq(fBall),
+                            fBallReply.replyNumber.eq(x.getReplyNumber()),
+                            fBallReply.replySort.ne(0L)).fetchCount();
+            x.setChildCount(childReplyCount);
+            return x;
+        });
+
         return pageWrap;
     }
 

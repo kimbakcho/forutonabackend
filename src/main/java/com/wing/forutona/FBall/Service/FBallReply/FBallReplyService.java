@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class FBallReplyService {
         FUserInfo replyUser = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
 
         FBallReply saveFBallReplyItem = FBallReply.builder()
-                .replyUuid(reqDto.getReplyUuid())
+                .replyUuid(UUID.randomUUID().toString())
                 .replyDepth(0L)
                 .replyBallUuid(fBall)
                 .replyUid(replyUser)
@@ -70,6 +71,7 @@ public class FBallReplyService {
         }
 
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
+
 
         fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
