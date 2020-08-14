@@ -71,7 +71,22 @@ public class FBallReplyQueryRepository {
         orderSpecifier = fBallReply.replyNumber.desc();
         booleanBuilder.and(fBallReply.replySort.eq(0L));
 
-        return getFBallReplySearch(pageable, fBall, booleanBuilder, orderSpecifier);
+        Page<FBallReplyResDto> fBallReplySearch = getFBallReplySearch(pageable, fBall, booleanBuilder, orderSpecifier);
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        fBallReplySearch.map(x->{
+            Long childReplyCount = queryFactory
+                    .select(fBallReply.count())
+                    .from(fBallReply)
+                    .where(fBallReply.replyBallUuid.eq(fBall),
+                            fBallReply.replyNumber.eq(x.getReplyNumber()),
+                            fBallReply.replySort.ne(0L)).fetchCount();
+            x.setChildCount(childReplyCount);
+            return x;
+        });
+
+        return fBallReplySearch;
     }
 
 
@@ -103,17 +118,6 @@ public class FBallReplyQueryRepository {
 
         Page<FBallReplyResDto> pageWrap = new PageImpl<FBallReplyResDto>(fBallReplyResDtoQueryResults.getResults(),
                 pageable, fBallReplyResDtoQueryResults.getTotal());
-
-        pageWrap.map(x->{
-            Long childReplyCount = queryFactory
-                    .select(fBallReply.count())
-                    .from(fBallReply)
-                    .where(fBallReply.replyBallUuid.eq(fBall),
-                            fBallReply.replyNumber.eq(x.getReplyNumber()),
-                            fBallReply.replySort.ne(0L)).fetchCount();
-            x.setChildCount(childReplyCount);
-            return x;
-        });
 
         return pageWrap;
     }
