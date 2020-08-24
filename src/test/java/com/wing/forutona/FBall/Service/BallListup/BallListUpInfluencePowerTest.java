@@ -1,9 +1,8 @@
 package com.wing.forutona.FBall.Service.BallListup;
 
-import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.FBall.Dto.FBallListUpFromBallInfluencePowerReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
-import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import com.wing.forutona.FBall.Service.BallListUpService;
 import com.wing.forutona.FBall.Service.DistanceOfBallCountToLimitService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

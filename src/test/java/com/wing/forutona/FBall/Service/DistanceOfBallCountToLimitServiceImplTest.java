@@ -3,7 +3,7 @@ package com.wing.forutona.FBall.Service;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
-import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

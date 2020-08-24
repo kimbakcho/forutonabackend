@@ -3,15 +3,10 @@ package com.wing.forutona.FBall.Service;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Dto.FBallUpdateReqDto;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
-import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public interface BallUpdateService {
     FBallResDto updateBall(FBallUpdateReqDto reqDto,String userUid) throws Exception;

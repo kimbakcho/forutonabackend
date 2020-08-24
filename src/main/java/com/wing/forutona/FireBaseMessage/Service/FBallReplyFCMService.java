@@ -2,8 +2,8 @@ package com.wing.forutona.FireBaseMessage.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.wing.forutona.FBall.Domain.FBallReply;
-import com.wing.forutona.FBall.Repository.FBallReply.FBallReplyDataRepository;
+import com.wing.forutona.FBallReply.Domain.FBallReply;
+import com.wing.forutona.FBallReply.Repositroy.FBallReplyDataRepository;
 import com.wing.forutona.FireBaseMessage.Dto.FireBaseMessageSendDto;
 import com.wing.forutona.FireBaseMessage.PayloadDto.FCMReplyDto;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;

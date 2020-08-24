@@ -1,6 +1,6 @@
 package com.wing.forutona.FireBaseMessage.Service;
 
-import com.wing.forutona.FBall.Dto.FBallReplyInsertReqDto;
+import com.wing.forutona.FBallReply.Dto.FBallReplyInsertReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

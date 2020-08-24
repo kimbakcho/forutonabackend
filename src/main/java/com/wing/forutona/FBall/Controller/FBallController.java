@@ -3,11 +3,9 @@ package com.wing.forutona.FBall.Controller;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
-import com.wing.forutona.CustomUtil.FSorts;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.*;
-import com.wing.forutona.FBall.Service.BallLikeService.BallLIkeServiceFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +35,6 @@ public class FBallController {
     final  BallSelectService ballSelectService;
 
     final  BallDeleteService ballDeleteService;
-
-    final BallLIkeServiceFactory ballLIkeServiceFactory;
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {

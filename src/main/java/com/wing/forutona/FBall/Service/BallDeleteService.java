@@ -5,7 +5,7 @@ import com.google.cloud.storage.BlobId;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallDesImagesDto;
 import com.wing.forutona.FBall.Dto.IssueBallDescriptionDto;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

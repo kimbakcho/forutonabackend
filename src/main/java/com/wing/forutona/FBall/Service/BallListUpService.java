@@ -3,7 +3,7 @@ package com.wing.forutona.FBall.Service;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

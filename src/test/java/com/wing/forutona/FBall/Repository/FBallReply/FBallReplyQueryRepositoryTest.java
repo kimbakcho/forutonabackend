@@ -2,13 +2,14 @@ package com.wing.forutona.FBall.Repository.FBallReply;
 
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Domain.FBallReply;
+import com.wing.forutona.FBallReply.Domain.FBallReply;
 import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Domain.FBallType;
-import com.wing.forutona.FBall.Dto.FBallReplyReqDto;
-import com.wing.forutona.FBall.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.FBallReply.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBallReply.Dto.FBallReplyResDto;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
+import com.wing.forutona.FBallReply.Repositroy.FBallReplyDataRepository;
+import com.wing.forutona.FBallReply.Repositroy.FBallReplyQueryRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

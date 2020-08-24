@@ -1,8 +1,7 @@
 package com.wing.forutona.FBall.Service;
 
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Dto.FBallResDto;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

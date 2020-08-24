@@ -6,11 +6,13 @@ import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Domain.FBallType;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-public class FBallResDto {
+@NoArgsConstructor
+public class FBallResDto implements Cloneable {
     private double latitude;
     private double longitude;
     private String ballUuid;
@@ -78,6 +80,11 @@ public class FBallResDto {
         this.userLevel = fball.getUid().getUserLevel();
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.getBallDeleteFlag();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

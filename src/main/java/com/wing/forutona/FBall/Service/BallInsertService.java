@@ -8,7 +8,7 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.FBallInsertReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Domain.FBallState;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.FireBaseMessage.Service.FBallInsertFCMService;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;

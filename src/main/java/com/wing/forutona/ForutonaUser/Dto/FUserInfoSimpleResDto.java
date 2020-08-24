@@ -2,8 +2,10 @@ package com.wing.forutona.ForutonaUser.Dto;
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class FUserInfoSimpleResDto {
     String uid;
     String nickName;

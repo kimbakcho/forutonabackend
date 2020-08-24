@@ -3,12 +3,10 @@ package com.wing.forutona.FireBaseMessage.Service;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Repository.FBall.FBallDataRepository;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 

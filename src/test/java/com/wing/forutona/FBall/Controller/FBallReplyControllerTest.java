@@ -3,14 +3,12 @@ package com.wing.forutona.FBall.Controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wing.forutona.BaseTest;
-import com.wing.forutona.FBall.Dto.*;
-import com.wing.forutona.FBall.Service.FBallReply.FBallReplyService;
+import com.wing.forutona.FBallReply.Dto.FBallReplyReqDto;
+import com.wing.forutona.FBallReply.Dto.FBallReplyResDto;
+import com.wing.forutona.FBallReply.Dto.FBallReplyResWrapDto;
+import com.wing.forutona.FBallReply.Service.FBallReplyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -19,10 +17,6 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class FBallReplyControllerTest extends BaseTest {
 

@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FMapFindScopeStep;
-import com.wing.forutona.FBall.Repository.FBall.FBallQueryRepository;
+import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import com.wing.forutona.FBall.Repository.MapFindScopeStepRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

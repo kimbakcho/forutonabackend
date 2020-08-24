@@ -1,22 +1,18 @@
 package com.wing.forutona.FBall.Repository.FBall;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Dto.FBallListUpWrapDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
-import org.junit.jupiter.api.Disabled;
+import com.wing.forutona.FBall.Repository.FBallDataRepository;
+import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -41,7 +37,7 @@ class FBallQueryRepositoryTest extends BaseTest {
         FBall choiceFBall = randomChoiceStringInfluencePowerBall(fBalls);
         makeStrongInfluencePowerBall(choiceFBall);
 
-        Pageable pageable = PageRequest.of(0, 9999999);
+        Pageable pageable = PageRequest.of(0, 999);
         //when
         Page<FBallResDto> ballListUpFromBallInfluencePower = fBallQueryRepository.getBallListUpFromBallInfluencePower(
                 GisGeometryUtil.createCenterPoint(37.50198846403655, 126.89106021076441),
