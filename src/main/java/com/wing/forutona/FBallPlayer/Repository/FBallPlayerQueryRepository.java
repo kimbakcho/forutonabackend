@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.wing.forutona.FBall.Domain.QFBallPlayer.*;
+import static com.wing.forutona.FBallPlayer.Domain.QFBallPlayer.fBallPlayer;
 
 
 @Repository

@@ -48,20 +48,9 @@ public class BaseTest {
     @BeforeEach
     public void BaseSetUp() throws Exception {
 
-//        testUser = FUserInfo.builder()
-//                .uid("TEST")
-//                .longitude(126.9174572)
-//                .latitude(37.550045)
-//                .fCMtoken("e9wJLk54v4Y:APA91bHcDrgwhsMOwUSL2DoJj-n57riAMfcCN2wHBzlniGITomzpkuLHvrSA_ggezMGlYv0AVyk4s2Z4EqFIjsadHlGsIu4eq7FUj6SFTsW06YI7HTdO-kqFsOMFYBv2PLM2QBE1lUAQ")
-//                .nickName("TESTNickName")
-//                .build();
-
         testUser = fUserInfoDataRepository.findById("7PfdwpJQqOgINy8XBWQbkqWBlqr1").get();
 
         customToken = FirebaseAuth.getInstance().createCustomToken(testUser.getUid());
-
-//        given(fAuthHttpInterceptor.preHandle(any(),any(),any())).willReturn(true);
-//        given(fireBaseHandlerMethodArgumentResolver.supportsParameter(any())).willReturn(false);
 
     }
 

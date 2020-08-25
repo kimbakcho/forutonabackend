@@ -7,9 +7,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBallReply.Domain.FBallReply;
 import com.wing.forutona.FBall.Domain.QFBall;
-import com.wing.forutona.FBall.Domain.QFBallReply;
+
+import com.wing.forutona.FBallReply.Domain.QFBallReply;
 import com.wing.forutona.FBallReply.Dto.FBallReplyResDto;
-import com.wing.forutona.FBall.Dto.QFBallReplyResDto;
+
+import com.wing.forutona.FBallReply.Dto.QFBallReplyResDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +20,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import static com.wing.forutona.FBall.Domain.QFBallReply.fBallReply;
-import static com.wing.forutona.FBall.Domain.QFBallValuation.fBallValuation;
+import static com.wing.forutona.FBallReply.Domain.QFBallReply.fBallReply;
+import static com.wing.forutona.FBallValuation.Domain.QFBallValuation.fBallValuation;
+
 
 @Repository
 public class FBallReplyQueryRepository {
@@ -31,13 +34,13 @@ public class FBallReplyQueryRepository {
     public Long getMaxSortNumber(String rootReplyUuid) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
-        FBallReply rootFBallReply = queryFactory.select(QFBallReply.fBallReply)
-                .from(QFBallReply.fBallReply)
-                .where(QFBallReply.fBallReply.replyUuid.eq(rootReplyUuid))
+        FBallReply rootFBallReply = queryFactory.select(fBallReply)
+                .from(fBallReply)
+                .where(fBallReply.replyUuid.eq(rootReplyUuid))
                 .fetchOne();
 
-        return queryFactory.select(QFBallReply.fBallReply.replySort.max())
-                .from(QFBallReply.fBallReply)
+        return queryFactory.select(fBallReply.replySort.max())
+                .from(fBallReply)
                 .where(fBallReply.replyBallUuid.eq(rootFBallReply.getReplyBallUuid()),
                         fBallReply.replyNumber.eq(rootFBallReply.getReplyNumber()))
                 .fetchOne();

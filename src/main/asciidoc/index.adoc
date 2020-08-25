@@ -61,9 +61,30 @@
 
 
 
-[[resources-index-access]]
-=== 볼 조회 조회
+[[볼 조회]]
 
-`GET` 요청을 사용하여 FBall 을 조회 할수 있다.
+|===
+| FBallState 값 | Description
+
+| Wait
+| 대기
+
+| Play
+| 진행
+
+| Finish
+| 종료
+|===
+
+=== 볼 조회
+
+`GET` 요청을 사용하여 BallUuid 로 Ball 을 조회 할수 있다.
+
+operation::FBallSelect[snippets='response-fields,response-body,request-parameters,http-request']
+
+=== 볼 영향력순 으로 조회
+
+`GET` 요청을 사용하여 영향력 순으로 FBall 을 조회 할수 있다.
 
 operation::FBallListUp[snippets='response-fields,response-body,request-parameters,http-request']
+

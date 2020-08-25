@@ -29,7 +29,6 @@ public class FBallResDto implements Cloneable {
     private LocalDateTime makeTime;
     private String description;
     private FUserInfoSimpleResDto uid;
-    private Double userLevel;
     //해당 부분 BallPower/지도 중심과의 거리로 계산
     private double influencePower;
     private long contributor;
@@ -53,7 +52,6 @@ public class FBallResDto implements Cloneable {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.uid = new FUserInfoSimpleResDto(fball.getUid());
-        this.userLevel = fball.getUid().getUserLevel();
         this.influencePower = influencePower;
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.getBallDeleteFlag();
@@ -77,7 +75,6 @@ public class FBallResDto implements Cloneable {
         this.makeTime = fball.getMakeTime();
         this.description = fball.getDescription();
         this.uid = new FUserInfoSimpleResDto(fball.getUid());
-        this.userLevel = fball.getUid().getUserLevel();
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.getBallDeleteFlag();
     }
