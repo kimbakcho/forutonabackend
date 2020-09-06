@@ -14,12 +14,17 @@ public class ResponseAddJsonHeaderInterceptor implements HandlerInterceptor {
         if(handler == null){
             return true;
         }
-        HandlerMethod method = (HandlerMethod) handler;
-        if(method.getMethodAnnotation(ResponseAddJsonHeader.class) != null){
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("application/json");
+        if(handler instanceof HandlerMethod ){
+            HandlerMethod method = (HandlerMethod) handler;
+            if(method.getMethodAnnotation(ResponseAddJsonHeader.class) != null){
+                response.setCharacterEncoding("utf-8");
+                response.setContentType("application/json");
+                return true;
+            }
+            return true;
+        } else {
             return true;
         }
-        return true;
+
     }
 }

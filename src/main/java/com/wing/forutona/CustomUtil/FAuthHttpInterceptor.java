@@ -23,14 +23,17 @@ public class FAuthHttpInterceptor implements HandlerInterceptor {
         if (handler == null) {
             return true;
         }
-        HandlerMethod method = (HandlerMethod) handler;
-        if (method.getMethodAnnotation(AuthFireBaseJwtCheck.class) != null) {
-
-            return authFireBaseJwtCheckAnno(request, method);
-
-        } else {
+        if(handler instanceof HandlerMethod ){
+            HandlerMethod method = (HandlerMethod) handler;
+            if (method.getMethodAnnotation(AuthFireBaseJwtCheck.class) != null) {
+                return authFireBaseJwtCheckAnno(request, method);
+            } else {
+                return true;
+            }
+        }else {
             return true;
         }
+
     }
 
 
