@@ -35,7 +35,7 @@ class BallCustomOrderDistance implements BallCustomOrderPathService {
         if (sort.getProperty().equals(orderKey)) {
             NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                     "function('st_distance_sphere',{0},{1})", fBall.placePoint,
-                    GisGeometryUtil.createCenterPoint(position.getLatitude(), position.getLongitude()));
+                    GisGeometryUtil.createPoint(position.getLatitude(), position.getLongitude()));
             orderSpecifiers.add(st_distance_sphere.desc());
         }
         return orderSpecifiers;

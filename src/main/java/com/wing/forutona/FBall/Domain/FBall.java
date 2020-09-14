@@ -78,7 +78,7 @@ public class FBall {
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
                  Double longitude,Double latitude,String ballName,FBallType ballType,
-                 String placeAddress,String description,
+                 String placeAddress,String description, Long ballPower,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
                  long ballHits, double makeExp) {
         this.ballUuid = ballUuid;
@@ -97,6 +97,7 @@ public class FBall {
         this.activationTime = activationTime;
         this.ballHits = ballHits;
         this.makeExp = makeExp;
+        this.ballPower = ballPower;
     }
 
     public void setUid(FUserInfo fBallUid) {

@@ -41,7 +41,7 @@ class BallListUpInfluencePowerTest {
     @DisplayName("Ball ListUp 범위 산정 후 영향력 ListUP Repository 호출")
     void search() throws Exception {
         //given
-        given(distanceOfBallCountToLimitService.distanceOfBallCountToLimit(anyDouble(),anyDouble(),anyInt())).willReturn(300);
+        given(distanceOfBallCountToLimitService.distanceOfBallCountToLimit(any())).willReturn(300);
         given(fBallQueryRepository.getBallListUpFromBallInfluencePower(any(),any(),any())).willReturn(new PageImpl<FBallResDto>(new ArrayList<>()));
         FBallListUpFromBallInfluencePowerReqDto reqDto = new FBallListUpFromBallInfluencePowerReqDto();
         reqDto.setBallLimit(1000);
@@ -52,7 +52,7 @@ class BallListUpInfluencePowerTest {
         ballListUpInfluencePower.searchBallListUpInfluencePower(reqDto,pageable);
         //then
         InOrder inOrder = inOrder(distanceOfBallCountToLimitService, fBallQueryRepository);
-        then(distanceOfBallCountToLimitService).should(inOrder).distanceOfBallCountToLimit(anyDouble(),anyDouble(),anyInt());
+        then(distanceOfBallCountToLimitService).should(inOrder).distanceOfBallCountToLimit(any());
         then(fBallQueryRepository).should(inOrder).getBallListUpFromBallInfluencePower(any(),any(),any());
     }
 

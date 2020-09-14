@@ -1,5 +1,6 @@
 package com.wing.forutona.FBall.Service;
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Dto.*;
@@ -49,15 +50,13 @@ class BallListUpServiceImpl implements BallListUpService {
     @Override
     public Page<FBallResDto> searchBallListUpInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
         FBallListUpFromBallInfluencePowerReqDto acceptReqDto = (FBallListUpFromBallInfluencePowerReqDto) reqDto;
-
         int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(
-                acceptReqDto.getLatitude(),
-                acceptReqDto.getLongitude(),
-                acceptReqDto.getBallLimit());
+                LatLng.newBuilder().setLatitude(reqDto.getLatitude()).setLongitude(reqDto.getLongitude()).build());
 
         return fBallQueryRepository.getBallListUpFromBallInfluencePower(
-                GisGeometryUtil.createCenterPoint(acceptReqDto.getLatitude(), acceptReqDto.getLongitude())
-                , GisGeometryUtil.createRect(acceptReqDto.getLatitude(), acceptReqDto.getLongitude(), findDistanceRangeLimit)
+                GisGeometryUtil.createPoint(acceptReqDto.getLatitude(), acceptReqDto.getLongitude())
+                , GisGeometryUtil.createSquareFromCenterPosition(
+                        LatLng.newBuilder().setLatitude(acceptReqDto.getLatitude()).setLongitude(acceptReqDto.getLongitude()).build(), findDistanceRangeLimit)
                 , pageable);
     }
 

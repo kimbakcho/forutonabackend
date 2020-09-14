@@ -1,5 +1,6 @@
 package com.wing.forutona;
 
+import com.google.type.LatLng;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -83,4 +84,5 @@ public abstract class Querydsl4RepositorySupport {
         JPAQuery countResult = countQuery.apply(getQueryFactory());
         return PageableExecutionUtils.getPage(content, pageable, countResult::fetchCount);
     }
+
 }

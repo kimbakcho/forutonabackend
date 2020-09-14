@@ -1,5 +1,6 @@
 package com.wing.forutona.FTag.Service;
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
@@ -45,16 +46,20 @@ class FTagServiceImpl implements FTagService {
             throws ParseException {
 
         int searchDistance = distanceOfBallCountToLimitService
-                .distanceOfBallCountToLimit(tagRankingFromBallInfluencePowerReqDto.getLatitude()
-                        , tagRankingFromBallInfluencePowerReqDto.getLongitude()
-                        , tagRankingFromBallInfluencePowerReqDto.getLimit());
+                .distanceOfBallCountToLimit(
+                        LatLng.newBuilder().setLongitude(tagRankingFromBallInfluencePowerReqDto.getLongitude())
+                                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getLatitude()).build());
 
         Geometry rect = GisGeometryUtil
-                .createRect(tagRankingFromBallInfluencePowerReqDto.getLatitude()
-                        , tagRankingFromBallInfluencePowerReqDto.getLongitude(), searchDistance);
+                .createSquareFromCenterPosition(
+                        LatLng.newBuilder()
+                                .setLongitude(tagRankingFromBallInfluencePowerReqDto.getLongitude())
+                                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getLatitude())
+                                .build()
+                        , searchDistance);
 
         Geometry centerPoint = GisGeometryUtil
-                .createCenterPoint(tagRankingFromBallInfluencePowerReqDto.getLatitude()
+                .createPoint(tagRankingFromBallInfluencePowerReqDto.getLatitude()
                         , tagRankingFromBallInfluencePowerReqDto.getLongitude());
 
         return fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(centerPoint, rect, tagRankingFromBallInfluencePowerReqDto.getLimit());

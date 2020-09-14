@@ -16,6 +16,7 @@ public class CustomDialect extends MySQL56SpatialDialect {
             super();
             this.registerFunction("distance",new StandardSQLFunction("ST_Distance", StandardBasicTypes.DOUBLE));
             this.registerFunction("st_within",new SQLFunctionTemplate(StandardBasicTypes.INTEGER,"st_within(?1,?2) and 1"));
+            this.registerFunction("st_within_st_buffer",new SQLFunctionTemplate(StandardBasicTypes.INTEGER,"st_within(?1,st_buffer(?2,?3)) and 1"));
             this.registerFunction("st_distance_sphere",new StandardSQLFunction("ST_Distance_Sphere",StandardBasicTypes.DOUBLE));
             this.registerFunction("match", new SQLFunctionTemplate(StandardBasicTypes.INTEGER, "match(?1) against (?2 in boolean mode) and 1"));
         }

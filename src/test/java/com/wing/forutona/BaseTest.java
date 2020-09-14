@@ -30,14 +30,6 @@ public class BaseTest {
     @Autowired
     EntityManager em;
 
-//    @MockBean
-//    protected FAuthHttpInterceptor fAuthHttpInterceptor;
-//
-//    @MockBean
-//    protected FireBaseHandlerMethodArgumentResolver fireBaseHandlerMethodArgumentResolver;
-
-//    protected String testFireBaseUser = "Naver11467346";
-
     protected FUserInfo testUser;
 
     @Autowired
@@ -47,11 +39,8 @@ public class BaseTest {
 
     @BeforeEach
     public void BaseSetUp() throws Exception {
-
         testUser = fUserInfoDataRepository.findById("7PfdwpJQqOgINy8XBWQbkqWBlqr1").get();
-
         customToken = FirebaseAuth.getInstance().createCustomToken(testUser.getUid());
-
     }
 
     protected String getTestUserToken(){

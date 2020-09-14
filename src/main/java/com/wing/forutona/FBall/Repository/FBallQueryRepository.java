@@ -10,9 +10,10 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.FBallState;
@@ -40,6 +41,7 @@ import static com.wing.forutona.FTag.Domain.QFBalltag.fBalltag;
 public class FBallQueryRepository extends Querydsl4RepositorySupport {
 
     final BallCustomOrderFactory ballCustomOrderFactory;
+
     @PersistenceContext
     EntityManager em;
 
@@ -113,15 +115,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         return page;
     }
 
-    public Long getFindBallCountInDistance(Geometry rect) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        NumberTemplate stWithin = boundaryInBallsFilter(rect);
-
-        Long count = queryFactory.select(fBall.count()).from(fBall)
-                .where(stWithin.eq(1), fBall.ballDeleteFlag.isFalse()).fetchOne();
-        return count;
-    }
 
     public Page<FBallResDto> getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
@@ -181,7 +174,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
                                                Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
-
         LatLng centerLatLng = LatLng.newBuilder().setLatitude(reqDto.getLatitude()).setLongitude(reqDto.getLongitude()).build();
 
         QueryResults<FBall> fBallQueryResults = queryFactory.select(fBall)
@@ -215,5 +207,13 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         return fetch;
     }
 
+
+    public long findByCountIsCriteriaBallFromDistance(LatLng centerPosition, int distance) throws ParseException {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, GisGeometryUtil.createDistanceEllipse(centerPosition, distance));
+
+        return queryFactory.select(fBall).from(fBall).where(st_within.eq(1),
+                fBall.activationTime.after(LocalDateTime.now())).fetchCount();
+    }
 
 }

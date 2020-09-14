@@ -1,5 +1,6 @@
 package com.wing.forutona.FTag.Repository;
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
@@ -39,15 +40,18 @@ class FBallTagQueryRepositoryTest extends BaseTest{
     @Test
     @DisplayName("태그에 관련된 볼에 강한 영향력을 주입 후 해당 태그로 결과 받기")
     void getFindTagRankingInDistanceOfInfluencePower() throws ParseException {
-
         //given
         updateAllAliveBall();
         FBalltag fBalltag = randomChoiceTag();
         makeTagBallPowerStrong(fBalltag);
         //when
         List<TagRankingResDto> influencePowerRankingDto = fBallTagQueryRepository.getFindTagRankingInDistanceOfInfluencePower(
-                GisGeometryUtil.createCenterPoint(37.50298846403655, 126.89706021076441)
-                , GisGeometryUtil.createRect(37.50298846403655, 126.89706021076441, 10000),
+                GisGeometryUtil.createPoint(37.50298846403655, 126.89706021076441)
+                , GisGeometryUtil.createSquareFromCenterPosition(LatLng.newBuilder()
+                        .setLongitude(126.89706021076441)
+                        .setLatitude(37.50298846403655)
+                        .build()
+                        , 10000),
                 1000);
         //then
 //        System.out.println(fBalltag.getTagItem());

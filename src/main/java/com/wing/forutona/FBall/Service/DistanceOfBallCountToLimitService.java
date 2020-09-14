@@ -1,5 +1,6 @@
 package com.wing.forutona.FBall.Service;
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface DistanceOfBallCountToLimitService {
-    int distanceOfBallCountToLimit(double latitude, double longitude, int limit) throws ParseException;
+    int distanceOfBallCountToLimit(LatLng centerPoint) throws ParseException;
 }
 
 @Service
@@ -23,16 +24,16 @@ class DistanceOfBallCountToLimitServiceImpl implements DistanceOfBallCountToLimi
 
     final private MapFindScopeStepRepository mapFindScopeStepRepository;
     final private FBallQueryRepository fBallQueryRepository;
+    final static int limitFindBallCountPolicy = 1000;
 
     @Override
     @Transactional
-    public int distanceOfBallCountToLimit(double latitude, double longitude, int limit) throws ParseException {
+    public int distanceOfBallCountToLimit(LatLng centerPoint) throws ParseException {
         List<FMapFindScopeStep> scopeMeter = mapFindScopeStepRepository.findAll(Sort.by("scopeMeter").ascending());
         int currentScopeMater = 0;
         for (FMapFindScopeStep mapFindScopeStep : scopeMeter) {
             currentScopeMater = mapFindScopeStep.getScopeMeter();
-            Geometry rect = GisGeometryUtil.createRect(latitude, longitude, currentScopeMater);
-            if (fBallQueryRepository.getFindBallCountInDistance(rect) > limit) {
+            if (fBallQueryRepository.findByCountIsCriteriaBallFromDistance(centerPoint,currentScopeMater) >  limitFindBallCountPolicy) {
                 return currentScopeMater;
             }
         }

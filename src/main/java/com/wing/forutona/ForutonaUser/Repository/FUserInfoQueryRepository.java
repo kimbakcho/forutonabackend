@@ -28,7 +28,7 @@ public class FUserInfoQueryRepository {
 
         NumberTemplate st_distance = Expressions.numberTemplate(Double.class,
                 "function('st_distance_sphere',{0},{1})", fUserInfo.placePoint,
-                GisGeometryUtil.createCenterPoint(latLng.getLatitude(), latLng.getLongitude()));
+                GisGeometryUtil.createPoint(latLng.getLatitude(), latLng.getLongitude()));
 
         List<FUserInfoResDto> result = queryFactory.select(new QFUserInfoResDto(fUserInfo))
                 .from(fUserInfo)
