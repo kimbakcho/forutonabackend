@@ -1,5 +1,6 @@
 package com.wing.forutona.FTag.Controller;
 
+import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FTag.Dto.FBallTagResDto;
@@ -20,8 +21,15 @@ public class FTagController {
 
     @GetMapping(value = "/v1/FTag/RankingFromBallInfluencePower")
     public List<TagRankingResDto> getFTagRankingFromBallInfluencePower(TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
-//        return fTagService.getFTagRankingFromBallInfluencePower(tagRankingFromBallInfluencePowerReqDto);
-        return null;
+        LatLng findPosition = LatLng.newBuilder()
+                .setLongitude(tagRankingFromBallInfluencePowerReqDto.getMapCenterLongitude())
+                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getUserLatitude())
+                .build();
+        LatLng userPosition = LatLng.newBuilder()
+                .setLongitude(tagRankingFromBallInfluencePowerReqDto.getUserLongitude())
+                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getUserLatitude())
+                .build();
+        return fTagService.getFTagRankingFromBallInfluencePower(findPosition,userPosition,10);
     }
 
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")

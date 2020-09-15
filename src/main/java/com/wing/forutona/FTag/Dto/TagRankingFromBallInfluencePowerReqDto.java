@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TagRankingFromBallInfluencePowerReqDto {
-    double latitude;
-    double longitude;
-    int limit;
+    double userLatitude;
+    double userLongitude;
+    double mapCenterLatitude;
+    double mapCenterLongitude;
 }

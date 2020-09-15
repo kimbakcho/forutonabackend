@@ -53,6 +53,7 @@ class BallLikeServiceTest extends BaseTest {
                 .latitude(37.4402052)
                 .longitude(126.79369789999998)
                 .uid(testUser)
+                .ballPower(0L)
                 .makeTime(LocalDateTime.now())
                 .build();
         fBallDataRepository.save(testBall);
