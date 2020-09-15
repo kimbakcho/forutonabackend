@@ -11,10 +11,12 @@ public class FBallTagResDto {
     Long idx;
     String tagItem;
     FBallResDto ballUuid;
+    double TagBI;
 
     public FBallTagResDto(FBalltag fBalltag){
         this.idx = fBalltag.getIdx();
         this.tagItem = fBalltag.getTagItem();
         this.ballUuid = new FBallResDto(fBalltag.getBallUuid());
+        double TagBI;
     }
 }

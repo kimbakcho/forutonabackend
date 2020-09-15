@@ -75,6 +75,12 @@ public class FBall {
     @ColumnDefault("0")
     private Boolean ballDeleteFlag = false;
 
+
+
+    @Transient
+    private Double BI;
+
+
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
                  Double longitude,Double latitude,String ballName,FBallType ballType,
@@ -186,5 +192,7 @@ public class FBall {
         return this.uid.getUid();
     }
 
-
+    public void setBI(Double BI) {
+        this.BI = BI;
+    }
 }

@@ -10,6 +10,7 @@ import com.wing.forutona.FBall.Domain.FBallType;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallQueryRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,7 @@ class FBallQueryRepositoryTest extends BaseTest {
     }
 
     @Test()
+    @Disabled
     @DisplayName("기준 조건의 Ball 갯수 확인 현재 기준은 살아 있는 경우 테스트 1보다 범위 증가")
     void criteriaBallDistanceRangeCount2() throws ParseException {
         //given
@@ -134,6 +136,7 @@ class FBallQueryRepositoryTest extends BaseTest {
                     .placeAddress("address" + (int) (Math.random() * 100000))
                     .uid(testUser)
                     .pointReward(0)
+                    .ballPower(0L)
                     .build();
             fBallDataRepository.save(tempBall);
         }

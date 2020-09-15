@@ -20,7 +20,8 @@ public class FTagController {
 
     @GetMapping(value = "/v1/FTag/RankingFromBallInfluencePower")
     public List<TagRankingResDto> getFTagRankingFromBallInfluencePower(TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
-        return fTagService.getFTagRankingFromBallInfluencePower(tagRankingFromBallInfluencePowerReqDto);
+//        return fTagService.getFTagRankingFromBallInfluencePower(tagRankingFromBallInfluencePowerReqDto);
+        return null;
     }
 
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")

@@ -208,6 +208,15 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
+    public List<FBall> findByCriteriaBallFromDistance(LatLng centerPosition, int distance) throws ParseException {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, GisGeometryUtil.createDistanceEllipse(centerPosition, distance));
+
+        return queryFactory.select(fBall).from(fBall).where(st_within.eq(1),
+                fBall.activationTime.after(LocalDateTime.now())).fetch();
+    }
+
+
     public long findByCountIsCriteriaBallFromDistance(LatLng centerPosition, int distance) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, GisGeometryUtil.createDistanceEllipse(centerPosition, distance));

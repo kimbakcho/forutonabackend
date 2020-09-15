@@ -2,9 +2,12 @@ package com.wing.forutona.FBall.Service;
 
 import com.google.type.LatLng;
 import com.wing.forutona.BallIGridMapOfInfluence.Domain.BallIGridMapOfInfluence;
+import com.wing.forutona.BallIGridMapOfInfluence.Domain.LatitudeLongitude;
 import com.wing.forutona.BallIGridMapOfInfluence.Repository.BallIGridMapOfInfluenceDataRepository;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -18,22 +21,20 @@ public interface BallOfInfluenceCalc {
 }
 
 @Transactional
+@Service
+@RequiredArgsConstructor
 class BallOfInfluenceCalcImpl implements BallOfInfluenceCalc{
-    BallIGridMapOfInfluenceDataRepository ballIGridMapOfInfluenceDataRepository;
+    final BallIGridMapOfInfluenceDataRepository ballIGridMapOfInfluenceDataRepository;
 
     double Coefficient1 = 1;
     double Coefficient2 = 1;
-
-    BallOfInfluenceCalcImpl(BallIGridMapOfInfluenceDataRepository ballIGridMapOfInfluenceDataRepository){
-        this.ballIGridMapOfInfluenceDataRepository = ballIGridMapOfInfluenceDataRepository;
-    }
 
     @Override
     public double calc(FBall fBall, LatLng userPosition) {
         double latitude = Math.round(fBall.getLatitude()*100.0)/100.0;
         double longitude = Math.round(fBall.getLongitude()*100.0)/100.0;
         BallIGridMapOfInfluence ballIGridMapOfInfluence = ballIGridMapOfInfluenceDataRepository
-                .findByLatitudeAndLongitude(latitude, longitude)
+                .findById(new LatitudeLongitude(latitude,longitude))
                 .orElseGet(() -> getBallIGridMapOfInfluence(latitude, longitude));
         long leftTimeHours = fBall.getMakeTime().until(LocalDateTime.now(), ChronoUnit.HOURS);
         double distance = GisGeometryUtil.getDistance(fBall.getPlacePoint(),userPosition) ;
@@ -49,8 +50,7 @@ class BallOfInfluenceCalcImpl implements BallOfInfluenceCalc{
                 .MGBC(1)
                 .MGAU(1)
                 .MGABP(1)
-                .longitude(longitude)
-                .latitude(latitude)
+                .latitudeLongitude(new LatitudeLongitude(latitude,longitude))
                 .HGABP(1)
                 .SummaryUpdateTime(LocalDateTime.now())
                 .build();

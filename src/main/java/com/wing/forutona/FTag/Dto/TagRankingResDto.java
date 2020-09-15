@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class TagRankingResDto {
-    int ranking;
     String tagName;
     double tagPower;
-    Long tagBallPower;
 
     @QueryProjection
     public TagRankingResDto(String tagName, double tagPower) {

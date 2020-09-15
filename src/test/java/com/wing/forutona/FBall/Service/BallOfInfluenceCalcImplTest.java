@@ -2,6 +2,7 @@ package com.wing.forutona.FBall.Service;
 
 import com.google.type.LatLng;
 import com.wing.forutona.BallIGridMapOfInfluence.Domain.BallIGridMapOfInfluence;
+import com.wing.forutona.BallIGridMapOfInfluence.Domain.LatitudeLongitude;
 import com.wing.forutona.BallIGridMapOfInfluence.Repository.BallIGridMapOfInfluenceDataRepository;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
@@ -29,11 +30,8 @@ class BallOfInfluenceCalcImplTest extends BaseTest {
     @Autowired
     BallIGridMapOfInfluenceDataRepository ballIGridMapOfInfluenceDataRepository;
 
+    @Autowired
     BallOfInfluenceCalc ballOfInfluenceCalc;
-    @BeforeEach
-    void beforeEach(){
-        ballOfInfluenceCalc = new BallOfInfluenceCalcImpl(ballIGridMapOfInfluenceDataRepository);
-    }
 
     @Test
     @DisplayName("BI 계산 BallIGridMapOfInfluence 있을때 테스트")
@@ -67,9 +65,10 @@ class BallOfInfluenceCalcImplTest extends BaseTest {
 
         double roundBallLongitude = Math.round(ballLongitude * 100.0) / 100.0;
         double roundBallLatitude = Math.round(ballLatitude * 100.0) / 100.0;
+        LatitudeLongitude latitudeLongitude = new LatitudeLongitude(roundBallLatitude,roundBallLongitude);
+
         ballIGridMapOfInfluenceDataRepository.saveAndFlush(BallIGridMapOfInfluence.builder()
-                .longitude(roundBallLongitude)
-                .latitude(roundBallLatitude)
+                .latitudeLongitude(latitudeLongitude)
                 .HGABP(0.02)
                 .MGABP(1)
                 .MGAU(1)
@@ -123,4 +122,5 @@ class BallOfInfluenceCalcImplTest extends BaseTest {
         //then
         assertEquals(0.009,Math.round(resultBI*1000.0)/1000.0);
     }
+
 }

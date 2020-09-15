@@ -8,6 +8,9 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
+import com.wing.forutona.FBall.Domain.FBall;
+import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.FTag.Dto.FBallTagResDto;
 import com.wing.forutona.FTag.Dto.QTagRankingResDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import org.springframework.stereotype.Repository;
@@ -26,57 +29,9 @@ public class FBallTagQueryRepository {
     @PersistenceContext
     EntityManager em;
 
-    public List<TagRankingResDto> getFindTagRankingInDistanceOfInfluencePower(Geometry centerPoint, Geometry rect, int limit) {
+    public List<FBalltag> findByBallInTags(List<FBall> fBalls){
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class, "function('st_distance_sphere',{0},{1})", fBall.placePoint, centerPoint);
-
-        NumberExpression influence = fBall.ballPower.divide(st_distance_sphere).sum();
-
-        NumberTemplate stWithin = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, rect);
-
-        List<TagRankingResDto> tagRankingResDtos = queryFactory.select(
-                new QTagRankingResDto(fBalltag.tagItem, influence))
-                .from(fBalltag)
-                .join(fBall).on(fBalltag.ballUuid.eq(fBall))
-                .where(stWithin.eq(1).and(fBall.activationTime.after(LocalDateTime.now())))
-                .groupBy(fBalltag.tagItem)
-                .orderBy(influence.desc())
-                .limit(limit)
-                .fetch();
-
-        makeTagRankingIndex(tagRankingResDtos);
-
-        return tagRankingResDtos;
-    }
-
-    public void makeTagRankingIndex(List<TagRankingResDto> tagRankingResDtos) {
-        int i = 1;
-        for (TagRankingResDto tagRankingResDto : tagRankingResDtos) {
-            tagRankingResDto.setRanking(i++);
-        }
-    }
-
-
-    public List<TagRankingResDto> getRelationTagRankingFromTagNameOrderByBallPower(String searchTag) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
-                "function('match',{0},{1})",
-                fBalltag.tagItem, "+" + searchTag + "*");
-
-        List<TagRankingResDto> tagRankingResDtos = queryFactory.select(
-                Projections.bean(TagRankingResDto.class,
-                        fBalltag.tagItem.as("tagName"), fBall.ballPower.sum().as("tagBallPower")))
-                .from(fBalltag)
-                .where(matchTemplate.eq(1)
-                        .and(fBall.activationTime.after(LocalDateTime.now())))
-                .groupBy(fBalltag.tagItem)
-                .orderBy(fBall.ballPower.sum().desc())
-                .limit(11).offset(0).fetch();
-
-        makeTagRankingIndex(tagRankingResDtos);
-
-        return tagRankingResDtos;
+        return queryFactory.select(fBalltag).from(fBalltag).where(fBalltag.ballUuid.in(fBalls)).fetch();
     }
 
 
