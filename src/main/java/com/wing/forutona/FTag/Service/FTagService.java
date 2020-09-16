@@ -64,7 +64,7 @@ class FTagServiceImpl implements FTagService {
         });
 
         return tagRankingResDtos.stream()
-                .sorted(Comparator.comparing(TagRankingResDto::getTagPower).reversed()).
+                .sorted(Comparator.comparing(TagRankingResDto::getTagPower).reversed()).limit(limit).
                         collect(Collectors.toList());
     }
 

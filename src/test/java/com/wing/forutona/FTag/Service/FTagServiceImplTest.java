@@ -91,6 +91,7 @@ class FTagServiceImplTest extends BaseTest {
 
         //then
         assertEquals(topBITag.get(0).getTagItem(),fTagRankingFromBallInfluencePower.get(0).getTagName());
+        assertEquals(10,fTagRankingFromBallInfluencePower.size());
     }
 
     @Test
