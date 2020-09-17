@@ -116,29 +116,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public Page<FBallResDto> getBallListUpFromBallInfluencePower(Geometry centerPoint, Geometry searchBoundary, Pageable pageable) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
-        NumberTemplate stWithin = boundaryInBallsFilter(searchBoundary);
-
-        NumberExpression<Double> influence = fBall.ballPower.divide(fBall.placePoint.distance(centerPoint));
-
-        QueryResults<FBallResDto> resDtoQueryResults = queryFactory.select(
-                new QFBallResDto(fBall, ExpressionUtils.as(influence, "Influence")))
-                .from(fBall)
-                .where(stWithin.eq(1)
-                        , fBall.activationTime.after(LocalDateTime.now())
-                        , fBall.ballState.eq(FBallState.Play)
-                        , fBall.ballDeleteFlag.isFalse()
-                )
-                .orderBy(influence.desc())
-                .limit(pageable.getPageSize())
-                .offset(pageable.getOffset())
-                .fetchResults();
-
-        Page<FBallResDto> page = new PageImpl(resDtoQueryResults.getResults(), pageable, resDtoQueryResults.getTotal());
-        return page;
-    }
 
     public NumberTemplate<Integer> boundaryInBallsFilter(Geometry searchBoundary) {
         return Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, searchBoundary);
@@ -159,14 +136,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         List<FBallResDto> collect = fBallResDtoQueryResults.getResults();
         Page<FBallResDto> page = new PageImpl(collect, pageable, fBallResDtoQueryResults.getTotal());
         return page;
-    }
-
-
-    private NumberExpression<Integer> getAliveCaseBuilder() {
-        return new CaseBuilder()
-                .when(fBall.activationTime.after(LocalDateTime.now()))
-                .then(1)
-                .otherwise(0);
     }
 
 

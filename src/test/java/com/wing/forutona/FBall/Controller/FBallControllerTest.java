@@ -2,7 +2,6 @@ package com.wing.forutona.FBall.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.Common.RestDocsConfiguration;
 import com.wing.forutona.FBall.Domain.FBallState;
@@ -13,7 +12,6 @@ import com.wing.forutona.FBall.Service.BallListUpService;
 import com.wing.forutona.FBall.Service.BallSelectService;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import org.apache.http.HttpHeaders;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -51,7 +49,8 @@ class FBallControllerTest extends BaseTest {
     BallListUpService ballListUpService;
 
     @MockBean
-    BallSelectService ballSelectService;;
+    BallSelectService ballSelectService;
+    ;
 
     @Test
     @DisplayName("fBallListUpService 영향력 순으로 ListUp 호출")
@@ -103,41 +102,44 @@ class FBallControllerTest extends BaseTest {
         clone3.setLatitude(36.5131);
         clone3.setLongitude(127.2323);
         fBallResDtos.add(clone3);
+
         //given
-        Pageable pageable = PageRequest.of(0, 20);
+        Pageable pageable = PageRequest.of(0, 40);
         PageImpl<FBallResDto> testData = new PageImpl<FBallResDto>(fBallResDtos, pageable, 3);
 
-        when(ballListUpService.searchBallListUpInfluencePower(any(), any())).thenReturn(testData);
+        when(ballListUpService.searchBallListUpOrderByBI(any(), any())).thenReturn(testData);
 
         FBallListUpFromBallInfluencePowerReqDto fBallListUpFromBallInfluencePowerReqDto =
                 new FBallListUpFromBallInfluencePowerReqDto();
 
-        fBallListUpFromBallInfluencePowerReqDto.setLatitude(127.0);
-        fBallListUpFromBallInfluencePowerReqDto.setLongitude(37.0);
-        fBallListUpFromBallInfluencePowerReqDto.setBallLimit(1000);
+        fBallListUpFromBallInfluencePowerReqDto.setMapCenterLongitude(37.5012);
+        fBallListUpFromBallInfluencePowerReqDto.setMapCenterLatitude(126.8976);
+        fBallListUpFromBallInfluencePowerReqDto.setUserLongitude(126.9203);
+        fBallListUpFromBallInfluencePowerReqDto.setUserLatitude(37.5012);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
         Map<String, String> ReqDto = new ObjectMapper()
                 .convertValue(fBallListUpFromBallInfluencePowerReqDto,
-                        new TypeReference<Map<String, String>>() {
-                        });
+                        new TypeReference<Map<String, String>>() {});
 
-        ReqDto.put("limit", "20");
+        ReqDto.put("limit", "40");
         ReqDto.put("offset", "0");
         params.setAll(ReqDto);
 
         //when then
-        mockMvc.perform(get("/v1/FBall/ListUpFromBallInfluencePower")
+        mockMvc.perform(get("/v1/FBall/ListUpBallListUpOrderByBI")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, super.getTestUserToken())
                 .contentType(MediaType.APPLICATION_JSON).params(params))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("FBallListUp",
+                .andDo(document("ListUpBallListUpOrderByBI",
                         relaxedRequestParameters(
-                                parameterWithName("latitude").description("위도"),
-                                parameterWithName("longitude").description("경도"),
-                                parameterWithName("ballLimit").description("볼 검색 범위 최대 갯수")
+                                parameterWithName("mapCenterLongitude").description("find 하는 Map 중앙 위치"),
+                                parameterWithName("mapCenterLatitude").description("find 하는 Map 중앙 위치"),
+                                parameterWithName("userLongitude").description("user 위치"),
+                                parameterWithName("userLatitude").description("user 위치")
                         ),
                         relaxedResponseFields(fieldWithPath("content").description("ball 들"),
                                 fieldWithPath("content[].latitude").description("위도"),

@@ -78,7 +78,7 @@ public class FBall {
 
 
     @Transient
-    private Double BI;
+    private Double BI = 0.0;
 
 
     @Builder

@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class FBallListUpFromBallInfluencePowerReqDto {
-    double latitude;
-    double longitude;
-    int ballLimit;
+    double userLatitude;
+    double userLongitude;
+    double mapCenterLatitude;
+    double mapCenterLongitude;
 }

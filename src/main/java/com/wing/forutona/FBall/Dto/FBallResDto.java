@@ -33,29 +33,7 @@ public class FBallResDto implements Cloneable {
     private double influencePower;
     private long contributor;
     private boolean ballDeleteFlag;
-
-    @QueryProjection
-    public FBallResDto(FBall fball, double influencePower) {
-        this.latitude = fball.getLatitude();
-        this.longitude = fball.getLongitude();
-        this.ballUuid = fball.getBallUuid();
-        this.ballName = fball.getBallName();
-        this.ballType = fball.getBallType();
-        this.ballState = fball.getBallState();
-        this.placeAddress = fball.getPlaceAddress();
-        this.ballHits = fball.getBallHits();
-        this.ballLikes = fball.getBallLikes();
-        this.ballDisLikes = fball.getBallDisLikes();
-        this.commentCount = fball.getCommentCount();
-        this.ballPower = fball.getBallPower();
-        this.activationTime = fball.getActivationTime();
-        this.makeTime = fball.getMakeTime();
-        this.description = fball.getDescription();
-        this.uid = new FUserInfoSimpleResDto(fball.getUid());
-        this.influencePower = influencePower;
-        this.contributor = fball.getContributor();
-        this.ballDeleteFlag = fball.getBallDeleteFlag();
-    }
+    private double bi;
 
     @QueryProjection
     public FBallResDto(FBall fball) {
@@ -77,6 +55,7 @@ public class FBallResDto implements Cloneable {
         this.uid = new FUserInfoSimpleResDto(fball.getUid());
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.getBallDeleteFlag();
+        this.bi = fball.getBI();
     }
 
     @Override

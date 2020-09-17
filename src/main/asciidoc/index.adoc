@@ -86,7 +86,7 @@ operation::FBallSelect[snippets='response-fields,response-body,request-parameter
 
 `GET` 요청을 사용하여 영향력 순으로 FBall 을 조회 할수 있다.
 
-operation::FBallListUp[snippets='response-fields,response-body,request-parameters,http-request']
+operation::ListUpBallListUpOrderByBI[snippets='response-fields,response-body,request-parameters,http-request']
 
 === Tag를 영향력순 으로 조회
 

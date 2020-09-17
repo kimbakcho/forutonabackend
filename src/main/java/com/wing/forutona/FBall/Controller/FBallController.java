@@ -57,9 +57,9 @@ public class FBallController {
         return ballListUpService.searchBallListUpUserMakerBall(makerUid,pageable);
     }
 
-    @GetMapping(value = "/v1/FBall/ListUpFromBallInfluencePower")
-    public Page<FBallResDto> ListUpBallInfluencePower(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpInfluencePower(reqDto,pageable);
+    @GetMapping(value = "/v1/FBall/ListUpBallListUpOrderByBI")
+    public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpOrderByBI(reqDto,pageable);
     }
 
     @ResponseAddJsonHeader
