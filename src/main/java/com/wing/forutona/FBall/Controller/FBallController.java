@@ -58,7 +58,7 @@ public class FBallController {
     }
 
     @GetMapping(value = "/v1/FBall/ListUpBallListUpOrderByBI")
-    public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws Exception {
+    public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws Exception {
         return ballListUpService.searchBallListUpOrderByBI(reqDto,pageable);
     }
 

@@ -3,13 +3,12 @@ package com.wing.forutona.FBall.Service;
 import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
-import com.wing.forutona.FBall.Dto.FBallListUpFromBallInfluencePowerReqDto;
+import com.wing.forutona.FBall.Dto.FBallListUpFromBIReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.FBallTestUtil;
 import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallQueryRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -58,7 +57,7 @@ class BallListUpServiceImplTest extends BaseTest {
 
         fBallTestUtil.makeRandomBallSave(mapCenterPosition,1000,100,true);
         //when
-        FBallListUpFromBallInfluencePowerReqDto reqDto = new FBallListUpFromBallInfluencePowerReqDto();
+        FBallListUpFromBIReqDto reqDto = new FBallListUpFromBIReqDto();
         reqDto.setMapCenterLatitude(mapCenterPosition.getLatitude());
         reqDto.setMapCenterLongitude(mapCenterPosition.getLongitude());
         reqDto.setUserLatitude(userPosition.getLatitude());
@@ -72,7 +71,6 @@ class BallListUpServiceImplTest extends BaseTest {
         assertEquals(40,fBallResDtos.getContent().size());
         assertTrue(fBallResDtos.isFirst());
         assertTrue(fBallResDtos.getContent().get(0).getBi() >= fBallResDtos.getContent().get(1).getBi());
-
 
         //when
         fBallResDtos = ballListUpService.searchBallListUpOrderByBI(reqDto, PageRequest.of(1, 40));

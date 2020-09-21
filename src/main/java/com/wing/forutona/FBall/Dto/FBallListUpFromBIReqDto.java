@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-public class FBallListUpFromBallInfluencePowerReqDto {
+public class FBallListUpFromBIReqDto {
     double userLatitude;
     double userLongitude;
     double mapCenterLatitude;

@@ -6,7 +6,7 @@ import com.wing.forutona.BaseTest;
 import com.wing.forutona.Common.RestDocsConfiguration;
 import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Domain.FBallType;
-import com.wing.forutona.FBall.Dto.FBallListUpFromBallInfluencePowerReqDto;
+import com.wing.forutona.FBall.Dto.FBallListUpFromBIReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Service.BallListUpService;
 import com.wing.forutona.FBall.Service.BallSelectService;
@@ -96,6 +96,7 @@ class FBallControllerTest extends BaseTest {
         clone2.setLatitude(36.5531);
         clone2.setLongitude(127.1323);
         fBallResDtos.add(clone2);
+
         FBallResDto clone3 = (FBallResDto) fBallResDto.clone();
         clone3.setBallUuid("TESTBALL3UUID");
         clone3.setBallUuid("TESTBall3NAME");
@@ -109,18 +110,18 @@ class FBallControllerTest extends BaseTest {
 
         when(ballListUpService.searchBallListUpOrderByBI(any(), any())).thenReturn(testData);
 
-        FBallListUpFromBallInfluencePowerReqDto fBallListUpFromBallInfluencePowerReqDto =
-                new FBallListUpFromBallInfluencePowerReqDto();
+        FBallListUpFromBIReqDto fBallListUpFromBIReqDto =
+                new FBallListUpFromBIReqDto();
 
-        fBallListUpFromBallInfluencePowerReqDto.setMapCenterLongitude(37.5012);
-        fBallListUpFromBallInfluencePowerReqDto.setMapCenterLatitude(126.8976);
-        fBallListUpFromBallInfluencePowerReqDto.setUserLongitude(126.9203);
-        fBallListUpFromBallInfluencePowerReqDto.setUserLatitude(37.5012);
+        fBallListUpFromBIReqDto.setMapCenterLongitude(37.5012);
+        fBallListUpFromBIReqDto.setMapCenterLatitude(126.8976);
+        fBallListUpFromBIReqDto.setUserLongitude(126.9203);
+        fBallListUpFromBIReqDto.setUserLatitude(37.5012);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         Map<String, String> ReqDto = new ObjectMapper()
-                .convertValue(fBallListUpFromBallInfluencePowerReqDto,
+                .convertValue(fBallListUpFromBIReqDto,
                         new TypeReference<Map<String, String>>() {});
 
         ReqDto.put("limit", "40");

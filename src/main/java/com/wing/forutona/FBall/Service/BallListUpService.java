@@ -2,7 +2,6 @@ package com.wing.forutona.FBall.Service;
 
 import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
-import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Repository.FBallQueryRepository;
@@ -25,7 +24,7 @@ public interface BallListUpService {
 
     Page<FBallResDto> searchBallListUpFromTagName(FBallListUpFromTagReqDto reqDto, Pageable pageable) throws ParseException;
 
-    Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException;
+    Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws ParseException;
 
     Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid,Pageable pageable) throws ParseException;
 }
@@ -55,7 +54,7 @@ class BallListUpServiceImpl implements BallListUpService {
     }
 
     @Override
-    public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBallInfluencePowerReqDto reqDto, Pageable pageable) throws ParseException {
+    public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws ParseException {
         LatLng mapCenter = LatLng.newBuilder().setLatitude(reqDto.getMapCenterLatitude()).setLongitude(reqDto.getMapCenterLongitude()).build();
         int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(mapCenter );
 

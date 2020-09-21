@@ -182,7 +182,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, GisGeometryUtil.createDistanceEllipse(centerPosition, distance));
 
         return queryFactory.select(fBall).from(fBall).where(st_within.eq(1),
-                fBall.activationTime.after(LocalDateTime.now())).fetch();
+                fBall.activationTime.after(LocalDateTime.now()),fBall.ballDeleteFlag.eq(false)).fetch();
     }
 
 
@@ -191,7 +191,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fBall.placePoint, GisGeometryUtil.createDistanceEllipse(centerPosition, distance));
 
         return queryFactory.select(fBall).from(fBall).where(st_within.eq(1),
-                fBall.activationTime.after(LocalDateTime.now())).fetchCount();
+                fBall.activationTime.after(LocalDateTime.now()),fBall.ballDeleteFlag.eq(false)).fetchCount();
     }
 
 }
