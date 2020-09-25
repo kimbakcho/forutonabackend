@@ -58,11 +58,9 @@ class FTagControllerTest extends BaseTest {
         tagRankingResDtos.add(new TagRankingResDto("TESTTag1",0.03));
         tagRankingResDtos.add(new TagRankingResDto("TESTTag2",0.02));
         tagRankingResDtos.add(new TagRankingResDto("TESTTag3",0.01));
-        given(fTagService.getFTagRankingFromBallInfluencePower(any(), any(), anyInt())).willReturn(tagRankingResDtos);
+        given(fTagService.getFTagRankingFromBallInfluencePower(any(), anyInt())).willReturn(tagRankingResDtos);
 
         TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto = new TagRankingFromBallInfluencePowerReqDto();
-        tagRankingFromBallInfluencePowerReqDto.setUserLatitude(37.5012);
-        tagRankingFromBallInfluencePowerReqDto.setUserLongitude(126.9203);
         tagRankingFromBallInfluencePowerReqDto.setMapCenterLatitude(37.5012);
         tagRankingFromBallInfluencePowerReqDto.setMapCenterLongitude(126.8976);
 
@@ -79,8 +77,6 @@ class FTagControllerTest extends BaseTest {
                 .andDo(print())
                 .andDo(document("FTagRankingFromBallInfluencePower",
                         relaxedRequestParameters(
-                                parameterWithName("userLatitude").description("유저위치Lat"),
-                                parameterWithName("userLongitude").description("유저위치Long"),
                                 parameterWithName("mapCenterLatitude").description("Search 하는 MapCenter Lat"),
                                 parameterWithName("mapCenterLongitude").description("Search 하는 MapCenter Long")),
                         relaxedResponseFields

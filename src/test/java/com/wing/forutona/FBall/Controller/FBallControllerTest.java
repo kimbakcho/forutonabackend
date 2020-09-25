@@ -115,8 +115,6 @@ class FBallControllerTest extends BaseTest {
 
         fBallListUpFromBIReqDto.setMapCenterLongitude(37.5012);
         fBallListUpFromBIReqDto.setMapCenterLatitude(126.8976);
-        fBallListUpFromBIReqDto.setUserLongitude(126.9203);
-        fBallListUpFromBIReqDto.setUserLatitude(37.5012);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
@@ -138,9 +136,7 @@ class FBallControllerTest extends BaseTest {
                 .andDo(document("ListUpBallListUpOrderByBI",
                         relaxedRequestParameters(
                                 parameterWithName("mapCenterLongitude").description("find 하는 Map 중앙 위치"),
-                                parameterWithName("mapCenterLatitude").description("find 하는 Map 중앙 위치"),
-                                parameterWithName("userLongitude").description("user 위치"),
-                                parameterWithName("userLatitude").description("user 위치")
+                                parameterWithName("mapCenterLatitude").description("find 하는 Map 중앙 위치")
                         ),
                         relaxedResponseFields(fieldWithPath("content").description("ball 들"),
                                 fieldWithPath("content[].latitude").description("위도"),

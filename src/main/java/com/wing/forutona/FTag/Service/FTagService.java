@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public interface FTagService {
-    List<TagRankingResDto> getFTagRankingFromBallInfluencePower(LatLng findPosition, LatLng userPosition, int limit) throws ParseException;
+    List<TagRankingResDto> getFTagRankingFromBallInfluencePower(LatLng findPosition, int limit) throws ParseException;
 
     List<TagRankingResDto> getRelationTagRankingFromTagNameOrderByBallPower(String searchTag);
 
@@ -47,11 +47,11 @@ class FTagServiceImpl implements FTagService {
 
     final BallOfInfluenceCalc ballOfInfluenceCalc;
 
-    public List<TagRankingResDto> getFTagRankingFromBallInfluencePower(LatLng findPosition, LatLng userPosition, int limit) throws ParseException {
+    public List<TagRankingResDto> getFTagRankingFromBallInfluencePower(LatLng findPosition , int limit) throws ParseException {
         int searchDistance = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(findPosition);
         List<FBall> sampleBall = fBallQueryRepository.findByCriteriaBallFromDistance(findPosition, searchDistance);
         List<FBalltag> byBallInTags = fBallTagQueryRepository.findByBallInTags(sampleBall);
-        List<FBalltag> calcTagInBallBI = calcTagRelationBallBI(userPosition, byBallInTags);
+        List<FBalltag> calcTagInBallBI = calcTagRelationBallBI(findPosition, byBallInTags);
         Map<String, Double> groupByTagNameSumBI =
                 calcTagInBallBI
                         .stream()
@@ -68,9 +68,9 @@ class FTagServiceImpl implements FTagService {
                         collect(Collectors.toList());
     }
 
-    private List<FBalltag> calcTagRelationBallBI(LatLng userPosition, List<FBalltag> byBallInTags) {
+    private List<FBalltag> calcTagRelationBallBI(LatLng position, List<FBalltag> byBallInTags) {
         return byBallInTags.stream().map(x -> {
-            x.getBallUuid().setBI(ballOfInfluenceCalc.calc(x.getBallUuid(), userPosition));
+            x.getBallUuid().setBI(ballOfInfluenceCalc.calc(x.getBallUuid(), position));
             return x;
         }).collect(Collectors.toList());
     }

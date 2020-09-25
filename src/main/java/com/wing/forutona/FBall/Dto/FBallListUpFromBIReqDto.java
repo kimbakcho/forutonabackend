@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 public class FBallListUpFromBIReqDto {
-    double userLatitude;
-    double userLongitude;
     double mapCenterLatitude;
     double mapCenterLongitude;
 }

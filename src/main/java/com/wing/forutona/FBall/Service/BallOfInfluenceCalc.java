@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface BallOfInfluenceCalc {
-    Double calc(FBall fBall, LatLng userPosition);
+    Double calc(FBall fBall, LatLng position);
 
-    List<FBall> calc(List<FBall> fBall, LatLng userPosition);
+    List<FBall> calc(List<FBall> fBall, LatLng position);
 }
 
 @Transactional
@@ -31,14 +31,14 @@ class BallOfInfluenceCalcImpl implements BallOfInfluenceCalc {
     double Coefficient2 = 1;
 
     @Override
-    public Double calc(FBall fBall, LatLng userPosition) {
+    public Double calc(FBall fBall, LatLng position) {
         double latitude = Math.round(fBall.getLatitude() * 100.0) / 100.0;
         double longitude = Math.round(fBall.getLongitude() * 100.0) / 100.0;
         BallIGridMapOfInfluence ballIGridMapOfInfluence = ballIGridMapOfInfluenceDataRepository
                 .findById(new LatitudeLongitude(latitude, longitude))
                 .orElseGet(() -> getBallIGridMapOfInfluence(latitude, longitude));
         long leftTimeHours = fBall.getMakeTime().until(LocalDateTime.now(), ChronoUnit.HOURS);
-        double distance = GisGeometryUtil.getDistance(fBall.getPlacePoint(), userPosition);
+        double distance = GisGeometryUtil.getDistance(fBall.getPlacePoint(), position);
 
         double BI = (fBall.getBallPower() - (leftTimeHours * ballIGridMapOfInfluence.getHGABP() * Coefficient1)) /
                 (Coefficient2 * distance);
@@ -46,9 +46,9 @@ class BallOfInfluenceCalcImpl implements BallOfInfluenceCalc {
     }
 
     @Override
-    public List<FBall> calc(List<FBall> fBall, LatLng userPosition) {
+    public List<FBall> calc(List<FBall> fBall, LatLng position) {
         return fBall.stream().map(x -> {
-            x.setBI(calc(x, userPosition));
+            x.setBI(calc(x, position));
             return x;
         }).collect(Collectors.toList());
     }

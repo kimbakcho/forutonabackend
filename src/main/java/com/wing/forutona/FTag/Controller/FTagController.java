@@ -23,13 +23,9 @@ public class FTagController {
     public List<TagRankingResDto> getFTagRankingFromBallInfluencePower(TagRankingFromBallInfluencePowerReqDto tagRankingFromBallInfluencePowerReqDto) throws ParseException {
         LatLng findPosition = LatLng.newBuilder()
                 .setLongitude(tagRankingFromBallInfluencePowerReqDto.getMapCenterLongitude())
-                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getUserLatitude())
+                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getMapCenterLatitude())
                 .build();
-        LatLng userPosition = LatLng.newBuilder()
-                .setLongitude(tagRankingFromBallInfluencePowerReqDto.getUserLongitude())
-                .setLatitude(tagRankingFromBallInfluencePowerReqDto.getUserLatitude())
-                .build();
-        return fTagService.getFTagRankingFromBallInfluencePower(findPosition,userPosition,10);
+        return fTagService.getFTagRankingFromBallInfluencePower(findPosition,10);
     }
 
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")

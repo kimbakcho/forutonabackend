@@ -59,8 +59,8 @@ class BallListUpServiceImpl implements BallListUpService {
         int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(mapCenter );
 
         List<FBall> byCriteriaBallFromDistance = fBallQueryRepository.findByCriteriaBallFromDistance(mapCenter, findDistanceRangeLimit);
-        LatLng userPosition = LatLng.newBuilder().setLatitude(reqDto.getUserLatitude()).setLongitude(reqDto.getUserLongitude()).build();
-        List<FBall> calcBIBalls = ballOfInfluenceCalc.calc(byCriteriaBallFromDistance, userPosition);
+
+        List<FBall> calcBIBalls = ballOfInfluenceCalc.calc(byCriteriaBallFromDistance, mapCenter);
         List<FBallResDto> resultBalls =
                 calcBIBalls.stream().sorted(Comparator.comparingDouble(FBall::getBI).reversed())
                         .skip(pageable.getOffset())

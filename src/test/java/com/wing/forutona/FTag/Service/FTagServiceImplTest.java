@@ -77,9 +77,9 @@ class FTagServiceImplTest extends BaseTest {
         int distanceOfBallCountToLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(setupPoint);
         List<FBall> byCriteriaBallFromDistance = fBallQueryRepository.findByCriteriaBallFromDistance(setupPoint, distanceOfBallCountToLimit);
 
-        LatLng userPoint = LatLng.newBuilder().setLongitude(126.9203).setLatitude(37.5012).build();
+
         List<FBall> fBallSortBI = byCriteriaBallFromDistance.stream().map(x -> {
-            x.setBI(ballOfInfluenceCalc.calc(x, userPoint));
+            x.setBI(ballOfInfluenceCalc.calc(x, setupPoint));
             return x;
         }).sorted(Comparator.comparing(FBall::getBI).reversed()).collect(Collectors.toList());
 
@@ -87,7 +87,7 @@ class FTagServiceImplTest extends BaseTest {
                 fBallSortBI.get(0));
 
         //when
-        List<TagRankingResDto> fTagRankingFromBallInfluencePower = fTagService.getFTagRankingFromBallInfluencePower(setupPoint,userPoint, 10);
+        List<TagRankingResDto> fTagRankingFromBallInfluencePower = fTagService.getFTagRankingFromBallInfluencePower(setupPoint, 10);
 
         //then
         assertEquals(topBITag.get(0).getTagItem(),fTagRankingFromBallInfluencePower.get(0).getTagName());
@@ -106,16 +106,15 @@ class FTagServiceImplTest extends BaseTest {
         int distanceOfBallCountToLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(setupPoint);
         List<FBall> byCriteriaBallFromDistance = fBallQueryRepository.findByCriteriaBallFromDistance(setupPoint, distanceOfBallCountToLimit);
 
-        LatLng userPoint = LatLng.newBuilder().setLongitude(126.9203).setLatitude(37.5012).build();
         List<FBall> fBallSortBI = byCriteriaBallFromDistance.stream().map(x -> {
-            x.setBI(ballOfInfluenceCalc.calc(x, userPoint));
+            x.setBI(ballOfInfluenceCalc.calc(x, setupPoint));
             return x;
         }).sorted(Comparator.comparing(FBall::getBI).reversed()).collect(Collectors.toList());
 
         double totalBI = fBallSortBI.stream().mapToDouble(x->x.getBI()).sum();
 
         //when
-        List<TagRankingResDto> fTagRankingFromBallInfluencePower = fTagService.getFTagRankingFromBallInfluencePower(setupPoint,userPoint, 10);
+        List<TagRankingResDto> fTagRankingFromBallInfluencePower = fTagService.getFTagRankingFromBallInfluencePower(setupPoint, 10);
 
         //then
         assertEquals(1,fTagRankingFromBallInfluencePower.size());

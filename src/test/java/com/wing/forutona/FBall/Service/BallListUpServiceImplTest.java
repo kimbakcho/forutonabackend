@@ -60,8 +60,6 @@ class BallListUpServiceImplTest extends BaseTest {
         FBallListUpFromBIReqDto reqDto = new FBallListUpFromBIReqDto();
         reqDto.setMapCenterLatitude(mapCenterPosition.getLatitude());
         reqDto.setMapCenterLongitude(mapCenterPosition.getLongitude());
-        reqDto.setUserLatitude(userPosition.getLatitude());
-        reqDto.setUserLongitude(userPosition.getLongitude());
         Page<FBallResDto> fBallResDtos = ballListUpService.searchBallListUpOrderByBI(reqDto, PageRequest.of(0, 40));
         for (FBallResDto fBallResDto : fBallResDtos.getContent()) {
             System.out.println("BallUuid =" + fBallResDto.getBallUuid() + "  BI =" + fBallResDto.getBi());
