@@ -38,7 +38,7 @@ public class FBallController {
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
     public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpFromMapArea(reqDto,pageable);
+        return ballListUpService.searchBallListUpFromMapAreaOrderByBI(reqDto,pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromSearchTitle")

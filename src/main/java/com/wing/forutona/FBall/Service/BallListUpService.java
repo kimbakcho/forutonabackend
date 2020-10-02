@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 public interface BallListUpService {
-    Page<FBallResDto> searchBallListUpFromMapArea(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException;
+    Page<FBallResDto> searchBallListUpFromMapAreaOrderByBI(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException;
 
     Page<FBallResDto> searchBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, Pageable pageable) throws ParseException;
 
@@ -26,7 +26,7 @@ public interface BallListUpService {
 
     Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws ParseException;
 
-    Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid,Pageable pageable) throws ParseException;
+    Page<FBallResDto> searchBallListUpUserMakerBall(String ballUuid, Pageable pageable) throws ParseException;
 }
 
 @Service
@@ -39,8 +39,27 @@ class BallListUpServiceImpl implements BallListUpService {
     final BallOfInfluenceCalc ballOfInfluenceCalc;
 
     @Override
-    public Page<FBallResDto> searchBallListUpFromMapArea(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException {
-        return fBallQueryRepository.getBallListUpFromMapArea((BallFromMapAreaReqDto) reqDto, pageable);
+    public Page<FBallResDto> searchBallListUpFromMapAreaOrderByBI(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException {
+        List<FBall> ballListUpFromMapArea = fBallQueryRepository.findByBallListUpFromMapArea(reqDto);
+
+        List<FBall> calcBIBalls = ballOfInfluenceCalc.calc(ballListUpFromMapArea,
+                LatLng.newBuilder()
+                        .setLatitude(reqDto.getCenterPointLat())
+                        .setLongitude(reqDto.getCenterPointLng())
+                        .build());
+
+        return fBallListToPageBallResDto(pageable, calcBIBalls);
+    }
+
+    public Page<FBallResDto> fBallListToPageBallResDto(Pageable pageable, List<FBall> calcBIBalls) {
+        List<FBallResDto> resultBalls =
+                calcBIBalls.stream().sorted(Comparator.comparingDouble(FBall::getBI).reversed())
+                        .skip(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .map(x -> new FBallResDto(x))
+                        .collect(Collectors.toList());
+        Page<FBallResDto> pageResult = new PageImpl<FBallResDto>(resultBalls, pageable, calcBIBalls.size());
+        return pageResult;
     }
 
     @Override
@@ -55,20 +74,16 @@ class BallListUpServiceImpl implements BallListUpService {
 
     @Override
     public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws ParseException {
-        LatLng mapCenter = LatLng.newBuilder().setLatitude(reqDto.getMapCenterLatitude()).setLongitude(reqDto.getMapCenterLongitude()).build();
-        int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(mapCenter );
+        LatLng mapCenter = LatLng.newBuilder()
+                .setLatitude(reqDto.getMapCenterLatitude())
+                .setLongitude(reqDto.getMapCenterLongitude())
+                .build();
+        int findDistanceRangeLimit = distanceOfBallCountToLimitService.distanceOfBallCountToLimit(mapCenter);
 
         List<FBall> byCriteriaBallFromDistance = fBallQueryRepository.findByCriteriaBallFromDistance(mapCenter, findDistanceRangeLimit);
 
         List<FBall> calcBIBalls = ballOfInfluenceCalc.calc(byCriteriaBallFromDistance, mapCenter);
-        List<FBallResDto> resultBalls =
-                calcBIBalls.stream().sorted(Comparator.comparingDouble(FBall::getBI).reversed())
-                        .skip(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .map(x -> new FBallResDto(x))
-                        .collect(Collectors.toList());
-        Page<FBallResDto> pageResult = new PageImpl<FBallResDto>(resultBalls,pageable,calcBIBalls.size());
-        return pageResult;
+        return fBallListToPageBallResDto(pageable, calcBIBalls);
     }
 
     @Override

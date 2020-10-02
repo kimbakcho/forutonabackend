@@ -3,11 +3,8 @@ package com.wing.forutona.FBall.Repository.FBall;
 import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
-import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
-import com.wing.forutona.FBall.Domain.FBallState;
-import com.wing.forutona.FBall.Domain.FBallType;
-import com.wing.forutona.FBall.Dto.FBallResDto;
+import com.wing.forutona.FBall.Dto.BallFromMapAreaReqDto;
 import com.wing.forutona.FBall.FBallTestUtil;
 import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallQueryRepository;
@@ -16,16 +13,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
-import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
@@ -38,9 +29,10 @@ class FBallQueryRepositoryTest extends BaseTest {
     FBallDataRepository fBallDataRepository;
 
     FBallTestUtil fBallTestUtil;
+
     @BeforeEach
-    void beforeEach(){
-        fBallTestUtil = new FBallTestUtil(fBallDataRepository,testUser);
+    void beforeEach() {
+        fBallTestUtil = new FBallTestUtil(fBallDataRepository, testUser);
     }
 
     @Test()
@@ -51,15 +43,15 @@ class FBallQueryRepositoryTest extends BaseTest {
         LatLng centerPosition = LatLng.newBuilder().setLatitude(37.5088099).setLongitude(126.8912061).build();
         int km = 1000;
         int distance = 10 * km;
-        fBallTestUtil.makeRandomBallSave(centerPosition,distance,100,true);
-        fBallTestUtil.makeRandomBallSave(centerPosition,distance,20,false);
+        fBallTestUtil.makeRandomBallSave(centerPosition, distance, 100, true);
+        fBallTestUtil.makeRandomBallSave(centerPosition, distance, 20, false);
         LatLng centerPosition2 = LatLng.newBuilder().setLatitude(36.5580266).setLongitude(127.5069707).build();
-        fBallTestUtil.makeRandomBallSave(centerPosition2,distance,100,true);
+        fBallTestUtil.makeRandomBallSave(centerPosition2, distance, 100, true);
 
         //when
         long findBallCount = fBallQueryRepository.findByCountIsCriteriaBallFromDistance(centerPosition, distance);
         //then
-        assertEquals(100,findBallCount);
+        assertEquals(100, findBallCount);
     }
 
     @Test()
@@ -71,18 +63,42 @@ class FBallQueryRepositoryTest extends BaseTest {
         LatLng centerPosition = LatLng.newBuilder().setLatitude(37.5088099).setLongitude(126.8912061).build();
         int km = 1000;
         int distance = 100 * km;
-        fBallTestUtil.makeRandomBallSave(centerPosition,distance,1000,true);
+        fBallTestUtil.makeRandomBallSave(centerPosition, distance, 1000, true);
 
         LatLng centerPosition2 = LatLng.newBuilder().setLatitude(35.429344044107154).setLongitude(128.6334228515625).build();
-        fBallTestUtil.makeRandomBallSave(centerPosition2,distance,500,true);
+        fBallTestUtil.makeRandomBallSave(centerPosition2, distance, 500, true);
         //when
         long findBallCount = fBallQueryRepository.findByCountIsCriteriaBallFromDistance(centerPosition, distance);
         //then
-        assertEquals(1000,findBallCount);
+        assertEquals(1000, findBallCount);
     }
 
 
+    @Test
+    @DisplayName("사각형 영역안에 들어 있는 볼만 검색 (살아 있고 지워지지 않는 볼만)")
+    void getBallListUpFromMapAreaTEST() throws ParseException {
+        //given
+        fBallDataRepository.deleteAll();
+        LatLng centerPosition = LatLng.newBuilder().setLatitude(37.5088099).setLongitude(126.8912061).build();
+        int km = 1000;
+        int distance = 45 * km;
+        fBallTestUtil.makeRandomBallSave(centerPosition, distance, 1000, true);
 
+        LatLng centerPosition2 = LatLng.newBuilder().setLatitude(35.285984736065764).setLongitude(128.902587890625).build();
+        fBallTestUtil.makeRandomBallSave(centerPosition2, distance, 1000, true);
+        //when
+        BallFromMapAreaReqDto ballFromMapAreaReqDto = new BallFromMapAreaReqDto(
+                37.00255267215955,
+                126.18347167968749,
+                38.026458711461245,
+                127.66937255859375, centerPosition.getLatitude(), centerPosition.getLongitude());
+
+        List<FBall> byBallListUpFromMapArea = fBallQueryRepository.findByBallListUpFromMapArea(ballFromMapAreaReqDto);
+
+        //then
+        assertEquals(byBallListUpFromMapArea.size(),1000);
+
+    }
 
 
 }
