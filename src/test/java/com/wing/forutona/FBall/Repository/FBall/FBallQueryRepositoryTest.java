@@ -5,6 +5,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.BallFromMapAreaReqDto;
+import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.FBallTestUtil;
 import com.wing.forutona.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.FBall.Repository.FBallQueryRepository;
@@ -13,11 +14,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 class FBallQueryRepositoryTest extends BaseTest {
@@ -93,10 +98,14 @@ class FBallQueryRepositoryTest extends BaseTest {
                 38.026458711461245,
                 127.66937255859375, centerPosition.getLatitude(), centerPosition.getLongitude());
 
-        List<FBall> byBallListUpFromMapArea = fBallQueryRepository.findByBallListUpFromMapArea(ballFromMapAreaReqDto);
+        Page<FBallResDto> byBallListUpFromMapArea = fBallQueryRepository
+                .findByBallListUpFromMapAreaOrderByBP(ballFromMapAreaReqDto, PageRequest.of(0,40));
 
         //then
-        assertEquals(byBallListUpFromMapArea.size(),1000);
+        assertEquals(byBallListUpFromMapArea.getTotalElements(),1000);
+
+        assertTrue(byBallListUpFromMapArea.getContent().get(0).getBallPower()>=byBallListUpFromMapArea.getContent().get(1).getBallPower());
+
 
     }
 

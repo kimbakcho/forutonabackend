@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 public interface BallListUpService {
-    Page<FBallResDto> searchBallListUpFromMapAreaOrderByBI(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException;
+    Page<FBallResDto> searchBallListUpFromMapAreaOrderByBP(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException;
 
     Page<FBallResDto> searchBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, Pageable pageable) throws ParseException;
 
@@ -39,16 +39,8 @@ class BallListUpServiceImpl implements BallListUpService {
     final BallOfInfluenceCalc ballOfInfluenceCalc;
 
     @Override
-    public Page<FBallResDto> searchBallListUpFromMapAreaOrderByBI(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException {
-        List<FBall> ballListUpFromMapArea = fBallQueryRepository.findByBallListUpFromMapArea(reqDto);
-
-        List<FBall> calcBIBalls = ballOfInfluenceCalc.calc(ballListUpFromMapArea,
-                LatLng.newBuilder()
-                        .setLatitude(reqDto.getCenterPointLat())
-                        .setLongitude(reqDto.getCenterPointLng())
-                        .build());
-
-        return fBallListToPageBallResDto(pageable, calcBIBalls);
+    public Page<FBallResDto> searchBallListUpFromMapAreaOrderByBP(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException {
+        return fBallQueryRepository.findByBallListUpFromMapAreaOrderByBP(reqDto,pageable);
     }
 
     public Page<FBallResDto> fBallListToPageBallResDto(Pageable pageable, List<FBall> calcBIBalls) {

@@ -45,7 +45,7 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         this.ballCustomOrderFactory = ballCustomOrderFactory;
     }
 
-    public List<FBall> findByBallListUpFromMapArea(BallFromMapAreaReqDto reqDto) throws ParseException {
+    public  Page<FBallResDto> findByBallListUpFromMapAreaOrderByBP(BallFromMapAreaReqDto reqDto, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
 
@@ -54,17 +54,26 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
         mapAreaGeoRect.setSRID(4326);
 
         NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})",
-                fBall.placePoint,mapAreaGeoRect);
+                fBall.placePoint, mapAreaGeoRect);
 
         QueryResults<FBall> fBallQueryResults = queryFactory
                 .select(fBall)
                 .from(fBall)
                 .where(st_within.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
-                        , fBall.ballDeleteFlag.isFalse()).fetchResults();
+                        , fBall.ballDeleteFlag.isFalse()).orderBy(fBall.ballPower.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetchResults();
 
-        List<FBall> results = fBallQueryResults.getResults();
-        return results;
+        Page<FBallResDto> fBallResDtos = new PageImpl<FBallResDto>(
+                fBallQueryResults
+                        .getResults()
+                        .stream()
+                        .map(x -> new FBallResDto(x))
+                        .collect(Collectors.toList()), pageable, fBallQueryResults.getTotal());
+
+        return fBallResDtos;
     }
 
     public List<OrderSpecifier> makeOrderSpecifiers(LatLng position, Sort sort) throws ParseException {

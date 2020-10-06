@@ -46,7 +46,7 @@ public class FBallTestUtil  {
                     .placeAddress("address" + (int) (Math.random() * 100000))
                     .uid(testUser)
                     .pointReward(0)
-                    .ballPower(0L)
+                    .ballPower((long) (Math.random() * 100))
                     .build();
             fBallDataRepository.save(tempBall);
         }
