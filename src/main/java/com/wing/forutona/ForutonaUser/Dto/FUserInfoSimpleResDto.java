@@ -1,12 +1,16 @@
 package com.wing.forutona.ForutonaUser.Dto;
 
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class FUserInfoSimpleResDto {
+@AllArgsConstructor
+@Builder
+public class FUserInfoSimpleResDto  implements Cloneable{
     String uid;
     String nickName;
     String profilePictureUrl;
@@ -15,6 +19,7 @@ public class FUserInfoSimpleResDto {
     String selfIntroduction;
     Double cumulativeInfluence;
     Long followCount;
+    Double playerPower;
 
     public FUserInfoSimpleResDto(FUserInfo fUserInfo){
         this.uid = fUserInfo.getUid();
@@ -25,5 +30,13 @@ public class FUserInfoSimpleResDto {
         this.selfIntroduction = fUserInfo.getSelfIntroduction();
         this.cumulativeInfluence = fUserInfo.getCumulativeInfluence();
         this.followCount = fUserInfo.getFollowCount();
+        this.playerPower = fUserInfo.getPlayerPower();
     }
+
+    public Object clone() throws CloneNotSupportedException {
+        FUserInfoSimpleResDto clone = (FUserInfoSimpleResDto)super.clone();
+        return clone;
+    }
+
+
 }

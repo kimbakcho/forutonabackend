@@ -5,6 +5,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.FTag.Dto.FBallTagResDto;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
+import com.wing.forutona.FTag.Dto.TagRankingFromTextReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import com.wing.forutona.FTag.Service.FTagService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,11 @@ public class FTagController {
     @GetMapping(value = "/v1/FTag/RelationTagRankingFromTagNameOrderByBallPower")
     public List<TagRankingResDto> getRelationTagRankingFromTagNameOrderByBallPower(String searchTag) {
         return fTagService.getRelationTagRankingFromTagNameOrderByBallPower(searchTag);
+    }
+
+    @GetMapping(value = "/v1/FTag/TagRankingFromTextOrderBySumBI")
+    public List<TagRankingResDto> getTagRankingFromTextOrderBySumBI(TagRankingFromTextReqDto tagRankingFromTextReqDto) throws ParseException {
+        return fTagService.getTagRankingFromTextOrderBySumBI(tagRankingFromTextReqDto);
     }
 
     @GetMapping(value = "/v1/FTag/tagFromBallUuid")

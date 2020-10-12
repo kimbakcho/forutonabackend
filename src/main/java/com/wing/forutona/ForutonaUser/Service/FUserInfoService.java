@@ -7,11 +7,14 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.ForutonaUser.Repository.FUserInfoQueryRepository;
 import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginService;
 import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsLoginServiceFactory;
 import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsSupportService;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +40,8 @@ public interface FUserInfoService {
     String updateUserProfileImage(FFireBaseToken fireBaseToken, MultipartFile file) throws IOException;
 
     FUserInfoResDto updateAccountUserInfo(FFireBaseToken fFireBaseToken, FUserAccountUpdateReqDto reqDto);
+
+    Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable);
 }
 
 @Service
@@ -45,6 +50,8 @@ public interface FUserInfoService {
 class FUserInfoServiceImpl implements FUserInfoService {
 
     final FUserInfoDataRepository fUserInfoDataRepository;
+
+    final FUserInfoQueryRepository fUserInfoQueryRepository;
 
     final SnsLoginServiceFactory snsLoginServiceFactory;
 
@@ -132,6 +139,11 @@ class FUserInfoServiceImpl implements FUserInfoService {
             fUserInfo.setProfilePictureUrl(reqDto.getUserProfileImageUrl());
         }
         return new FUserInfoResDto(fUserInfo);
+    }
+
+    @Override
+    public Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable) {
+        return fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex(searchNickName,pageable);
     }
 
 

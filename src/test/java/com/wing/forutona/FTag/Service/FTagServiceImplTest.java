@@ -18,6 +18,7 @@ import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -95,7 +96,7 @@ class FTagServiceImplTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("같은 Tag BI 합쳐진것 테스트 ")
+    @DisplayName("같은 Tag BI 합쳐진것 테스트")
     void getFTagRankingFromBallInfluencePowerWithSameTagSumBi() throws ParseException {
         //given
         fBallTagDataRepository.deleteAll();
@@ -121,22 +122,58 @@ class FTagServiceImplTest extends BaseTest {
         assertEquals(Math.round(totalBI*1000)/1000,Math.round(fTagRankingFromBallInfluencePower.get(0).getTagPower()*1000)/1000);
     }
 
+    @Test
+    @Disabled
+    @DisplayName("같은 Tag BI 합쳐진것 테스트")
+    void getTagRankingFromTextOrderBySumBI() throws ParseException {
+        //given
+        LatLng setupPoint = LatLng.newBuilder().setLongitude(126.92031158021636).setLatitude(37.5012).build();
+
+        //FULLTEXT 경우 트랜젝션안에서 값을 넣어서 해봤지만 match 에서 반영이 안되고 DB에 있는 기존값 가지고만 테스트가 가능함.
+//        makeRandomBallWithTag(setupPoint,100,true,"영화");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화1");
+//        makeRandomBallWithTag(setupPoint,100,true,"1영화1");
+//        makeRandomBallWithTag(setupPoint,100,true,"1영화1");
+//        makeRandomBallWithTag(setupPoint,100,true,"1영화1");
+//        makeRandomBallWithTag(setupPoint,100,true,"a영화");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화 추천");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화 추천aa");
+//        makeRandomBallWithTag(setupPoint,100,true,"aa영화 추천aa");
+//        makeRandomBallWithTag(setupPoint,100,true,"aa 영화 추천");
+//        makeRandomBallWithTag(setupPoint,100,true,"aa 영화 배우");
+//        makeRandomBallWithTag(setupPoint,100,true,"명대사");
+//        makeRandomBallWithTag(setupPoint,100,true,"명대사");
+//        makeRandomBallWithTag(setupPoint,100,true,"명대사");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화명장면");
+//        makeRandomBallWithTag(setupPoint,100,true,"영화관");
+
+        //when
+        List<FBalltag> tags = fBallTagQueryRepository.findByTextMatchTags("TEST", setupPoint);
+        //then
+        System.out.println(tags.size());
+
+
+    }
+
 
     void makeRandomBallWithTagSave(LatLng findPosition, int distance, int count, boolean isAlive){
         for(int i=0;i<count;i++){
-            LatLng randomLocation = GisGeometryUtil.getRandomLocation(findPosition.getLongitude(), findPosition.getLatitude(), distance);
-            FBall tempBall = makeFBall(isAlive, randomLocation);
-            FBall ballUuid = fBallDataRepository.save(tempBall);
-            fBallTagDataRepository.save(FBalltag.builder().ballUuid(ballUuid).tagItem(i+"Tag1").build());
+            makeRandomBallWithTag(findPosition, distance, isAlive, i + "Tag1");
         }
+    }
+
+    void makeRandomBallWithTag(LatLng findPosition, int distance, boolean isAlive, String tageName) {
+        LatLng randomLocation = GisGeometryUtil.getRandomLocation(findPosition.getLongitude(), findPosition.getLatitude(), distance);
+        FBall tempBall = makeFBall(isAlive, randomLocation);
+        FBall ballUuid = fBallDataRepository.save(tempBall);
+        fBallTagDataRepository.save(FBalltag.builder().ballUuid(ballUuid).tagItem(tageName).build());
     }
 
     void makeRandomBallWithTagSameSave(LatLng findPosition, int distance, int count, boolean isAlive){
         for(int i=0;i<count;i++){
-            LatLng randomLocation = GisGeometryUtil.getRandomLocation(findPosition.getLongitude(), findPosition.getLatitude(), distance);
-            FBall tempBall = makeFBall(isAlive, randomLocation);
-            FBall ballUuid = fBallDataRepository.save(tempBall);
-            fBallTagDataRepository.save(FBalltag.builder().ballUuid(ballUuid).tagItem("Tag1").build());
+            makeRandomBallWithTag(findPosition, distance, isAlive, "Tag1");
         }
     }
 

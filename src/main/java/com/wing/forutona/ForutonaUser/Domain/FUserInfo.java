@@ -97,6 +97,8 @@ public class FUserInfo {
     private Long alarmSponNewContent =0L;
     @ColumnDefault("1")
     private Long deactivation =1L;
+    @ColumnDefault("0")
+    private Double playerPower = 0.0;
 
 
     @Builder

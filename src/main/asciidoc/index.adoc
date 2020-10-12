@@ -93,3 +93,11 @@ operation::ListUpBallListUpOrderByBI[snippets='response-fields,response-body,req
 `GET` 요청을 사용하여 검색된 Ball의 Tag를 가져온뒤 Ball의 BI를 통해 순차 정렬을 하여 을 조회 할수 있다.
 
 operation::FTagRankingFromBallInfluencePower[snippets='response-fields,response-body,request-parameters,http-request']
+
+=== Tag를 검색어 기준으로 검색 함 정렬은 TagPower 기준
+
+operation::TagRankingFromTextOrderBySumBI[snippets='response-fields,response-body,request-parameters,http-request']
+
+=== NickName을 검색 정렬을 Player Power
+
+operation::UserNickNameWithFullTextMatchIndex[snippets='response-fields,response-body,request-parameters,http-request']

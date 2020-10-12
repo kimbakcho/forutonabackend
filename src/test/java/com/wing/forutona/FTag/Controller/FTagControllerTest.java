@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.Common.RestDocsConfiguration;
 import com.wing.forutona.FTag.Dto.TagRankingFromBallInfluencePowerReqDto;
+import com.wing.forutona.FTag.Dto.TagRankingFromTextReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
 import com.wing.forutona.FTag.Service.FTagService;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,6 +83,49 @@ class FTagControllerTest extends BaseTest {
                         relaxedResponseFields
                                 (fieldWithPath("[].tagName").description("TagName"),
                                 fieldWithPath("[].tagPower").description("ball의 BI로 부터 계산된 TagPower"))
+                        )
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
+
+    @Test
+    @DisplayName("getTagRankingFromTextOrderBySumBI 호출")
+    void getTagRankingFromTextOrderBySumBI() throws Exception {
+        //given
+        List<TagRankingResDto> tagRankingResDtos = new ArrayList<>();
+        tagRankingResDtos.add(new TagRankingResDto("TESTTag1",0.03));
+        tagRankingResDtos.add(new TagRankingResDto("TESTTag2",0.02));
+        tagRankingResDtos.add(new TagRankingResDto("TESTTag3",0.01));
+        given(fTagService.getTagRankingFromTextOrderBySumBI(any())).willReturn(tagRankingResDtos);
+
+        TagRankingFromTextReqDto tagRankingFromTextReqDto = new TagRankingFromTextReqDto();
+        tagRankingFromTextReqDto.setMapCenterLatitude(37.5012);
+        tagRankingFromTextReqDto.setMapCenterLongitude(126.8976);
+        tagRankingFromTextReqDto.setSearchTagText("TEST");
+
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        Map<String, String> ReqDto = new ObjectMapper()
+                .convertValue(tagRankingFromTextReqDto,
+                        new TypeReference<Map<String, String>>() {
+                        });
+        params.setAll(ReqDto);
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/FTag/TagRankingFromTextOrderBySumBI")
+                .contentType(MediaType.APPLICATION_JSON).params(params))
+                .andDo(print())
+                .andDo(document("TagRankingFromTextOrderBySumBI",
+                        relaxedRequestParameters(
+                                parameterWithName("mapCenterLatitude").description("Search 하는 MapCenter Lat"),
+                                parameterWithName("mapCenterLongitude").description("Search 하는 MapCenter Long"),
+                                parameterWithName("searchTagText").description("Search 하는 Tag Name")
+                                ),
+                        relaxedResponseFields
+                                (fieldWithPath("[].tagName").description("TagName"),
+                                        fieldWithPath("[].tagPower").description("ball의 BI로 부터 계산된 TagPower"))
                         )
                 )
                 .andExpect(status().isOk())
