@@ -2,11 +2,13 @@ package com.wing.forutona.FBall.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.Common.RestDocsConfiguration;
 import com.wing.forutona.FBall.Domain.FBallState;
 import com.wing.forutona.FBall.Domain.FBallType;
 import com.wing.forutona.FBall.Dto.FBallListUpFromBIReqDto;
+import com.wing.forutona.FBall.Dto.FBallListUpFromSearchTitleReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.Service.BallListUpService;
 import com.wing.forutona.FBall.Service.BallSelectService;
@@ -56,32 +58,9 @@ class FBallControllerTest extends BaseTest {
     @DisplayName("fBallListUpService 영향력 순으로 ListUp 호출")
     void listUpBallInfluencePower() throws Exception {
         List<FBallResDto> fBallResDtos = new ArrayList<>();
-        FBallResDto fBallResDto = new FBallResDto();
-        fBallResDto.setLatitude(37.5541);
-        fBallResDto.setLongitude(127.1223);
-        fBallResDto.setBallUuid("TESTBALL1UUID");
-        fBallResDto.setBallName("TESTBall1NAME");
-        fBallResDto.setBallType(FBallType.IssueBall);
-        fBallResDto.setBallState(FBallState.Play);
-        fBallResDto.setPlaceAddress("대한민국 경기도");
-        fBallResDto.setBallHits(100);
-        fBallResDto.setBallLikes(10);
-        fBallResDto.setBallDisLikes(5);
-        fBallResDto.setCommentCount(5);
-        fBallResDto.setBallPower(10);
-        fBallResDto.setActivationTime(LocalDateTime.now().plusDays(7));
-        fBallResDto.setMakeTime(LocalDateTime.now());
-        fBallResDto.setDescription("TEST");
+        FBallResDto fBallResDto = basicBall("TESTBALL1UUID", "TESTBall1NAME");
 
-        FUserInfoSimpleResDto fUserInfoSimpleResDto = new FUserInfoSimpleResDto();
-        fUserInfoSimpleResDto.setUid("TESTUid");
-        fUserInfoSimpleResDto.setNickName("UserNickName");
-        fUserInfoSimpleResDto.setProfilePictureUrl("https://storage.googleapis.com/publicforutona/profileimage/6a44fed4-0ca3-47d7-b5a8-2389ad8d0145.png");
-        fUserInfoSimpleResDto.setIsoCode("KR");
-        fUserInfoSimpleResDto.setUserLevel(0.0);
-        fUserInfoSimpleResDto.setSelfIntroduction("Hi");
-        fUserInfoSimpleResDto.setCumulativeInfluence(2.0);
-        fUserInfoSimpleResDto.setFollowCount(10L);
+        FUserInfoSimpleResDto fUserInfoSimpleResDto = basicUser();
 
         fBallResDto.setUid(fUserInfoSimpleResDto);
         fBallResDto.setInfluencePower(9.0);
@@ -144,31 +123,81 @@ class FBallControllerTest extends BaseTest {
                                 fieldWithPath("content[].ballUuid").description("Ball Id")
                         )
                 ));
-
-
     }
 
-    @Test
-    void selectBall() throws Exception {
-        //given
-        String ballTestUuid = "TESTBALL1UUID";
-        FBallResDto fBallResDto = new FBallResDto();
-        fBallResDto.setLatitude(37.5541);
-        fBallResDto.setLongitude(127.1223);
-        fBallResDto.setBallUuid(ballTestUuid);
-        fBallResDto.setBallName("TESTBall1NAME");
-        fBallResDto.setBallType(FBallType.IssueBall);
-        fBallResDto.setBallState(FBallState.Play);
-        fBallResDto.setPlaceAddress("대한민국 경기도");
-        fBallResDto.setBallHits(100);
-        fBallResDto.setBallLikes(10);
-        fBallResDto.setBallDisLikes(5);
-        fBallResDto.setCommentCount(5);
-        fBallResDto.setBallPower(10);
-        fBallResDto.setActivationTime(LocalDateTime.now().plusDays(7));
-        fBallResDto.setMakeTime(LocalDateTime.now());
-        fBallResDto.setDescription("TEST");
 
+    @Test
+    void searchBallListUpFromSearchTitle() throws Exception {
+        List<FBallResDto> fBallResDtos = new ArrayList<>();
+        FBallResDto fBallResDto = basicBall("TESTBALL1UUID", "TEST1");
+
+        FUserInfoSimpleResDto fUserInfoSimpleResDto = basicUser();
+
+        fBallResDto.setUid(fUserInfoSimpleResDto);
+        fBallResDto.setInfluencePower(9.0);
+        fBallResDto.setContributor(10);
+        fBallResDto.setBallDeleteFlag(false);
+
+        FBallResDto clone1 = (FBallResDto) fBallResDto.clone();
+        fBallResDtos.add(clone1);
+        FBallResDto clone2 = (FBallResDto) fBallResDto.clone();
+        clone2.setBallUuid("TESTBALL2UUID");
+        clone2.setBallName("12 TEST1");
+        clone2.setLatitude(36.5531);
+        clone2.setLongitude(127.1323);
+        fBallResDtos.add(clone2);
+
+        FBallResDto clone3 = (FBallResDto) fBallResDto.clone();
+        clone3.setBallUuid("TESTBALL3UUID");
+        clone2.setBallName("1TEST 1");
+        clone3.setLatitude(36.5131);
+        clone3.setLongitude(127.2323);
+        fBallResDtos.add(clone3);
+        //given
+        Pageable pageable = PageRequest.of(0, 40);
+        PageImpl<FBallResDto> testData = new PageImpl<FBallResDto>(fBallResDtos, pageable, 3);
+
+        when(ballListUpService.searchBallListUpFromSearchTitle(any(), any())).thenReturn(testData);
+
+        FBallListUpFromSearchTitleReqDto fBallListUpFromSearchTitleReqDto =
+                new FBallListUpFromSearchTitleReqDto();
+
+        fBallListUpFromSearchTitleReqDto.setLatitude(37.5012);
+        fBallListUpFromSearchTitleReqDto.setLongitude(126.8976);
+        fBallListUpFromSearchTitleReqDto.setSearchText("TEST");
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        Map<String, String> ReqDto = new ObjectMapper()
+                .convertValue(fBallListUpFromSearchTitleReqDto,
+                        new TypeReference<Map<String, String>>() {});
+
+        ReqDto.put("limit", "40");
+        ReqDto.put("offset", "0");
+        ReqDto.put("sort","ballPower,DESC");
+        params.setAll(ReqDto);
+
+        //when then
+        mockMvc.perform(get("/v1/FBall/ListUpFromSearchTitle")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON).params(params))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("ListUpFromSearchTitle",
+                        relaxedRequestParameters(
+                                parameterWithName("latitude").description("find 하는 Map 중앙 위치"),
+                                parameterWithName("longitude").description("find 하는 Map 중앙 위치"),
+                                parameterWithName("searchText").description("볼 이름 검색어")
+                        ),
+                        relaxedResponseFields(fieldWithPath("content").description("ball 들"),
+                                fieldWithPath("content[].latitude").description("위도"),
+                                fieldWithPath("content[].longitude").description("경도"),
+                                fieldWithPath("content[].ballUuid").description("Ball Id")
+                        )
+                ));
+    }
+
+    private FUserInfoSimpleResDto basicUser() {
         FUserInfoSimpleResDto fUserInfoSimpleResDto = new FUserInfoSimpleResDto();
         fUserInfoSimpleResDto.setUid("TESTUid");
         fUserInfoSimpleResDto.setNickName("UserNickName");
@@ -178,6 +207,16 @@ class FBallControllerTest extends BaseTest {
         fUserInfoSimpleResDto.setSelfIntroduction("Hi");
         fUserInfoSimpleResDto.setCumulativeInfluence(2.0);
         fUserInfoSimpleResDto.setFollowCount(10L);
+        return fUserInfoSimpleResDto;
+    }
+
+    @Test
+    void selectBall() throws Exception {
+        //given
+        String ballTestUuid = "TESTBALL1UUID";
+        FBallResDto fBallResDto = basicBall(ballTestUuid, "TESTBall1NAME");
+
+        FUserInfoSimpleResDto fUserInfoSimpleResDto = basicUser();
 
         fBallResDto.setUid(fUserInfoSimpleResDto);
         fBallResDto.setInfluencePower(9.0);
@@ -217,6 +256,26 @@ class FBallControllerTest extends BaseTest {
                                 fieldWithPath("contributor").description("기여자 숫자"),
                                 fieldWithPath("ballDeleteFlag").description("볼 삭제 유무")
                         )));
+    }
+
+    private FBallResDto basicBall(String ballTestUuid, String testBall1NAME) {
+        FBallResDto fBallResDto = new FBallResDto();
+        fBallResDto.setLatitude(37.5541);
+        fBallResDto.setLongitude(127.1223);
+        fBallResDto.setBallUuid(ballTestUuid);
+        fBallResDto.setBallName(testBall1NAME);
+        fBallResDto.setBallType(FBallType.IssueBall);
+        fBallResDto.setBallState(FBallState.Play);
+        fBallResDto.setPlaceAddress("대한민국 경기도");
+        fBallResDto.setBallHits(100);
+        fBallResDto.setBallLikes(10);
+        fBallResDto.setBallDisLikes(5);
+        fBallResDto.setCommentCount(5);
+        fBallResDto.setBallPower(10);
+        fBallResDto.setActivationTime(LocalDateTime.now().plusDays(7));
+        fBallResDto.setMakeTime(LocalDateTime.now());
+        fBallResDto.setDescription("TEST");
+        return fBallResDto;
     }
 
 }

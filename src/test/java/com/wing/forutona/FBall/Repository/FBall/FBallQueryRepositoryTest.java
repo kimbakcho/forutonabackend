@@ -3,8 +3,8 @@ package com.wing.forutona.FBall.Repository.FBall;
 import com.google.type.LatLng;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
-import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Dto.BallFromMapAreaReqDto;
+import com.wing.forutona.FBall.Dto.FBallListUpFromSearchTitleReqDto;
 import com.wing.forutona.FBall.Dto.FBallResDto;
 import com.wing.forutona.FBall.FBallTestUtil;
 import com.wing.forutona.FBall.Repository.FBallDataRepository;
@@ -16,10 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,6 +78,7 @@ class FBallQueryRepositoryTest extends BaseTest {
 
 
     @Test
+    @Disabled
     @DisplayName("사각형 영역안에 들어 있는 볼만 검색 (살아 있고 지워지지 않는 볼만)")
     void getBallListUpFromMapAreaTEST() throws ParseException {
         //given
@@ -99,12 +98,36 @@ class FBallQueryRepositoryTest extends BaseTest {
                 127.66937255859375, centerPosition.getLatitude(), centerPosition.getLongitude());
 
         Page<FBallResDto> byBallListUpFromMapArea = fBallQueryRepository
-                .findByBallListUpFromMapAreaOrderByBP(ballFromMapAreaReqDto, PageRequest.of(0,40));
+                .findByBallListUpFromMapAreaOrderByBP(ballFromMapAreaReqDto, PageRequest.of(0, 40));
 
         //then
-        assertEquals(byBallListUpFromMapArea.getTotalElements(),1000);
+        assertEquals(byBallListUpFromMapArea.getTotalElements(), 1000);
 
-        assertTrue(byBallListUpFromMapArea.getContent().get(0).getBallPower()>=byBallListUpFromMapArea.getContent().get(1).getBallPower());
+        assertTrue(byBallListUpFromMapArea.getContent().get(0).getBallPower() >= byBallListUpFromMapArea.getContent().get(1).getBallPower());
+
+    }
+
+    @Test
+    void getBallListUpFromSearchTitle() throws ParseException {
+        //given
+        FBallListUpFromSearchTitleReqDto fBallListUpFromSearchTitleReqDto = new FBallListUpFromSearchTitleReqDto();
+        fBallListUpFromSearchTitleReqDto.setLatitude(35.285984736065764);
+        fBallListUpFromSearchTitleReqDto.setLongitude(128.902587890625);
+        fBallListUpFromSearchTitleReqDto.setSearchText("qrq");
+        //when
+        Page<FBallResDto> ballPower = fBallQueryRepository.findByBallListUpFromSearchTitle(fBallListUpFromSearchTitleReqDto,
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "ballPower")));
+
+        Page<FBallResDto> ballHits = fBallQueryRepository.findByBallListUpFromSearchTitle(fBallListUpFromSearchTitleReqDto,
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "ballHits")));
+
+        Page<FBallResDto> makeTime = fBallQueryRepository.findByBallListUpFromSearchTitle(fBallListUpFromSearchTitleReqDto,
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "makeTime")));
+
+        Page<FBallResDto> distances = fBallQueryRepository.findByBallListUpFromSearchTitle(fBallListUpFromSearchTitleReqDto,
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "distance")));
+        //then
+        System.out.println(ballPower.getContent().size());
 
 
     }

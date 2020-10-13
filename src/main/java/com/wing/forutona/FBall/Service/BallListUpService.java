@@ -56,7 +56,7 @@ class BallListUpServiceImpl implements BallListUpService {
 
     @Override
     public Page<FBallResDto> searchBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, Pageable pageable) throws ParseException {
-        return fBallQueryRepository.getBallListUpFromSearchTitle((FBallListUpFromSearchTitleReqDto) reqDto, pageable);
+        return fBallQueryRepository.findByBallListUpFromSearchTitle(reqDto, pageable);
     }
 
     @Override

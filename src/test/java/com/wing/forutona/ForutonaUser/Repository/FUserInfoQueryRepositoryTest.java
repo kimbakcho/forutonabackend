@@ -5,17 +5,17 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.ForutonaUser.Dto.FUserInfoResDto;
-import lombok.RequiredArgsConstructor;
+import com.wing.forutona.ForutonaUser.Dto.FUserInfoSimpleResDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 class FUserInfoQueryRepositoryTest extends BaseTest {
@@ -31,17 +31,35 @@ class FUserInfoQueryRepositoryTest extends BaseTest {
         double geoTestLat = 36.767149;
         double geoTestLong = 127.371234;
         List<FUserInfo> tempContent = fUserInfoDataRepository.findAll();
-        tempContent.forEach(x->{
-            x.updatePlacePoint(geoTestLat+0.3,geoTestLong+0.3);
+        tempContent.forEach(x -> {
+            x.updatePlacePoint(geoTestLat + 0.3, geoTestLong + 0.3);
         });
         List<FUserInfo> content = fUserInfoDataRepository.findAll(PageRequest.of(0, 10)).getContent();
-        for(int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             FUserInfo fUserInfo = tempContent.get(i);
-            fUserInfo.updatePlacePoint( geoTestLat,geoTestLong);
+            fUserInfo.updatePlacePoint(geoTestLat, geoTestLong);
         }
         LatLng latLng = LatLng.newBuilder().setLatitude(geoTestLat).setLongitude(geoTestLong).build();
         List<FUserInfoResDto> findNearUserFromGeoLocation = fUserInfoQueryRepository.getFindNearUserFromGeoLocation(latLng, 100);
         System.out.println(findNearUserFromGeoLocation.size());
-        assertTrue(findNearUserFromGeoLocation.size()>=10);
+        assertTrue(findNearUserFromGeoLocation.size() >= 10);
+    }
+
+    @Test
+    void findByUserNickNameWithFullTextMatchIndex() {
+        //given
+
+        //when
+        Page<FUserInfoSimpleResDto> playerPowers = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "playerPower")));
+
+        Page<FUserInfoSimpleResDto> nickNames = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "nickName")));
+
+        Page<FUserInfoSimpleResDto> followCount = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "followCount")));
+
+        //then
+
     }
 }

@@ -31,9 +31,10 @@ import java.util.stream.Collectors;
 
 import static com.wing.forutona.FBall.Domain.QFBall.fBall;
 import static com.wing.forutona.FTag.Domain.QFBalltag.fBalltag;
+import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
 @Repository
-public class FBallQueryRepository extends Querydsl4RepositorySupport {
+public class FBallQueryRepository  {
 
     final BallCustomOrderFactory ballCustomOrderFactory;
 
@@ -41,7 +42,6 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     EntityManager em;
 
     public FBallQueryRepository(BallCustomOrderFactory ballCustomOrderFactory) {
-        super(FBall.class);
         this.ballCustomOrderFactory = ballCustomOrderFactory;
     }
 
@@ -86,18 +86,19 @@ public class FBallQueryRepository extends Querydsl4RepositorySupport {
     }
 
 
-    public Page<FBallResDto> getBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, Pageable pageable) throws ParseException {
+    public Page<FBallResDto> findByBallListUpFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto, Pageable pageable) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         NumberTemplate matchTemplate = Expressions.numberTemplate(Integer.class,
                 "function('match',{0},{1})",
-                QFBall.fBall.ballName, "+" + reqDto.getSearchText() + "*");
+                QFBall.fBall.ballName, "'" + reqDto.getSearchText() + "'");
 
         LatLng centerLatLng = LatLng.newBuilder().setLatitude(reqDto.getLatitude()).setLongitude(reqDto.getLongitude()).build();
 
         QueryResults<FBall> fBallQueryResults = queryFactory
                 .select(fBall)
                 .from(fBall)
+                .join(fBall.uid,fUserInfo)
                 .where(matchTemplate.eq(1)
                         , fBall.activationTime.after(LocalDateTime.now())
                         , fBall.ballDeleteFlag.isFalse()

@@ -61,7 +61,7 @@
 
 
 
-[[볼 조회]]
+[[ball]]
 
 |===
 | FBallState 값 | Description
@@ -76,28 +76,79 @@
 | 종료
 |===
 
+
 === 볼 조회
 
 `GET` 요청을 사용하여 BallUuid 로 Ball 을 조회 할수 있다.
 
-operation::FBallSelect[snippets='response-fields,response-body,request-parameters,http-request']
+.request
+include::{snippets}/FBallListUp/request-parameters.adoc[]
+include::{snippets}/FBallListUp/http-request.adoc[]
 
-=== 볼 영향력순 으로 조회
+.response
+include::{snippets}/FBallListUp/response-fields.adoc[]
+include::{snippets}/FBallListUp/http-response.adoc[]
 
-`GET` 요청을 사용하여 영향력 순으로 FBall 을 조회 할수 있다.
+===  볼 영향력순 으로 조회
 
-operation::ListUpBallListUpOrderByBI[snippets='response-fields,response-body,request-parameters,http-request']
+`GET` 요청을 사용하여 BallUuid 로 Ball 을 조회 할수 있다.
+
+.request
+include::{snippets}/ListUpBallListUpOrderByBI/request-parameters.adoc[]
+include::{snippets}/ListUpBallListUpOrderByBI/http-request.adoc[]
+
+.response
+include::{snippets}/ListUpBallListUpOrderByBI/response-fields.adoc[]
+include::{snippets}/ListUpBallListUpOrderByBI/http-response.adoc[]
+
+===  볼 이름 검색
+.request
+include::{snippets}/ListUpFromSearchTitle/request-parameters.adoc[]
+include::{snippets}/ListUpFromSearchTitle/http-request.adoc[]
+
+.response
+include::{snippets}/ListUpFromSearchTitle/response-fields.adoc[]
+include::{snippets}/ListUpFromSearchTitle/http-response.adoc[]
 
 === Tag를 영향력순 으로 조회
 
 `GET` 요청을 사용하여 검색된 Ball의 Tag를 가져온뒤 Ball의 BI를 통해 순차 정렬을 하여 을 조회 할수 있다.
+.request
+include::{snippets}/FTagRankingFromBallInfluencePower/request-parameters.adoc[]
+include::{snippets}/FTagRankingFromBallInfluencePower/http-request.adoc[]
 
-operation::FTagRankingFromBallInfluencePower[snippets='response-fields,response-body,request-parameters,http-request']
+.response
+include::{snippets}/FTagRankingFromBallInfluencePower/response-fields.adoc[]
+include::{snippets}/FTagRankingFromBallInfluencePower/http-response.adoc[]
 
 === Tag를 검색어 기준으로 검색 함 정렬은 TagPower 기준
 
-operation::TagRankingFromTextOrderBySumBI[snippets='response-fields,response-body,request-parameters,http-request']
+Tag를 검색어 기준으로 검색 함 정렬은 TagPower 기준
+
+.request
+include::{snippets}/TagRankingFromTextOrderBySumBI/request-parameters.adoc[]
+include::{snippets}/TagRankingFromTextOrderBySumBI/http-request.adoc[]
+
+.response
+include::{snippets}/TagRankingFromTextOrderBySumBI/response-fields.adoc[]
+include::{snippets}/TagRankingFromTextOrderBySumBI/http-response.adoc[]
+
+=== Tag으로 Ball 검색 Tag는 정확한 문자열 매칭
+
+Tag으로 Ball 검색 Tag는 정확한 문자열 매칭
+
+.request
+include::{snippets}/TagItem/request-parameters.adoc[]
+include::{snippets}/TagItem/http-request.adoc[]
+
+.response
+include::{snippets}/TagItem/http-response.adoc[]
 
 === NickName을 검색 정렬을 Player Power
+.request
+include::{snippets}/UserNickNameWithFullTextMatchIndex/request-parameters.adoc[]
+include::{snippets}/UserNickNameWithFullTextMatchIndex/http-request.adoc[]
 
-operation::UserNickNameWithFullTextMatchIndex[snippets='response-fields,response-body,request-parameters,http-request']
+.response
+include::{snippets}/UserNickNameWithFullTextMatchIndex/response-fields.adoc[]
+include::{snippets}/UserNickNameWithFullTextMatchIndex/http-response.adoc[]

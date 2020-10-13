@@ -48,6 +48,7 @@ class FUserInfoControllerTest extends BaseTest {
         params.add("searchNickName","테스트");
         params.add("limit","40");
         params.add("offset","0");
+        params.add("sort","playerPower,DESC");
 
         List<FUserInfoSimpleResDto> contents = new ArrayList<>();
         FUserInfoSimpleResDto user1 = FUserInfoSimpleResDto.builder()

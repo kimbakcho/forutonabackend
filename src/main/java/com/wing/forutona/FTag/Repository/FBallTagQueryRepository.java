@@ -1,25 +1,39 @@
 package com.wing.forutona.FTag.Repository;
 
 import com.google.type.LatLng;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.CustomUtil.GisGeometryUtil;
 import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FTag.Domain.FBalltag;
+import com.wing.forutona.FTag.Domain.QFBalltag;
+import com.wing.forutona.FTag.Dto.FBallTagResDto;
+import com.wing.forutona.FTag.Dto.TextMatchTagBallReqDto;
+import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.wing.forutona.FBall.Domain.QFBall.fBall;
 import static com.wing.forutona.FTag.Domain.QFBalltag.fBalltag;
 import static com.wing.forutona.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
 @Repository
-public class FBallTagQueryRepository {
+public class FBallTagQueryRepository   {
 
     @PersistenceContext
     EntityManager em;
@@ -46,5 +60,43 @@ public class FBallTagQueryRepository {
                 .fetch();
     }
 
+    public Page<FBallTagResDto> findByTagItem(TextMatchTagBallReqDto reqDto, Pageable pageable) throws ParseException {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        LatLng mapCenter = LatLng.newBuilder()
+                .setLatitude(reqDto.getMapCenterLatitude())
+                .setLongitude(reqDto.getMapCenterLongitude())
+                .build();
+
+
+        JPAQuery<FBalltag> tempQuery = queryFactory.select(fBalltag)
+                .from(fBalltag).join(fBalltag.ballUuid, fBall)
+                .where(fBalltag.tagItem.eq(reqDto.getSearchText()));
+
+        JPAQuery<FBalltag> tempQuery1 = applySort(tempQuery, pageable, mapCenter);
+
+        JPAQuery<FBalltag> resultQuery = tempQuery1.limit(pageable.getPageSize()).offset(pageable.getOffset());
+
+        Page<FBalltag> page = PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, tempQuery::fetchCount);
+
+        return page.map(x-> new FBallTagResDto(x));
+    }
+
+    public JPAQuery<FBalltag> applySort(JPAQuery<FBalltag> query,Pageable pageable,LatLng mapCenter) throws ParseException {
+        PathBuilder<FBall> entityPath = new PathBuilder<FBall>(FBall.class, "fBall");
+        for (Sort.Order order : pageable.getSort()) {
+            if(order.getProperty().equals("distance")){
+                NumberTemplate st_distance = Expressions.numberTemplate(Double.class,
+                        "function('st_distance_sphere',{0},{1})", fBall.placePoint,
+                        GisGeometryUtil.createPoint(mapCenter.getLatitude(), mapCenter.getLongitude()));
+                query.orderBy(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(order.getDirection().name()), st_distance));
+            } else {
+                PathBuilder<Object> path = entityPath.get(order.getProperty());
+                query.orderBy(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(order.getDirection().name()), path));
+            }
+        }
+        return query;
+    }
 
 }

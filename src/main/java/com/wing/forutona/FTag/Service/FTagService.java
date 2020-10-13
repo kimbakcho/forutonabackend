@@ -11,9 +11,12 @@ import com.wing.forutona.FTag.Domain.FBalltag;
 import com.wing.forutona.FTag.Dto.FBallTagResDto;
 import com.wing.forutona.FTag.Dto.TagRankingFromTextReqDto;
 import com.wing.forutona.FTag.Dto.TagRankingResDto;
+import com.wing.forutona.FTag.Dto.TextMatchTagBallReqDto;
 import com.wing.forutona.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.FTag.Repository.FBallTagQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,8 @@ public interface FTagService {
     List<FBallTagResDto> getTagFromBallUuid(String ballUuid);
 
     List<TagRankingResDto> getTagRankingFromTextOrderBySumBI(TagRankingFromTextReqDto tagRankingFromTextReqDto) throws ParseException;
+
+    Page<FBallTagResDto> getTagItem(TextMatchTagBallReqDto reqDto, Pageable pageable) throws ParseException;
 }
 
 @Service
@@ -80,6 +85,11 @@ class FTagServiceImpl implements FTagService {
                 .setLatitude(tagRankingFromTextReqDto.getMapCenterLatitude()).build();
         List<FBalltag> byBallInTags = fBallTagQueryRepository.findByTextMatchTags(tagRankingFromTextReqDto.getSearchTagText(), mapCenter);
         return getListOrderByTagPower(mapCenter, 10, byBallInTags);
+    }
+
+    @Override
+    public Page<FBallTagResDto> getTagItem(TextMatchTagBallReqDto reqDto, Pageable pageable) throws ParseException {
+        return fBallTagQueryRepository.findByTagItem(reqDto,pageable);
     }
 
 
