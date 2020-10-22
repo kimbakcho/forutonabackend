@@ -2,7 +2,6 @@ package com.wing.forutona.FTag.Controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.BaseTest;
 import com.wing.forutona.Common.RestDocsConfiguration;
 import com.wing.forutona.FBall.Domain.FBallState;
@@ -27,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +98,7 @@ class FTagControllerTest extends BaseTest {
 
     @Test
     @DisplayName("getTagRankingFromTextOrderBySumBI 호출")
-    void getTagRankingFromTextOrderBySumBI() throws Exception {
+    void getTagRankingFromTextOrderBySumBP() throws Exception {
         //given
         List<TagRankingResDto> tagRankingResDtos = new ArrayList<>();
         tagRankingResDtos.add(new TagRankingResDto("TESTTag1",0.03));

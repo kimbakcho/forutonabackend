@@ -15,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 /**
  * FireBase Auth Token 을 넣어 주는 Inject
  */
-@Component
+
 public class FireBaseHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Autowired
     FireBaseAdmin fireBaseAdmin;

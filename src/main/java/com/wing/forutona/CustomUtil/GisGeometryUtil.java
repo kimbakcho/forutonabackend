@@ -1,8 +1,6 @@
 package com.wing.forutona.CustomUtil;
 
 import com.google.type.LatLng;
-import com.grum.geocalc.BoundingArea;
-import com.grum.geocalc.EarthCalc;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;

@@ -15,7 +15,6 @@ import com.wing.forutona.FBall.Domain.FBall;
 import com.wing.forutona.FBall.Domain.QFBall;
 import com.wing.forutona.FBall.Dto.*;
 import com.wing.forutona.FBall.Service.BallCustomOrderService.BallCustomOrderFactory;
-import com.wing.forutona.Querydsl4RepositorySupport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

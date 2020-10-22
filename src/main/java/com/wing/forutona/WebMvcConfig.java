@@ -13,29 +13,29 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    @Autowired
-    private FAuthHttpInterceptor fAuthHttpInterceptor;
-
-    @Autowired
-    private ResponseAddJsonHeaderInterceptor responseAddJsonHeaderInterceptor;
-
-    @Autowired
-    private FireBaseHandlerMethodArgumentResolver fireBaseHandlerMethodArgumentResolver;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(fAuthHttpInterceptor)
-                .addPathPatterns("/**");
-
-        registry.addInterceptor(responseAddJsonHeaderInterceptor)
-                .addPathPatterns("/**");
-
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(fireBaseHandlerMethodArgumentResolver);
-    }
+//
+//    @Autowired
+//    private FAuthHttpInterceptor fAuthHttpInterceptor;
+//
+//    @Autowired
+//    private ResponseAddJsonHeaderInterceptor responseAddJsonHeaderInterceptor;
+//
+//    @Autowired
+//    private FireBaseHandlerMethodArgumentResolver fireBaseHandlerMethodArgumentResolver;
+//
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(fAuthHttpInterceptor)
+//                .addPathPatterns("/**");
+//
+//        registry.addInterceptor(responseAddJsonHeaderInterceptor)
+//                .addPathPatterns("/**");
+//
+//    }
+//
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+//        argumentResolvers.add(fireBaseHandlerMethodArgumentResolver);
+//    }
 
 }

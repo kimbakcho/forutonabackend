@@ -6,9 +6,11 @@ import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.ForutonaUser.Dto.*;
 import com.wing.forutona.ForutonaUser.Service.FUserInfoService;
 import com.wing.forutona.ForutonaUser.Service.SnsLogin.SnsSupportService;
+import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -24,20 +26,18 @@ public class FUserInfoController {
     final FUserInfoService fUserInfoService;
 
     @GetMapping(value = "/v1/FUserInfo")
-    @AuthFireBaseJwtCheck
-    FUserInfoResDto selectFUserInfo(FFireBaseToken fFireBaseToken) throws Exception {
-        return fUserInfoService.selectFUserInfo(fFireBaseToken.getUserFireBaseUid());
+    FUserInfoResDto selectFUserInfo(@AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return fUserInfoService.selectFUserInfo(userAdapter.getfUserInfo().getUid());
     }
 
     @PutMapping(value = "/v1/FUserInfo/UserPosition")
-    @AuthFireBaseJwtCheck
-    void updateUserPosition(UserPositionUpdateReqDto reqDto, FFireBaseToken fFireBaseToken) throws Exception {
-        fUserInfoService.updateUserPosition(reqDto, fFireBaseToken);
+    void updateUserPosition(UserPositionUpdateReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        fUserInfoService.updateUserPosition(reqDto,userAdapter.getfUserInfo());
     }
 
     @PutMapping(value = "/v1/FUserInfo/FireBaseMessageToken")
-    public void updateFireBaseMessageToken(@RequestParam String token, FFireBaseToken fFireBaseToken) {
-        fUserInfoService.updateFireBaseMessageToken(fFireBaseToken.getUserFireBaseUid(), token);
+    public void updateFireBaseMessageToken(@RequestParam String token,@AuthenticationPrincipal UserAdapter userAdapter) {
+        fUserInfoService.updateFireBaseMessageToken(userAdapter.getfUserInfo().getUid(), token);
     }
 
 

@@ -25,7 +25,7 @@ import java.util.UUID;
 public interface FUserInfoService {
     FUserInfoResDto selectFUserInfo(String uid);
 
-    void updateUserPosition(UserPositionUpdateReqDto reqDto, FFireBaseToken fireBaseToken);
+    void updateUserPosition(UserPositionUpdateReqDto reqDto, FUserInfo fUserInfo);
 
     void updateFireBaseMessageToken(String uid, String token);
 
@@ -64,8 +64,7 @@ class FUserInfoServiceImpl implements FUserInfoService {
     }
 
     @Override
-    public void updateUserPosition(UserPositionUpdateReqDto reqDto, FFireBaseToken fireBaseToken) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+    public void updateUserPosition(UserPositionUpdateReqDto reqDto, FUserInfo fUserInfo ) {
         fUserInfo.updatePlacePoint(reqDto.getLat(), reqDto.getLng());
     }
 
