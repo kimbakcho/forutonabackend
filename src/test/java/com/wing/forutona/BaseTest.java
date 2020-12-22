@@ -1,23 +1,18 @@
 package com.wing.forutona;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.wing.forutona.CustomUtil.FAuthHttpInterceptor;
-import com.wing.forutona.CustomUtil.FireBaseHandlerMethodArgumentResolver;
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
-import org.junit.jupiter.api.BeforeAll;
+import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @ActiveProfiles("test")

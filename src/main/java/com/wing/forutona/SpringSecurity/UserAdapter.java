@@ -1,9 +1,8 @@
 package com.wing.forutona.SpringSecurity;
 
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 

@@ -35,4 +35,30 @@ public class LocalPreference implements CustomPreference{
         jpaProperties.put("hibernate.use_sql_comment", "true");
         return jpaProperties;
     }
+
+    @Override
+    public Properties getManagerJpaProperties() {
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", "com.wing.forutona.CustomDialect");
+        jpaProperties.put("hibernate.show_sql", "true");
+        jpaProperties.put("hibernate.format_sql", "true");
+        jpaProperties.put("hibernate.default_batch_fetch_size", "1000");
+        jpaProperties.put("hibernate.use_sql_comment", "true");
+        return jpaProperties;
+    }
+
+    @Override
+    public String getManagerDataSourceUserName() {
+        return  "managementforutona";
+    }
+
+    @Override
+    public String getManagerDataSourcePassword() {
+        return "forutona1020";
+    }
+
+    @Override
+    public String getManagerDataSourceUrl() {
+        return "jdbc:mysql://forutonadb.thkomeet.com:3306/forutonamanager_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false";
+    }
 }

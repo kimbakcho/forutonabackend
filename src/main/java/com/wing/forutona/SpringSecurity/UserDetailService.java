@@ -1,9 +1,8 @@
 package com.wing.forutona.SpringSecurity;
 
-import com.wing.forutona.ForutonaUser.Domain.FUserInfo;
-import com.wing.forutona.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -7,4 +7,12 @@ public interface CustomPreference {
     String getAppDBPassword();
     String getAppDBUrl();
     Properties getAppJpaProperties();
+
+    Properties getManagerJpaProperties();
+
+    String getManagerDataSourceUserName();
+
+    String getManagerDataSourcePassword();
+
+    String getManagerDataSourceUrl();
 }
