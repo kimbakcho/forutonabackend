@@ -52,7 +52,7 @@ class FBallControllerTest extends BaseTest {
 
     @MockBean
     BallSelectService ballSelectService;
-    ;
+
 
     @Test
     @DisplayName("fBallListUpService 영향력 순으로 ListUp 호출")

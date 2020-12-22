@@ -21,7 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http
+                .csrf().disable();
 
         http
                 .addFilterAfter(bearerTokenAuthenticationFilter(), SecurityContextPersistenceFilter.class);
@@ -29,10 +30,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+
+        http.
+                authorizeRequests()
+                .antMatchers("/v1/FUserInfo/SnsUserJoinCheckInfo")
+                .permitAll();
+
         http
                 .authorizeRequests()
                 .antMatchers("/v1/FUserInfo**","/v1/FUserInfo/**")
                 .authenticated();
+
+
 
     }
 

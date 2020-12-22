@@ -63,7 +63,6 @@ public class FBallController {
     }
 
     @ResponseAddJsonHeader
-    @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall/BallImageUpload")
     public ResponseBodyEmitter ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files){
         ResponseBodyEmitter emitter = new ResponseBodyEmitter();

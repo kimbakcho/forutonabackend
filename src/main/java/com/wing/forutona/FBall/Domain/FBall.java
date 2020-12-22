@@ -75,11 +75,8 @@ public class FBall {
     @ColumnDefault("0")
     private Boolean ballDeleteFlag = false;
 
-
-
     @Transient
     private Double BI = 0.0;
-
 
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
