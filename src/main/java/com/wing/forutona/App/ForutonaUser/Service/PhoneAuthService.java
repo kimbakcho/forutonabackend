@@ -52,23 +52,24 @@ public class PhoneAuthService {
     @Transactional
     public PhoneAuthResDto reqPhoneAuth(PhoneAuthReqDto reqDto) {
         List<PhoneAuth> phoneNumber =
-                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(reqDto.getInternationalizedPhoneNumber());
+                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs
+                        (makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
         if (phoneNumber.size() > 0 &&
                 phoneNumber.get(0).getAuthRetryAvailableTime().isAfter(LocalDateTime.now())) {
             return new PhoneAuthResDto(phoneNumber.get(0));
         } else {
             if (phoneNumber.size() > 0) {
-                phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());
+                phoneAuthDataRepository.deleteById( phoneNumber.get(0).getIdx());
                 phoneAuthDataRepository.flush();
             }
             PhoneAuth phoneAuth = PhoneAuth.fromPhoneAuthReqDto(reqDto);
             phoneAuthDataRepository.save(phoneAuth);
             phoneAuthDataRepository.flush();
-            SuerMSendsns(phoneAuth.getInternationalizedPhoneNumber(), phoneAuth.getAuthNumber(), phoneAuth.getIsoCode());
+            SuerMSendsns(phoneAuth.getPhoneNumber(), phoneAuth.getAuthNumber(), phoneAuth.getIsoCode());
             return new PhoneAuthResDto(phoneAuth);
         }
     }
-
+    //일단 한국만 구현 나중에 다른 나라 구현은 팩토리 패턴으로 구현할 예정
     public int SuerMSendsns(String phoneNumber, String authNumber, String isocode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -86,9 +87,9 @@ public class PhoneAuthService {
         snsobject.put("deptcode", sureMdeptcode);
         JSONArray messagearray = new JSONArray();
         JSONObject messageobj = new JSONObject();
-        if (isocode.equals("KR")) {
-            messageobj.put("to", phoneNumber.replace("+82", "0"));
-        }
+
+        messageobj.put("to", phoneNumber);
+
         messagearray.put(messageobj);
         snsobject.put("messages", messagearray);
         String sendmessage = "<#>\n";
@@ -113,7 +114,7 @@ public class PhoneAuthService {
     @Transactional
     public PhoneAuthNumberResDto reqNumberAuthReq(PhoneAuthNumberReqDto reqDto) throws Exception {
         List<PhoneAuth> phoneNumber =
-                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(reqDto.getInternationalizedPhoneNumber());
+                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
         if (phoneNumber.size() > 0) {
             PhoneAuth phoneAuth = phoneNumber.get(0);
             if (phoneAuth.getAuthTime().isBefore(LocalDateTime.now())) {
@@ -123,9 +124,9 @@ public class PhoneAuthService {
                 return resDto;
             } else if (phoneAuth.getAuthNumber().equals(reqDto.getAuthNumber())) {
                 PhoneAuthNumberResDto resDto = new PhoneAuthNumberResDto();
-                resDto.setInternationalizedPhoneNumber(reqDto.getInternationalizedPhoneNumber());
+                resDto.setInternationalizedDialCode(reqDto.getInternationalizedDialCode());
                 resDto.setPhoneNumber(reqDto.getPhoneNumber());
-                resDto.setPhoneAuthToken(SHA256Util.getEncSHA256(reqDto.getInternationalizedPhoneNumber() + "Forutona123"));
+                resDto.setPhoneAuthToken(SHA256Util.getEncSHA256( makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()) + "Forutona123"));
                 resDto.setErrorFlag(false);
                 return resDto;
             } else {
@@ -145,7 +146,6 @@ public class PhoneAuthService {
 
     @Transactional
     public PwFindPhoneAuthResDto reqPwFindPhoneAuth(PwFindPhoneAuthReqDto reqDto) {
-
         UserRecord userByEmail = null;
         try {
             userByEmail = FirebaseAuth.getInstance().getUserByEmail(reqDto.getEmail());
@@ -154,14 +154,14 @@ public class PhoneAuthService {
         }
         if (userByEmail != null) {
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(userByEmail.getUid()).get();
-            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedPhoneNumber())) {
+            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedDialCode())) {
                 PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto();
                 resDto.setError(true);
                 resDto.setCause("MissMatchEmailAndPhone");
                 return resDto;
             } else {
                 List<PhoneAuth> phoneNumber =
-                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(reqDto.getInternationalizedPhoneNumber());
+                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
                 if (phoneNumber.size() > 0 &&
                         phoneNumber.get(0).getAuthRetryAvailableTime().isAfter(LocalDateTime.now())) {
                     PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto(phoneNumber.get(0));
@@ -180,7 +180,7 @@ public class PhoneAuthService {
                     resDto.setError(false);
                     resDto.setEmail(reqDto.getEmail());
                     resDto.setCause("");
-                    SuerMSendsns(phoneAuth.getInternationalizedPhoneNumber(), phoneAuth.getAuthNumber(), phoneAuth.getIsoCode());
+                    SuerMSendsns(phoneAuth.getPhoneNumber(), phoneAuth.getAuthNumber(), phoneAuth.getIsoCode());
                     return resDto;
                 }
             }
@@ -205,14 +205,14 @@ public class PhoneAuthService {
 
         if (userByEmail != null) {
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(userByEmail.getUid()).get();
-            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedPhoneNumber())) {
+            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedDialCode())) {
                 PwFindPhoneAuthNumberResDto resDto = new PwFindPhoneAuthNumberResDto();
                 resDto.setErrorFlag(true);
                 resDto.setErrorCause("MissMatchEmailAndPhone");
                 return resDto;
             } else {
                 List<PhoneAuth> phoneNumber =
-                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(reqDto.getInternationalizedPhoneNumber());
+                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
                 if (phoneNumber.size() > 0) {
                     PhoneAuth phoneAuth = phoneNumber.get(0);
                     if (phoneAuth.getAuthTime().isBefore(LocalDateTime.now())) {
@@ -223,9 +223,9 @@ public class PhoneAuthService {
                     } else if (phoneAuth.getAuthNumber().equals(reqDto.getAuthNumber())) {
                         PwFindPhoneAuthNumberResDto resDto = new PwFindPhoneAuthNumberResDto();
                         resDto.setEmail(reqDto.getEmail());
-                        resDto.setInternationalizedPhoneNumber(reqDto.getInternationalizedPhoneNumber());
+                        resDto.setInternationalizedDialCode(reqDto.getInternationalizedDialCode());
                         resDto.setPhoneNumber(reqDto.getPhoneNumber());
-                        resDto.setEmailPhoneAuthToken(SHA256Util.getEncSHA256(reqDto.getEmail() + reqDto.getInternationalizedPhoneNumber() + "Forutona123"));
+                        resDto.setEmailPhoneAuthToken(SHA256Util.getEncSHA256(reqDto.getEmail() + makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()) + "Forutona123"));
                         resDto.setErrorFlag(false);
                         return resDto;
                     } else {
@@ -264,5 +264,9 @@ public class PhoneAuthService {
                 return resDto;
             }
 
+    }
+
+    String makeInternationalizedPhoneNumber(String dialCode,String phonenNmber){
+        return dialCode+" "+phonenNmber;
     }
 }

@@ -27,7 +27,7 @@ public class PhoneAuth {
         //TODO 서비스로 옮겨 준다.
         PhoneAuth phoneAuth = new PhoneAuth();
         phoneAuth.phoneNumber = reqDto.getPhoneNumber();
-        phoneAuth.internationalizedPhoneNumber = reqDto.getInternationalizedPhoneNumber();
+        phoneAuth.internationalizedPhoneNumber = reqDto.getInternationalizedDialCode()+" " +reqDto.getPhoneNumber();
         double dValue = Math.random();
         int iValue = (int) (dValue * 100000) + 100000;
         phoneAuth.authNumber  = String.format("%d", iValue);

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PhoneAuthNumberReqDto {
     String phoneNumber;
-    String internationalizedPhoneNumber;
+    String internationalizedDialCode;
     String isoCode;
     String authNumber;
 }
