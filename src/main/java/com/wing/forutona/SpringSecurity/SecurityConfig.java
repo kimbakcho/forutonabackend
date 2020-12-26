@@ -36,6 +36,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/termsConditions**")
                 .permitAll();
 
+        http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/v1/FUserInfo/JoinUser")
+                .permitAll();
+
+
+        http.
+                authorizeRequests()
+                .antMatchers(HttpMethod.GET,"/v1/FUserInfo/CheckNickNameDuplication")
+                .permitAll();
+
         http.
                 authorizeRequests()
                 .antMatchers("/v1/FUserInfo/SnsUserJoinCheckInfo")

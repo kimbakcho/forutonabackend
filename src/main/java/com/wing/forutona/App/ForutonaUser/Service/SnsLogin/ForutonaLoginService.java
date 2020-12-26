@@ -3,6 +3,7 @@ package com.wing.forutona.App.ForutonaUser.Service.SnsLogin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
 import com.wing.forutona.CustomUtil.SHA256Util;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinReqDto;
@@ -11,16 +12,20 @@ import com.wing.forutona.App.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
-@Component
+import java.io.IOException;
+
 public class ForutonaLoginService extends SnsLoginService {
 
     private FUserInfoDataRepository fUserInfoDataRepository;
 
-    @Autowired
-    public ForutonaLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
+    final FUserInfoService fUserInfoService;
+
+    public ForutonaLoginService(FUserInfoDataRepository fUserInfoDataRepository, FUserInfoService fUserInfoService) {
         super(fUserInfoDataRepository);
         this.fUserInfoDataRepository = fUserInfoDataRepository;
+        this.fUserInfoService = fUserInfoService;
     }
 
     @Override
@@ -29,7 +34,7 @@ public class ForutonaLoginService extends SnsLoginService {
     }
 
     @Override
-    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) throws FirebaseAuthException {
+    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto, MultipartFile profileImage, MultipartFile backGroundImage) throws FirebaseAuthException, IOException {
         FUserInfo fUserInfo = FUserInfo.fromFUserInfoJoinReqDto(reqDto);
         String encSHA256 = "";
         FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
@@ -41,6 +46,9 @@ public class ForutonaLoginService extends SnsLoginService {
         if(encSHA256.equals(reqDto.getPhoneAuthToken())){
             UserRecord user = null;
             try {
+                FUserInfo saveUser = fUserInfoDataRepository.save(fUserInfo);
+                fUserInfoService.updateUserProfileImage(saveUser,profileImage);
+                fUserInfoService.updateUserBackGroundImage(saveUser,backGroundImage);
                 user = FirebaseAuth.getInstance().getUser(reqDto.getEmailUserUid());
             } catch (FirebaseAuthException e) {
                 e.printStackTrace();
@@ -49,8 +57,8 @@ public class ForutonaLoginService extends SnsLoginService {
                 resDto.setCustomToken("");
                 resDto.setJoinComplete(false);
             }else {
-                fUserInfoDataRepository.save(fUserInfo);
-                resDto.setCustomToken("");
+                String customToken = FirebaseAuth.getInstance().createCustomToken(reqDto.getEmailUserUid());
+                resDto.setCustomToken(customToken);
                 resDto.setJoinComplete(true);
             }
         }else {

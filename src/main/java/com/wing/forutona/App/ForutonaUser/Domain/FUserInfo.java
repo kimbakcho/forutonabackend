@@ -11,10 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -28,8 +25,9 @@ public class FUserInfo {
     private String uid;
     private String nickName;
     private String profilePictureUrl;
-    @ColumnDefault("0")
-    private Integer gender = 0;
+    private String backGroundImageUrl;
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
     private LocalDate ageDate;
     private String email;
     @ColumnDefault("0")
@@ -125,12 +123,15 @@ public class FUserInfo {
         fUserInfo.isoCode = reqDto.getCountryCode();
         fUserInfo.selfIntroduction = reqDto.getUserIntroduce();
         fUserInfo.nickName = reqDto.getNickName();
-        fUserInfo.profilePictureUrl = reqDto.getUserProfileImageUrl();
+        fUserInfo.latitude = 37.4402052;
+        fUserInfo.longitude = 126.79369789999998;
         GeometryFactory geomFactory = new GeometryFactory();
-        Point placePoint = geomFactory.createPoint(new Coordinate(126.79369789999998, 37.4402052));
+        Point placePoint = geomFactory.createPoint(new Coordinate(fUserInfo.longitude, fUserInfo.latitude));
         placePoint.setSRID(4326);
         fUserInfo.placePoint = placePoint;
         fUserInfo.phoneNumber = reqDto.getInternationalizedPhoneNumber();
+        fUserInfo.gender = reqDto.getGender();
+        fUserInfo.ageDate = reqDto.getAgeDate().toLocalDate();
         return fUserInfo;
     }
 
@@ -150,6 +151,10 @@ public class FUserInfo {
 
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public void setBackGroundImageUrl(String backGroundImageUrl) {
+        this.backGroundImageUrl = backGroundImageUrl;
     }
 
     public void setIsoCode(String isoCode) {

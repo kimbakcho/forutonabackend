@@ -7,6 +7,9 @@ import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinReqDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 abstract public class SnsLoginService {
 
@@ -19,7 +22,7 @@ abstract public class SnsLoginService {
 
     public abstract FUserSnsCheckJoinResDto getInfoFromToken(SnsSupportService snsService,String accessToken);
 
-    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto) throws FirebaseAuthException {
+    public FUserInfoJoinResDto join(FUserInfoJoinReqDto reqDto, MultipartFile profileImage, MultipartFile backGroundImage) throws FirebaseAuthException, IOException {
         FUserSnsCheckJoinResDto infoFromToken = getInfoFromToken(reqDto.getSnsSupportService(),reqDto.getSnsToken());
         String fireBaseUid = reqDto.getSnsSupportService() + infoFromToken.getSnsUid();
         reqDto.setEmailUserUid(fireBaseUid);

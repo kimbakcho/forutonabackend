@@ -2,6 +2,7 @@ package com.wing.forutona.App.ForutonaUser.Service;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
@@ -29,15 +30,13 @@ public interface FUserInfoService {
 
     void updateFireBaseMessageToken(String uid, String token);
 
-    FUserInfoJoinResDto joinUser(FUserInfoJoinReqDto reqDto) throws Exception;
-
-    FUserSnsCheckJoinResDto getSnsUserJoinCheckInfo(SnsSupportService snsService, String accessToken) throws Exception;
-
     boolean checkNickNameDuplication(String nickName);
 
     void userPwChange(FFireBaseToken fFireBaseToken, String pw);
 
-    String updateUserProfileImage(FFireBaseToken fireBaseToken, MultipartFile file) throws IOException;
+    String updateUserProfileImage(FUserInfo fUserInfo, MultipartFile file) throws IOException;
+
+    String updateUserBackGroundImage(FUserInfo fUserInfo ,MultipartFile file) throws IOException;
 
     FUserInfoResDto updateAccountUserInfo(FFireBaseToken fFireBaseToken, FUserAccountUpdateReqDto reqDto);
 
@@ -52,8 +51,6 @@ class FUserInfoServiceImpl implements FUserInfoService {
     final FUserInfoDataRepository fUserInfoDataRepository;
 
     final FUserInfoQueryRepository fUserInfoQueryRepository;
-
-    final SnsLoginServiceFactory snsLoginServiceFactory;
 
     final GoogleStorgeAdmin googleStorgeAdmin;
 
@@ -74,17 +71,6 @@ class FUserInfoServiceImpl implements FUserInfoService {
         fUserInfo.setFCMtoken(token);
     }
 
-    @Override
-    public FUserInfoJoinResDto joinUser(FUserInfoJoinReqDto reqDto) throws Exception {
-        SnsLoginService snsLoginService = snsLoginServiceFactory.makeService(reqDto.getSnsSupportService());
-        return snsLoginService.join(reqDto);
-    }
-
-    @Override
-    public FUserSnsCheckJoinResDto getSnsUserJoinCheckInfo(SnsSupportService snsService, String accessToken) throws Exception {
-        SnsLoginService snsLoginService = snsLoginServiceFactory.makeService(snsService);
-        return snsLoginService.getInfoFromToken(snsService, accessToken);
-    }
 
     @Override
     public boolean checkNickNameDuplication(String nickName) {
@@ -102,8 +88,20 @@ class FUserInfoServiceImpl implements FUserInfoService {
     }
 
     @Override
-    public String updateUserProfileImage(FFireBaseToken fireBaseToken, MultipartFile file) throws IOException {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fireBaseToken.getUserFireBaseUid()).get();
+    public String updateUserProfileImage(FUserInfo fUserInfo , MultipartFile file) throws IOException {
+        String imageUrl = saveProfileStorageImage(file);
+        fUserInfo.setProfilePictureUrl(imageUrl);
+        return imageUrl;
+    }
+
+    @Override
+    public String updateUserBackGroundImage(FUserInfo fUserInfo ,MultipartFile file) throws IOException {
+        String imageUrl = saveProfileStorageImage(file);
+        fUserInfo.setBackGroundImageUrl(imageUrl);
+        return imageUrl;
+    }
+
+    public String saveProfileStorageImage(MultipartFile file) throws IOException {
         Storage storage = googleStorgeAdmin.GetStorageInstance();
         String OriginalFile = file.getOriginalFilename();
         int extentIndex = OriginalFile.lastIndexOf(".");
@@ -119,7 +117,6 @@ class FUserInfoServiceImpl implements FUserInfoService {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
         storage.create(blobInfo, file.getBytes());
         String imageUrl = "https://storage.googleapis.com/publicforutona/profileimage/" + saveFileName;
-        fUserInfo.setProfilePictureUrl(imageUrl);
         return imageUrl;
     }
 

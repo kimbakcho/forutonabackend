@@ -2,6 +2,7 @@ package com.wing.forutona.App.ForutonaUser.Dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
+import com.wing.forutona.App.ForutonaUser.Domain.GenderType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,8 @@ public class FUserInfoResDto {
     private String uid;
     private String nickName;
     private String profilePictureUrl;
-    private Integer gender;
+    private String backGroundImageUrl;
+    private GenderType gender;
     private LocalDate ageDate;
     private String email;
     private Boolean forutonaAgree;

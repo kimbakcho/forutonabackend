@@ -1,5 +1,8 @@
 package com.wing.forutona.App.ForutonaUser.Service.SnsLogin;
 
+import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
+import com.wing.forutona.CustomUtil.FireBaseAdmin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -7,23 +10,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SnsLoginServiceFactory {
 
-    final FaceBookLoginService faceBookLoginService;
+    final FUserInfoDataRepository fUserInfoDataRepository;
 
-    final NaverLoginService naverLoginService;
+    final FUserInfoService fUserInfoService;
 
-    final  KakaoLoginService kakaoLoginService;
-
-    final ForutonaLoginService forutonaLoginService;
+    final FireBaseAdmin fireBaseAdmin;
 
     public SnsLoginService makeService(SnsSupportService snsSupportService) throws Exception {
         if (snsSupportService.equals(SnsSupportService.FaceBook)) {
-            return faceBookLoginService;
+            return new FaceBookLoginService(fUserInfoDataRepository,fireBaseAdmin);
         } else if (snsSupportService.equals(SnsSupportService.Naver)) {
-           return naverLoginService;
+           return new NaverLoginService(fUserInfoDataRepository);
         } else if (snsSupportService.equals(SnsSupportService.Kakao)) {
-            return  kakaoLoginService;
+            return  new KakaoLoginService(fUserInfoDataRepository);
         } else if (snsSupportService.equals(SnsSupportService.Forutona)) {
-            return forutonaLoginService;
+            return new ForutonaLoginService(fUserInfoDataRepository,fUserInfoService);
         } else {
             throw new Exception("Not Support SnsService");
         }

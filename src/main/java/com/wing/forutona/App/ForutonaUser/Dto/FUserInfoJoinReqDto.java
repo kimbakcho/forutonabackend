@@ -1,7 +1,11 @@
 package com.wing.forutona.App.ForutonaUser.Dto;
 
+import com.wing.forutona.App.ForutonaUser.Domain.GenderType;
 import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsSupportService;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Data
 public class FUserInfoJoinReqDto {
@@ -13,7 +17,6 @@ public class FUserInfoJoinReqDto {
     boolean ageLimitAgree;
     String nickName;
     String email;
-    String userProfileImageUrl;
     SnsSupportService snsSupportService;
     String countryCode;
     String snsToken;
@@ -23,4 +26,7 @@ public class FUserInfoJoinReqDto {
     String phoneAuthToken;
     String password;
     String emailUserUid;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime ageDate;
+    GenderType gender;
 }
