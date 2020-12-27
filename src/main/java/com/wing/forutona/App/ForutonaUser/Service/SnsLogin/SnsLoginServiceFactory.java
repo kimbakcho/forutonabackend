@@ -18,11 +18,11 @@ public class SnsLoginServiceFactory {
 
     public SnsLoginService makeService(SnsSupportService snsSupportService) throws Exception {
         if (snsSupportService.equals(SnsSupportService.FaceBook)) {
-            return new FaceBookLoginService(fUserInfoDataRepository,fireBaseAdmin);
+            return new FaceBookLoginService(fUserInfoDataRepository,fireBaseAdmin,fUserInfoService);
         } else if (snsSupportService.equals(SnsSupportService.Naver)) {
-           return new NaverLoginService(fUserInfoDataRepository);
+           return new NaverLoginService(fUserInfoDataRepository,fUserInfoService);
         } else if (snsSupportService.equals(SnsSupportService.Kakao)) {
-            return  new KakaoLoginService(fUserInfoDataRepository);
+            return  new KakaoLoginService(fUserInfoDataRepository,fUserInfoService);
         } else if (snsSupportService.equals(SnsSupportService.Forutona)) {
             return new ForutonaLoginService(fUserInfoDataRepository,fUserInfoService);
         } else {

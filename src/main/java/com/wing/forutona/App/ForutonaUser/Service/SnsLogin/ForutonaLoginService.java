@@ -10,8 +10,6 @@ import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinReqDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,7 +21,7 @@ public class ForutonaLoginService extends SnsLoginService {
     final FUserInfoService fUserInfoService;
 
     public ForutonaLoginService(FUserInfoDataRepository fUserInfoDataRepository, FUserInfoService fUserInfoService) {
-        super(fUserInfoDataRepository);
+        super(fUserInfoDataRepository, fUserInfoService);
         this.fUserInfoDataRepository = fUserInfoDataRepository;
         this.fUserInfoService = fUserInfoService;
     }
@@ -47,8 +45,12 @@ public class ForutonaLoginService extends SnsLoginService {
             UserRecord user = null;
             try {
                 FUserInfo saveUser = fUserInfoDataRepository.save(fUserInfo);
-                fUserInfoService.updateUserProfileImage(saveUser,profileImage);
-                fUserInfoService.updateUserBackGroundImage(saveUser,backGroundImage);
+                if(profileImage != null){
+                    fUserInfoService.updateUserProfileImage(saveUser,profileImage);
+                }
+                if(backGroundImage != null){
+                    fUserInfoService.updateUserBackGroundImage(saveUser,backGroundImage);
+                }
                 user = FirebaseAuth.getInstance().getUser(reqDto.getEmailUserUid());
             } catch (FirebaseAuthException e) {
                 e.printStackTrace();

@@ -29,4 +29,5 @@ public class FUserInfoJoinReqDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     LocalDateTime ageDate;
     GenderType gender;
+    String profileImageUrl;
 }

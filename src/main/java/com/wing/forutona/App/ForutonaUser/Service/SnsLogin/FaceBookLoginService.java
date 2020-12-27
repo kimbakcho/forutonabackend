@@ -3,19 +3,19 @@ package com.wing.forutona.App.ForutonaUser.Service.SnsLogin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
 import com.wing.forutona.CustomUtil.FireBaseAdmin;
 import com.wing.forutona.App.ForutonaUser.Dto.*;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 public class FaceBookLoginService extends SnsLoginService {
 
     final FireBaseAdmin fireBaseAdmin;
 
-    public FaceBookLoginService(FUserInfoDataRepository fUserInfoDataRepository,FireBaseAdmin fireBaseAdmin) {
-        super(fUserInfoDataRepository);
+    public FaceBookLoginService(FUserInfoDataRepository fUserInfoDataRepository, FireBaseAdmin fireBaseAdmin, FUserInfoService fUserInfoService) {
+        super(fUserInfoDataRepository, fUserInfoService);
         this.fireBaseAdmin = fireBaseAdmin;
     }
 

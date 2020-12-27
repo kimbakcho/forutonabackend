@@ -5,16 +5,16 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.App.ForutonaUser.Dto.*;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 public class KakaoLoginService extends SnsLoginService{
-    public KakaoLoginService(FUserInfoDataRepository fUserInfoDataRepository) {
-        super(fUserInfoDataRepository);
+    public KakaoLoginService(FUserInfoDataRepository fUserInfoDataRepository, FUserInfoService fUserInfoService) {
+        super(fUserInfoDataRepository, fUserInfoService);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinReqDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserSnsCheckJoinResDto;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
+import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,8 +16,11 @@ abstract public class SnsLoginService {
 
     private FUserInfoDataRepository fUserInfoDataRepository;
 
-    public SnsLoginService(FUserInfoDataRepository fUserInfoDataRepository){
+    final FUserInfoService fUserInfoService;
+
+    public SnsLoginService(FUserInfoDataRepository fUserInfoDataRepository, FUserInfoService fUserInfoService){
         this.fUserInfoDataRepository = fUserInfoDataRepository;
+        this.fUserInfoService = fUserInfoService;
     }
 
 
@@ -34,6 +38,17 @@ abstract public class SnsLoginService {
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
         }
+        if(profileImage != null){
+            fUserInfoService.updateUserProfileImage(fUserInfo,profileImage);
+        }else {
+            if(reqDto.getProfileImageUrl() != null){
+                fUserInfo.setProfilePictureUrl(reqDto.getProfileImageUrl());
+            }
+        }
+        if(backGroundImage != null){
+            fUserInfoService.updateUserBackGroundImage(fUserInfo,backGroundImage);
+        }
+
         fUserInfoDataRepository.save(fUserInfo);
         FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();
         resDto.setCustomToken(customToken);
