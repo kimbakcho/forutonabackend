@@ -54,6 +54,10 @@ public class FUserInfoResDto {
     private Long alarmFollowNewContent;
     private Long alarmSponNewContent;
     private Long deactivation;
+    int maliciousCount ;
+    LocalDateTime stopPeriod;
+    String maliciousCause;
+    Boolean maliciousMessageCheck;
 
     @QueryProjection
     public FUserInfoResDto(FUserInfo fUserInfo){
@@ -98,5 +102,10 @@ public class FUserInfoResDto {
         this.alarmFollowNewContent = fUserInfo.getAlarmFollowNewContent();
         this.alarmSponNewContent = fUserInfo.getAlarmFollowNewContent();
         this.deactivation = fUserInfo.getDeactivation();
+        this.maliciousCount = fUserInfo.getMaliciousCount();
+        this.stopPeriod = fUserInfo.getStopPeriod();
+        this.maliciousCause = fUserInfo.getMaliciousCause();
+        this.maliciousMessageCheck = fUserInfo.getMaliciousMessageCheck();
+
     }
 }

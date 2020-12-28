@@ -38,9 +38,11 @@ public interface FUserInfoService {
 
     String updateUserBackGroundImage(FUserInfo fUserInfo ,MultipartFile file) throws IOException;
 
-    FUserInfoResDto updateAccountUserInfo(FFireBaseToken fFireBaseToken, FUserAccountUpdateReqDto reqDto);
+    FUserInfoResDto updateAccountUserInfo( FUserAccountUpdateReqDto reqDto);
 
     Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable);
+
+    void updateMaliciousMessageCheck(FUserInfo getFUserInfo);
 }
 
 @Service
@@ -121,25 +123,32 @@ class FUserInfoServiceImpl implements FUserInfoService {
     }
 
     @Override
-    public FUserInfoResDto updateAccountUserInfo(FFireBaseToken fFireBaseToken, FUserAccountUpdateReqDto reqDto) {
-        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fFireBaseToken.getUserFireBaseUid()).get();
-        fUserInfo.setIsoCode(reqDto.getIsoCode());
-        //이전 자신의 닉네임과 같지 않을때 중복 체크후 닉네임 설정
-        if (!fUserInfo.getNickName().equals(reqDto.getNickName())) {
-            if (fUserInfoDataRepository.countByNickNameEquals(reqDto.getNickName()) == 0) {
-                fUserInfo.setNickName(reqDto.getNickName());
-            }
-        }
-        fUserInfo.setSelfIntroduction(reqDto.getSelfIntroduction());
-        if (reqDto.getUserProfileImageUrl() != null) {
-            fUserInfo.setProfilePictureUrl(reqDto.getUserProfileImageUrl());
-        }
-        return new FUserInfoResDto(fUserInfo);
+    public FUserInfoResDto updateAccountUserInfo(FUserAccountUpdateReqDto reqDto) {
+//        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fFireBaseToken.getUserFireBaseUid()).get();
+//        fUserInfo.setIsoCode(reqDto.getIsoCode());
+//        //이전 자신의 닉네임과 같지 않을때 중복 체크후 닉네임 설정
+//        if (!fUserInfo.getNickName().equals(reqDto.getNickName())) {
+//            if (fUserInfoDataRepository.countByNickNameEquals(reqDto.getNickName()) == 0) {
+//                fUserInfo.setNickName(reqDto.getNickName());
+//            }
+//        }
+//        fUserInfo.setSelfIntroduction(reqDto.getSelfIntroduction());
+//        if (reqDto.getUserProfileImageUrl() != null) {
+//            fUserInfo.setProfilePictureUrl(reqDto.getUserProfileImageUrl());
+//        }
+//        return new FUserInfoResDto(fUserInfo);
+        return  null;
     }
 
     @Override
     public Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable) {
         return fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex(searchNickName,pageable);
+    }
+
+    @Override
+    public void updateMaliciousMessageCheck(FUserInfo fUserInfo) {
+        FUserInfo fUserInfo1 = fUserInfoDataRepository.findById(fUserInfo.getUid()).get();
+        fUserInfo1.setMaliciousMessageCheck(true);
     }
 
 

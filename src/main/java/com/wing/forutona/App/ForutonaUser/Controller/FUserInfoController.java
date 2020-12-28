@@ -69,10 +69,9 @@ public class FUserInfoController {
     }
 
 
-    @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FUserInfo/AccountUserInfo")
-    public FUserInfoResDto updateAccountUserInfo(FFireBaseToken fFireBaseToken, @RequestBody FUserAccountUpdateReqDto reqDto) {
-        return fUserInfoService.updateAccountUserInfo(fFireBaseToken, reqDto);
+    public FUserInfoResDto updateAccountUserInfo( @RequestBody FUserAccountUpdateReqDto reqDto) {
+        return fUserInfoService.updateAccountUserInfo(reqDto);
     }
 
 
@@ -104,6 +103,12 @@ public class FUserInfoController {
     @GetMapping(value = "/v1/FUserInfo/UserNickNameWithFullTextMatchIndex")
     public Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(@RequestParam String searchNickName, Pageable pageable) {
         return fUserInfoService.getUserNickNameWithFullTextMatchIndex(searchNickName, pageable);
+    }
+
+
+    @PutMapping(value = "/v1/FUserInfo/maliciousMessageCheck")
+    public void updateMaliciousMessageCheck(@AuthenticationPrincipal UserAdapter userAdapter) {
+        fUserInfoService.updateMaliciousMessageCheck(userAdapter.getfUserInfo());
     }
 
 

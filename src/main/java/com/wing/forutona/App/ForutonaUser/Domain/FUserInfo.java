@@ -97,7 +97,10 @@ public class FUserInfo {
     private Long deactivation =1L;
     @ColumnDefault("0")
     private Double playerPower = 0.0;
-
+    int maliciousCount ;
+    LocalDateTime stopPeriod;
+    Boolean maliciousMessageCheck = false;
+    String maliciousCause;
 
     @Builder
     public FUserInfo(String uid, String fCMtoken, String nickName, double longitude, double latitude) {
@@ -107,6 +110,8 @@ public class FUserInfo {
         this.longitude = longitude;
         this.latitude = latitude;
         this.updatePlacePoint(this.latitude, this.longitude);
+        this.maliciousCount = 0;
+        this.maliciousMessageCheck = false;
     }
 
     public static FUserInfo fromFUserInfoJoinReqDto(FUserInfoJoinReqDto reqDto) {
@@ -132,6 +137,8 @@ public class FUserInfo {
         fUserInfo.phoneNumber = reqDto.getInternationalizedPhoneNumber();
         fUserInfo.gender = reqDto.getGender();
         fUserInfo.ageDate = reqDto.getAgeDate().toLocalDate();
+        fUserInfo.maliciousCount = 0;
+        fUserInfo.maliciousMessageCheck = false;
         return fUserInfo;
     }
 
@@ -173,6 +180,7 @@ public class FUserInfo {
         this.fCMtoken = fCMtoken;
     }
 
-
-
+    public void setMaliciousMessageCheck(boolean maliciousMessageCheck) {
+        this.maliciousMessageCheck = maliciousMessageCheck;
+    }
 }
