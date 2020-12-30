@@ -3,12 +3,12 @@ package com.wing.forutona.App.ForutonaUser.Service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.wing.forutona.CustomUtil.SHA256Util;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.App.ForutonaUser.Domain.PhoneAuth;
 import com.wing.forutona.App.ForutonaUser.Dto.*;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import com.wing.forutona.App.ForutonaUser.Repository.PhoneAuthDataRepository;
+import com.wing.forutona.CustomUtil.SHA256Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +53,13 @@ public class PhoneAuthService {
     public PhoneAuthResDto reqPhoneAuth(PhoneAuthReqDto reqDto) {
         List<PhoneAuth> phoneNumber =
                 phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs
-                        (makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
+                        (makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()));
         if (phoneNumber.size() > 0 &&
                 phoneNumber.get(0).getAuthRetryAvailableTime().isAfter(LocalDateTime.now())) {
             return new PhoneAuthResDto(phoneNumber.get(0));
         } else {
             if (phoneNumber.size() > 0) {
-                phoneAuthDataRepository.deleteById( phoneNumber.get(0).getIdx());
+                phoneAuthDataRepository.deleteById(phoneNumber.get(0).getIdx());
                 phoneAuthDataRepository.flush();
             }
             PhoneAuth phoneAuth = PhoneAuth.fromPhoneAuthReqDto(reqDto);
@@ -69,6 +69,7 @@ public class PhoneAuthService {
             return new PhoneAuthResDto(phoneAuth);
         }
     }
+
     //일단 한국만 구현 나중에 다른 나라 구현은 팩토리 패턴으로 구현할 예정
     public int SuerMSendsns(String phoneNumber, String authNumber, String isocode) {
         RestTemplate restTemplate = new RestTemplate();
@@ -114,7 +115,7 @@ public class PhoneAuthService {
     @Transactional
     public PhoneAuthNumberResDto reqNumberAuthReq(PhoneAuthNumberReqDto reqDto) throws Exception {
         List<PhoneAuth> phoneNumber =
-                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
+                phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()));
         if (phoneNumber.size() > 0) {
             PhoneAuth phoneAuth = phoneNumber.get(0);
             if (phoneAuth.getAuthTime().isBefore(LocalDateTime.now())) {
@@ -126,7 +127,7 @@ public class PhoneAuthService {
                 PhoneAuthNumberResDto resDto = new PhoneAuthNumberResDto();
                 resDto.setInternationalizedDialCode(reqDto.getInternationalizedDialCode());
                 resDto.setPhoneNumber(reqDto.getPhoneNumber());
-                resDto.setPhoneAuthToken(SHA256Util.getEncSHA256( makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()) + "Forutona123"));
+                resDto.setPhoneAuthToken(SHA256Util.getEncSHA256(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()) + "Forutona123"));
                 resDto.setErrorFlag(false);
                 return resDto;
             } else {
@@ -161,7 +162,7 @@ public class PhoneAuthService {
                 return resDto;
             } else {
                 List<PhoneAuth> phoneNumber =
-                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
+                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()));
                 if (phoneNumber.size() > 0 &&
                         phoneNumber.get(0).getAuthRetryAvailableTime().isAfter(LocalDateTime.now())) {
                     PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto(phoneNumber.get(0));
@@ -205,14 +206,14 @@ public class PhoneAuthService {
 
         if (userByEmail != null) {
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(userByEmail.getUid()).get();
-            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedDialCode())) {
+            if (!fUserInfo.getPhoneNumber().equals(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()))) {
                 PwFindPhoneAuthNumberResDto resDto = new PwFindPhoneAuthNumberResDto();
                 resDto.setErrorFlag(true);
                 resDto.setErrorCause("MissMatchEmailAndPhone");
                 return resDto;
             } else {
                 List<PhoneAuth> phoneNumber =
-                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()));
+                        phoneAuthDataRepository.findPhoneAuthByInternationalizedPhoneNumberIs(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()));
                 if (phoneNumber.size() > 0) {
                     PhoneAuth phoneAuth = phoneNumber.get(0);
                     if (phoneAuth.getAuthTime().isBefore(LocalDateTime.now())) {
@@ -225,7 +226,7 @@ public class PhoneAuthService {
                         resDto.setEmail(reqDto.getEmail());
                         resDto.setInternationalizedDialCode(reqDto.getInternationalizedDialCode());
                         resDto.setPhoneNumber(reqDto.getPhoneNumber());
-                        resDto.setEmailPhoneAuthToken(SHA256Util.getEncSHA256(reqDto.getEmail() + makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(),reqDto.getPhoneNumber()) + "Forutona123"));
+                        resDto.setEmailPhoneAuthToken(SHA256Util.getEncSHA256(reqDto.getEmail() + makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()) + "Forutona123"));
                         resDto.setErrorFlag(false);
                         return resDto;
                     } else {
@@ -245,28 +246,28 @@ public class PhoneAuthService {
     @Transactional
     public PwChangeFromPhoneAuthResDto reqChangePwAuthPhone(PwChangeFromPhoneAuthReqDto reqDto) throws Exception {
 
-            String sha256AuthToken = SHA256Util.getEncSHA256(reqDto.getEmail() + reqDto.getInternationalizedPhoneNumber() + "Forutona123");
-            if (sha256AuthToken.equals(reqDto.getEmailPhoneAuthToken())) {
-                UserRecord userByEmail = FirebaseAuth.getInstance().getUserByEmail(reqDto.getEmail());
-                UserRecord.UpdateRequest userUpdate = new UserRecord.UpdateRequest(userByEmail.getUid());
-                userUpdate.setPassword(reqDto.getPassword());
-                FirebaseAuth.getInstance().updateUser(userUpdate);
-                PwChangeFromPhoneAuthResDto resDto = new PwChangeFromPhoneAuthResDto();
-                resDto.setErrorFlag(false);
-                resDto.setCause("");
-                resDto.setEmail(reqDto.getEmail());
-                resDto.setInternationalizedPhoneNumber(reqDto.getInternationalizedPhoneNumber());
-                return resDto;
-            } else {
-                PwChangeFromPhoneAuthResDto resDto = new PwChangeFromPhoneAuthResDto();
-                resDto.setErrorFlag(true);
-                resDto.setCause("TokenMissMatch");
-                return resDto;
-            }
+        String sha256AuthToken = SHA256Util.getEncSHA256(reqDto.getEmail() + reqDto.getInternationalizedPhoneNumber() + "Forutona123");
+        if (sha256AuthToken.equals(reqDto.getEmailPhoneAuthToken())) {
+            UserRecord userByEmail = FirebaseAuth.getInstance().getUserByEmail(reqDto.getEmail());
+            UserRecord.UpdateRequest userUpdate = new UserRecord.UpdateRequest(userByEmail.getUid());
+            userUpdate.setPassword(reqDto.getPassword());
+            FirebaseAuth.getInstance().updateUser(userUpdate);
+            PwChangeFromPhoneAuthResDto resDto = new PwChangeFromPhoneAuthResDto();
+            resDto.setErrorFlag(false);
+            resDto.setCause("");
+            resDto.setEmail(reqDto.getEmail());
+            resDto.setInternationalizedPhoneNumber(reqDto.getInternationalizedPhoneNumber());
+            return resDto;
+        } else {
+            PwChangeFromPhoneAuthResDto resDto = new PwChangeFromPhoneAuthResDto();
+            resDto.setErrorFlag(true);
+            resDto.setCause("TokenMissMatch");
+            return resDto;
+        }
 
     }
 
-    String makeInternationalizedPhoneNumber(String dialCode,String phonenNmber){
-        return dialCode+" "+phonenNmber;
+    String makeInternationalizedPhoneNumber(String dialCode, String phonenNmber) {
+        return dialCode + " " + phonenNmber;
     }
 }
