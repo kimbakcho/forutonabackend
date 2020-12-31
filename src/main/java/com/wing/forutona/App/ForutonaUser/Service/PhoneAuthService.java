@@ -155,7 +155,7 @@ public class PhoneAuthService {
         }
         if (userByEmail != null) {
             FUserInfo fUserInfo = fUserInfoDataRepository.findById(userByEmail.getUid()).get();
-            if (!fUserInfo.getPhoneNumber().equals(reqDto.getInternationalizedDialCode())) {
+            if (!fUserInfo.getPhoneNumber().equals(makeInternationalizedPhoneNumber(reqDto.getInternationalizedDialCode(), reqDto.getPhoneNumber()))) {
                 PwFindPhoneAuthResDto resDto = new PwFindPhoneAuthResDto();
                 resDto.setError(true);
                 resDto.setCause("MissMatchEmailAndPhone");
