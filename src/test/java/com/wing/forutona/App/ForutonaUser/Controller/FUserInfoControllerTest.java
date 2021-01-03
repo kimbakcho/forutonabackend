@@ -53,7 +53,7 @@ class FUserInfoControllerTest extends BaseTest {
                 .nickName("테스트")
                 .userLevel(0.0)
                 .cumulativeInfluence(0.0)
-                .followCount(10L)
+                .followerCount(10L)
                 .isoCode("KR")
                 .playerPower(0.0)
                 .profilePictureUrl("https://test.com/test.png")
@@ -93,7 +93,7 @@ class FUserInfoControllerTest extends BaseTest {
                                         fieldWithPath("content[].userLevel").description("레벨"),
                                         fieldWithPath("content[].selfIntroduction").description("selfIntroduction"),
                                         fieldWithPath("content[].cumulativeInfluence").description("유저 영향력"),
-                                        fieldWithPath("content[].followCount").description("follow 숫자"),
+                                        fieldWithPath("content[].followerCount").description("follower 숫자"),
                                         fieldWithPath("content[].playerPower").description("playerPower")
                                 )
                         )

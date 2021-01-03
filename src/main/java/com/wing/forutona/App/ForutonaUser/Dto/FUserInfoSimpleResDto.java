@@ -14,22 +14,26 @@ public class FUserInfoSimpleResDto  implements Cloneable{
     String uid;
     String nickName;
     String profilePictureUrl;
+    String backGroundImageUrl;
     String isoCode;
     Double userLevel;
     String selfIntroduction;
     Double cumulativeInfluence;
-    Long followCount;
+    Long followerCount;
+    Long followingCount;
     Double playerPower;
 
     public FUserInfoSimpleResDto(FUserInfo fUserInfo){
         this.uid = fUserInfo.getUid();
         this.nickName = fUserInfo.getNickName();
         this.profilePictureUrl = fUserInfo.getProfilePictureUrl();
+        this.backGroundImageUrl = fUserInfo.getBackGroundImageUrl();
         this.isoCode = fUserInfo.getIsoCode();
         this.userLevel = fUserInfo.getUserLevel();
         this.selfIntroduction = fUserInfo.getSelfIntroduction();
         this.cumulativeInfluence = fUserInfo.getCumulativeInfluence();
-        this.followCount = fUserInfo.getFollowCount();
+        this.followerCount = fUserInfo.getFollowerCount();
+        this.followingCount = fUserInfo.getFollowingCount();
         this.playerPower = fUserInfo.getPlayerPower();
     }
 

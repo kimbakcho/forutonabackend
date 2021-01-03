@@ -43,6 +43,8 @@ public interface FUserInfoService {
     Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable);
 
     void updateMaliciousMessageCheck(FUserInfo getFUserInfo);
+
+    FUserInfoSimpleResDto getFUserInfoSimple(String userUid);
 }
 
 @Service
@@ -149,6 +151,12 @@ class FUserInfoServiceImpl implements FUserInfoService {
     public void updateMaliciousMessageCheck(FUserInfo fUserInfo) {
         FUserInfo fUserInfo1 = fUserInfoDataRepository.findById(fUserInfo.getUid()).get();
         fUserInfo1.setMaliciousMessageCheck(true);
+    }
+
+    @Override
+    public FUserInfoSimpleResDto getFUserInfoSimple(String userUid) {
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(userUid).get();
+        return new FUserInfoSimpleResDto(fUserInfo);
     }
 
 

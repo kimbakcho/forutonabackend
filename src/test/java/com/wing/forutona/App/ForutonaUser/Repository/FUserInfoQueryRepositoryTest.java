@@ -56,8 +56,8 @@ class FUserInfoQueryRepositoryTest extends BaseTest {
         Page<FUserInfoSimpleResDto> nickNames = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
                 PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "nickName")));
 
-        Page<FUserInfoSimpleResDto> followCount = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
-                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "followCount")));
+        Page<FUserInfoSimpleResDto> followerCount = fUserInfoQueryRepository.findByUserNickNameWithFullTextMatchIndex("te",
+                PageRequest.of(0, 40, Sort.by(Sort.Direction.DESC, "followerCount")));
 
         //then
 

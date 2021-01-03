@@ -60,7 +60,8 @@ public class FUserInfo {
     @Column(name = "joinTime", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime joinTime;
     @ColumnDefault("0")
-    private Long followCount = 0L;
+    private Long followerCount = 0L;
+    private Long followingCount = 0L;
     @ColumnDefault("0")
     private Long backOut = 0L;
     private LocalDateTime lastBackOutTime;

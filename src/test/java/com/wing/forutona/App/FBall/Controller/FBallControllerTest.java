@@ -205,7 +205,7 @@ class FBallControllerTest extends BaseTest {
         fUserInfoSimpleResDto.setUserLevel(0.0);
         fUserInfoSimpleResDto.setSelfIntroduction("Hi");
         fUserInfoSimpleResDto.setCumulativeInfluence(2.0);
-        fUserInfoSimpleResDto.setFollowCount(10L);
+        fUserInfoSimpleResDto.setFollowerCount(10L);
         return fUserInfoSimpleResDto;
     }
 

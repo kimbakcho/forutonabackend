@@ -74,7 +74,6 @@ public class FUserInfoController {
         return fUserInfoService.updateAccountUserInfo(reqDto);
     }
 
-
 //    @AuthFireBaseJwtCheck
 //    @ResponseAddJsonHeader
 //    @PutMapping(value = "/v1/FUserInfo/ProfileImage")
@@ -111,5 +110,9 @@ public class FUserInfoController {
         fUserInfoService.updateMaliciousMessageCheck(userAdapter.getfUserInfo());
     }
 
+    @GetMapping(value= "/v1/FUserInfo/FUserInfoSimple")
+    public FUserInfoSimpleResDto getFUserInfoSimple(String userUid){
+        return fUserInfoService.getFUserInfoSimple(userUid);
+    }
 
 }

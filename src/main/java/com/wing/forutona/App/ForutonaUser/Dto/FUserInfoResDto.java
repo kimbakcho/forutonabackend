@@ -35,7 +35,8 @@ public class FUserInfoResDto {
     private Double expPoint;
     private String fCMtoken;
     private LocalDateTime joinTime;
-    private Long followCount;
+    private Long followerCount;
+    private Long followingCount;
     private Long backOut;
     private LocalDateTime lastBackOutTime;
     private String selfIntroduction;
@@ -83,7 +84,8 @@ public class FUserInfoResDto {
         this.expPoint = fUserInfo.getExpPoint();
         this.fCMtoken = fUserInfo.getFCMtoken();
         this.joinTime = fUserInfo.getJoinTime();
-        this.followCount = fUserInfo.getFollowCount();
+        this.followerCount = fUserInfo.getFollowerCount();
+        this.followingCount = fUserInfo.getFollowingCount();
         this.backOut = fUserInfo.getBackOut();
         this.lastBackOutTime = fUserInfo.getLastBackOutTime();
         this.selfIntroduction = fUserInfo.getSelfIntroduction();
