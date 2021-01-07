@@ -70,8 +70,10 @@ public class FUserInfoController {
 
 
     @PutMapping(value = "/v1/FUserInfo/AccountUserInfo")
-    public FUserInfoResDto updateAccountUserInfo( @RequestBody FUserAccountUpdateReqDto reqDto) {
-        return fUserInfoService.updateAccountUserInfo(reqDto);
+    public FUserInfoResDto updateAccountUserInfo(
+            @AuthenticationPrincipal UserAdapter userAdapter,
+            FUserAccountUpdateReqDto reqDto,MultipartFile profileImage,MultipartFile backGroundImage) throws IOException {
+        return fUserInfoService.updateAccountUserInfo(userAdapter,reqDto,profileImage,backGroundImage);
     }
 
 //    @AuthFireBaseJwtCheck

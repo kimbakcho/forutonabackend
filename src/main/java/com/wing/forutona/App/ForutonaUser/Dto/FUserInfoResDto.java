@@ -65,6 +65,7 @@ public class FUserInfoResDto {
         this.uid = fUserInfo.getUid();
         this.nickName = fUserInfo.getNickName();
         this.profilePictureUrl = fUserInfo.getProfilePictureUrl();
+        this.backGroundImageUrl = fUserInfo.getBackGroundImageUrl();
         this.gender  = fUserInfo.getGender();
         this.ageDate = fUserInfo.getAgeDate();
         this.email = fUserInfo.getEmail();

@@ -13,9 +13,11 @@ import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsLoginService;
 import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsLoginServiceFactory;
 import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsSupportService;
 import com.wing.forutona.GoogleStorageDao.GoogleStorgeAdmin;
+import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +40,7 @@ public interface FUserInfoService {
 
     String updateUserBackGroundImage(FUserInfo fUserInfo ,MultipartFile file) throws IOException;
 
-    FUserInfoResDto updateAccountUserInfo( FUserAccountUpdateReqDto reqDto);
+    FUserInfoResDto updateAccountUserInfo(UserAdapter userAdapter, FUserAccountUpdateReqDto reqDto,MultipartFile profileImage,MultipartFile backGroundImage) throws IOException;
 
     Page<FUserInfoSimpleResDto> getUserNickNameWithFullTextMatchIndex(String searchNickName, Pageable pageable);
 
@@ -125,21 +127,31 @@ class FUserInfoServiceImpl implements FUserInfoService {
     }
 
     @Override
-    public FUserInfoResDto updateAccountUserInfo(FUserAccountUpdateReqDto reqDto) {
-//        FUserInfo fUserInfo = fUserInfoDataRepository.findById(fFireBaseToken.getUserFireBaseUid()).get();
-//        fUserInfo.setIsoCode(reqDto.getIsoCode());
-//        //이전 자신의 닉네임과 같지 않을때 중복 체크후 닉네임 설정
-//        if (!fUserInfo.getNickName().equals(reqDto.getNickName())) {
-//            if (fUserInfoDataRepository.countByNickNameEquals(reqDto.getNickName()) == 0) {
-//                fUserInfo.setNickName(reqDto.getNickName());
-//            }
-//        }
-//        fUserInfo.setSelfIntroduction(reqDto.getSelfIntroduction());
-//        if (reqDto.getUserProfileImageUrl() != null) {
-//            fUserInfo.setProfilePictureUrl(reqDto.getUserProfileImageUrl());
-//        }
-//        return new FUserInfoResDto(fUserInfo);
-        return  null;
+    public FUserInfoResDto updateAccountUserInfo(UserAdapter userAdapter,
+                                                 FUserAccountUpdateReqDto reqDto,MultipartFile profileImage,MultipartFile backGroundImage) throws IOException {
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
+        fUserInfo.setIsoCode(reqDto.getIsoCode());
+        //이전 자신의 닉네임과 같지 않을때 중복 체크후 닉네임 설정
+        if (!fUserInfo.getNickName().equals(reqDto.getNickName())) {
+            if (fUserInfoDataRepository.countByNickNameEquals(reqDto.getNickName()) == 0) {
+                fUserInfo.setNickName(reqDto.getNickName());
+            }
+        }
+        fUserInfo.setSelfIntroduction(reqDto.getSelfIntroduction());
+        if(profileImage != null){
+            updateUserProfileImage(fUserInfo,profileImage);
+        }
+        if(backGroundImage != null){
+            updateUserBackGroundImage(fUserInfo,backGroundImage);
+        }
+
+        if(reqDto.isProfileImageIsEmpty()){
+            fUserInfo.setProfilePictureUrl(null);
+        }
+        if(reqDto.isBackGroundIsEmpty()){
+            fUserInfo.setBackGroundImageUrl(null);
+        }
+        return new FUserInfoResDto(fUserInfo);
     }
 
     @Override
