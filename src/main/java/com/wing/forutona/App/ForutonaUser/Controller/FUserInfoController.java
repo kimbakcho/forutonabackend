@@ -1,5 +1,6 @@
 package com.wing.forutona.App.ForutonaUser.Controller;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsLoginService;
 import com.wing.forutona.App.ForutonaUser.Service.SnsLogin.SnsLoginServiceFactory;
 import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
@@ -97,8 +98,8 @@ public class FUserInfoController {
 
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FUserInfo/PwChange")
-    public void userPwChange(FFireBaseToken fFireBaseToken, String pw) {
-        fUserInfoService.userPwChange(fFireBaseToken, pw);
+    public void userPwChange(@AuthenticationPrincipal UserAdapter userAdapter, String pw) throws FirebaseAuthException {
+        fUserInfoService.userPwChange(userAdapter, pw);
     }
 
     @GetMapping(value = "/v1/FUserInfo/UserNickNameWithFullTextMatchIndex")

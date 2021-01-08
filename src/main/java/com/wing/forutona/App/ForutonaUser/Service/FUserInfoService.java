@@ -2,6 +2,9 @@ package com.wing.forutona.App.ForutonaUser.Service;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserRecord;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
@@ -34,7 +37,7 @@ public interface FUserInfoService {
 
     boolean checkNickNameDuplication(String nickName);
 
-    void userPwChange(FFireBaseToken fFireBaseToken, String pw);
+    void userPwChange(UserAdapter userAdapter, String pw) throws FirebaseAuthException;
 
     String updateUserProfileImage(FUserInfo fUserInfo, MultipartFile file) throws IOException;
 
@@ -88,9 +91,10 @@ class FUserInfoServiceImpl implements FUserInfoService {
     }
 
     @Override
-    public void userPwChange(FFireBaseToken fFireBaseToken, String pw) {
-        UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(fFireBaseToken.getUserFireBaseUid());
+    public void userPwChange(UserAdapter userAdapter, String pw) throws FirebaseAuthException {
+        UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(userAdapter.getfUserInfo().getUid());
         updateRequest.setPassword(pw);
+        FirebaseAuth.getInstance().updateUser(updateRequest);
     }
 
     @Override
