@@ -49,11 +49,11 @@ public class FUserInfoResDto {
     private Long sponsorHistoryOpenAll;
     private Long sponsorHistoryOpenSponAndFollowFromMe;
     private Long sponsorHistoryOpenSponNoOpen;
-    private Long alarmChatMessage;
-    private Long alarmContentReply;
-    private Long alarmReplyAndReply;
-    private Long alarmFollowNewContent;
-    private Long alarmSponNewContent;
+    private Boolean alarmChatMessage;
+    private Boolean alarmContentReply;
+    private Boolean alarmReplyAndReply;
+    private Boolean alarmFollowNewContent;
+    private Boolean alarmSponNewContent;
     private Long deactivation;
     int maliciousCount ;
     LocalDateTime stopPeriod;
@@ -103,7 +103,7 @@ public class FUserInfoResDto {
         this.alarmContentReply = fUserInfo.getAlarmContentReply();
         this.alarmReplyAndReply = fUserInfo.getAlarmReplyAndReply();
         this.alarmFollowNewContent = fUserInfo.getAlarmFollowNewContent();
-        this.alarmSponNewContent = fUserInfo.getAlarmFollowNewContent();
+        this.alarmSponNewContent = fUserInfo.getAlarmSponNewContent();
         this.deactivation = fUserInfo.getDeactivation();
         this.maliciousCount = fUserInfo.getMaliciousCount();
         this.stopPeriod = fUserInfo.getStopPeriod();

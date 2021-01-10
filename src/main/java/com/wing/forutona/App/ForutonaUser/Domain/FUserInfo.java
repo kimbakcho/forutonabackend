@@ -85,15 +85,15 @@ public class FUserInfo {
     @ColumnDefault("1")
     private Long sponsorHistoryOpenSponNoOpen = 1L;
     @ColumnDefault("1")
-    private Long alarmChatMessage = 1L;
+    private Boolean alarmChatMessage = true;
     @ColumnDefault("1")
-    private Long alarmContentReply =1L;
+    private Boolean alarmContentReply =true;
     @ColumnDefault("1")
-    private Long alarmReplyAndReply = 1L;
+    private Boolean alarmReplyAndReply = true;
     @ColumnDefault("1")
-    private Long alarmFollowNewContent =1L;
+    private Boolean alarmFollowNewContent =true;
     @ColumnDefault("0")
-    private Long alarmSponNewContent =0L;
+    private Boolean alarmSponNewContent =false;
     @ColumnDefault("1")
     private Long deactivation =1L;
     @ColumnDefault("0")
@@ -183,5 +183,25 @@ public class FUserInfo {
 
     public void setMaliciousMessageCheck(boolean maliciousMessageCheck) {
         this.maliciousMessageCheck = maliciousMessageCheck;
+    }
+
+    public void setAlarmChatMessage(Boolean alarmChatMessage) {
+        this.alarmChatMessage = alarmChatMessage;
+    }
+
+    public void setAlarmContentReply(Boolean alarmContentReply) {
+        this.alarmContentReply = alarmContentReply;
+    }
+
+    public void setAlarmReplyAndReply(Boolean alarmReplyAndReply) {
+        this.alarmReplyAndReply = alarmReplyAndReply;
+    }
+
+    public void setAlarmFollowNewContent(Boolean alarmFollowNewContent) {
+        this.alarmFollowNewContent = alarmFollowNewContent;
+    }
+
+    public void setAlarmSponNewContent(Boolean alarmSponNewContent) {
+        this.alarmSponNewContent = alarmSponNewContent;
     }
 }

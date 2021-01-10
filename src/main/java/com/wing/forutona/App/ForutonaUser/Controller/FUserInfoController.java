@@ -69,32 +69,12 @@ public class FUserInfoController {
         return fUserInfoService.checkNickNameDuplication(nickName);
     }
 
-
     @PutMapping(value = "/v1/FUserInfo/AccountUserInfo")
     public FUserInfoResDto updateAccountUserInfo(
             @AuthenticationPrincipal UserAdapter userAdapter,
             FUserAccountUpdateReqDto reqDto,MultipartFile profileImage,MultipartFile backGroundImage) throws IOException {
         return fUserInfoService.updateAccountUserInfo(userAdapter,reqDto,profileImage,backGroundImage);
     }
-
-//    @AuthFireBaseJwtCheck
-//    @ResponseAddJsonHeader
-//    @PutMapping(value = "/v1/FUserInfo/ProfileImage")
-//    public ResponseBodyEmitter updateUserProfileImage(FFireBaseToken fFireBaseToken,
-//                                                      @RequestParam("ProfileImage") MultipartFile file) {
-//        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-//        ExecutorService executor = Executors.newSingleThreadExecutor();
-//        executor.execute(() -> {
-//            try {
-//                emitter.send(fUserInfoService.updateUserProfileImage(fFireBaseToken, file));
-//                emitter.complete();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                emitter.completeWithError(e);
-//            }
-//        });
-//        return emitter;
-//    }
 
     @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FUserInfo/PwChange")
@@ -116,6 +96,12 @@ public class FUserInfoController {
     @GetMapping(value= "/v1/FUserInfo/FUserInfoSimple")
     public FUserInfoSimpleResDto getFUserInfoSimple(String userUid){
         return fUserInfoService.getFUserInfoSimple(userUid);
+    }
+
+    @PutMapping(value =  "/v1/FUserInfo/UpdateAlarmConfig")
+    public FUserInfoResDto UpdateAlarmConfig(@AuthenticationPrincipal UserAdapter userAdapter,
+                                             @RequestBody UserAlarmConfigUpdateReqDto userAlarmConfigUpdateReqDto){
+        return fUserInfoService.UpdateAlarmConfig(userAdapter,userAlarmConfigUpdateReqDto);
     }
 
 }

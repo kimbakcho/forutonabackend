@@ -50,6 +50,8 @@ public interface FUserInfoService {
     void updateMaliciousMessageCheck(FUserInfo getFUserInfo);
 
     FUserInfoSimpleResDto getFUserInfoSimple(String userUid);
+
+    FUserInfoResDto UpdateAlarmConfig(UserAdapter userAdapter,UserAlarmConfigUpdateReqDto userAlarmConfigUpdateReqDto);
 }
 
 @Service
@@ -173,6 +175,17 @@ class FUserInfoServiceImpl implements FUserInfoService {
     public FUserInfoSimpleResDto getFUserInfoSimple(String userUid) {
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(userUid).get();
         return new FUserInfoSimpleResDto(fUserInfo);
+    }
+
+    @Override
+    public FUserInfoResDto UpdateAlarmConfig(UserAdapter userAdapter,UserAlarmConfigUpdateReqDto userAlarmConfigUpdateReqDto) {
+        FUserInfo fUserInfo = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
+        fUserInfo.setAlarmChatMessage(userAlarmConfigUpdateReqDto.getAlarmChatMessage());
+        fUserInfo.setAlarmContentReply(userAlarmConfigUpdateReqDto.getAlarmContentReply());
+        fUserInfo.setAlarmFollowNewContent(userAlarmConfigUpdateReqDto.getAlarmFollowNewContent());
+        fUserInfo.setAlarmReplyAndReply(userAlarmConfigUpdateReqDto.getAlarmReplyAndReply());
+        fUserInfo.setAlarmSponNewContent(userAlarmConfigUpdateReqDto.getAlarmSponNewContent());
+        return new FUserInfoResDto(fUserInfo);
     }
 
 
