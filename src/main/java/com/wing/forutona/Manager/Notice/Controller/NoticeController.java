@@ -22,5 +22,9 @@ public class NoticeController {
         return noticeService.getNotices(pageable);
     }
 
+    @GetMapping()
+    public NoticeResDto getNotice(Integer idx){
+        return  noticeService.getNotice(idx);
+    }
 
 }

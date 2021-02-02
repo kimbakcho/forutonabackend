@@ -42,10 +42,10 @@ class BallImageUploadServiceImpl implements BallImageUploadService{
             } else {
                 saveFileName = uuid.toString();
             }
-            BlobId blobId = BlobId.of("publicforutona", "profileimage/" + saveFileName);
+            BlobId blobId = BlobId.of("publicforutona", "ballImage/" + saveFileName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
             storage.create(blobInfo, file.getBytes());
-            String imageUrl = "https://storage.googleapis.com/publicforutona/profileimage/" + saveFileName;
+            String imageUrl = "https://storage.googleapis.com/publicforutona/ballImage/" + saveFileName;
             urls.add(imageUrl);
         }
         return fBallImageUploadResDto;

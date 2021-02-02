@@ -53,8 +53,12 @@ class BallInsertServiceImpl implements BallInsertService {
                 .ballType(reqDto.getBallType())
                 .placeAddress(reqDto.getPlaceAddress())
                 .description(reqDto.getDescription())
+                .ballPower(0L)
+                .ballHits(0)
                 .makeExp(300)
                 .uid(userInfo.get())
+                .influenceReward(0L)
+                .pointReward(0L)
                 .build();
 
         FBall saveBall = fBallDataRepository.saveAndFlush(fBall);

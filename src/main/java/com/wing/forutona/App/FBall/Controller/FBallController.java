@@ -6,9 +6,11 @@ import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.App.FBall.Dto.*;
 import com.wing.forutona.App.FBall.Service.*;
+import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -64,28 +66,16 @@ public class FBallController {
 
     @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/BallImageUpload")
-    public ResponseBodyEmitter ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files){
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            try {
-                emitter.send(ballImageUploadService.ballImageUpload(files));
-                emitter.complete();
-            } catch (IOException e) {
-                e.printStackTrace();
-                emitter.completeWithError(e);
-            }
-        });
-        return emitter;
+    public FBallImageUploadResDto ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files) throws IOException {
+        FBallImageUploadResDto fBallImageUploadResDto = ballImageUploadService.ballImageUpload(files);
+        return fBallImageUploadResDto;
     }
 
-    @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBall")
-    public FBallResDto insertBall(@RequestBody FBallInsertReqDto reqDto, FFireBaseToken fireBaseToken) throws ParseException {
-       return ballInsertService.insertBall(reqDto,fireBaseToken.getUserFireBaseUid());
+    public FBallResDto insertBall(@RequestBody FBallInsertReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws ParseException {
+       return ballInsertService.insertBall(reqDto,userAdapter.getfUserInfo().getUid());
     }
 
-    @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBall")
     public FBallResDto updateBall(@RequestBody FBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) throws Exception {
         return ballUpdateService.updateBall(reqDto,fireBaseToken.getUserFireBaseUid());

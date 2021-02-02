@@ -19,4 +19,10 @@ public class NoticeService {
         Page<NoticeResDto> result = all.map(x -> NoticeResDto.fromNotice(x));
         return result;
     }
+
+    public NoticeResDto getNotice(Integer idx) {
+        Notice notice = noticeRepository.findById(idx).get();
+        return NoticeResDto.fromNotice(notice);
+    }
+
 }

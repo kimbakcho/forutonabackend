@@ -11,9 +11,11 @@ import com.wing.forutona.App.FBallReply.Dto.FBallReplyUpdateReqDto;
 import com.wing.forutona.App.FBallReply.Service.FBallReplyInsertServiceFactory;
 import com.wing.forutona.App.FBallReply.Service.FBallReplyService;
 import com.wing.forutona.App.FireBaseMessage.Service.FBallReplyFCMServiceFactory;
+import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,20 +40,18 @@ public class FBallReplyController {
     }
 
 
-    @AuthFireBaseJwtCheck
     @PostMapping(value = "/v1/FBallReply")
-    public FBallReplyResDto insertFBallReply(@RequestBody FBallReplyInsertReqDto reqDto, FFireBaseToken fireBaseToken) throws FirebaseMessagingException, JsonProcessingException {
-        return fBallReplyService.insertFBallReply(fireBaseToken,
+    public FBallReplyResDto insertFBallReply(@RequestBody FBallReplyInsertReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter ) throws JsonProcessingException, FirebaseMessagingException {
+        return fBallReplyService.insertFBallReply(userAdapter,
                 fBallReplyInsertServiceFactory.getFBallReplyInsertServiceFactory(reqDto),
                 fBallReplyFCMServiceFactory.getFBallReplyFCMServiceFactory(reqDto),
                 reqDto);
     }
 
 
-    @AuthFireBaseJwtCheck
     @PutMapping(value = "/v1/FBallReply")
-    public FBallReplyResDto updateFBallReply(@RequestBody FBallReplyUpdateReqDto reqDto, FFireBaseToken fireBaseToken) throws Throwable {
-        return fBallReplyService.updateFBallReply(fireBaseToken, reqDto);
+    public FBallReplyResDto updateFBallReply(@RequestBody FBallReplyUpdateReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Throwable {
+        return fBallReplyService.updateFBallReply(userAdapter, reqDto);
     }
 
 

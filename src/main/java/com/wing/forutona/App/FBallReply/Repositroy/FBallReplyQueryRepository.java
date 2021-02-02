@@ -70,7 +70,7 @@ public class FBallReplyQueryRepository {
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         OrderSpecifier orderSpecifier;
-        orderSpecifier = fBallReply.replyNumber.desc();
+        orderSpecifier = fBallReply.replyNumber.asc();
         booleanBuilder.and(fBallReply.replySort.eq(0L));
 
         Page<FBallReplyResDto> fBallReplySearch = getFBallReplySearch(pageable, fBall, booleanBuilder, orderSpecifier);
