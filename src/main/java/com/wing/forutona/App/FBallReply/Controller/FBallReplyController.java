@@ -55,10 +55,9 @@ public class FBallReplyController {
     }
 
 
-    @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBallReply/{replyUuid}")
-    public FBallReplyResDto deleteFBallReply(@PathVariable String replyUuid, FFireBaseToken fireBaseToken) throws Throwable {
-        return fBallReplyService.deleteFBallReply(fireBaseToken, replyUuid);
+    public FBallReplyResDto deleteFBallReply(@PathVariable String replyUuid, @AuthenticationPrincipal UserAdapter userAdapter) throws Throwable {
+        return fBallReplyService.deleteFBallReply(userAdapter, replyUuid);
     }
 
 }

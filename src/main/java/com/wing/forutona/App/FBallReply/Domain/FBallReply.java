@@ -19,6 +19,7 @@ public class FBallReply {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballUuid")
     FBall replyBallUuid;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uid")
     FUserInfo replyUid;

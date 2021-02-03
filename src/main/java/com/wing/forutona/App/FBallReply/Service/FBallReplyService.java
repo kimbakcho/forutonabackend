@@ -88,7 +88,7 @@ public class FBallReplyService {
 
     @Transactional
     public FBallReplyResDto updateFBallReply(UserAdapter userAdapter, FBallReplyUpdateReqDto reqDto) throws Throwable {
-        FBallReply fBallReply = fBallReplyDataRepository.findById(reqDto.getReplyUuid()).get();
+        FBallReply fBallReply = fBallReplyQueryRepository.findByIdAndReplyUid(reqDto.getReplyUuid(),userAdapter.getfUserInfo());
         fBallReply.setReplyText(reqDto.getReplyText());
         fBallReply.setReplyUpdateDateTime(LocalDateTime.now());
         FBall fBall = fBallDataRepository.findById(fBallReply.getBallUuid()).get();
@@ -102,13 +102,9 @@ public class FBallReplyService {
     }
 
     @Transactional
-    public FBallReplyResDto deleteFBallReply(FFireBaseToken fireBaseToken, String replyUuid) throws Throwable {
-        FBallReply fBallReply = fBallReplyDataRepository.findById(replyUuid).get();
-        if (fireBaseToken.getUserFireBaseUid().equals(fBallReply.getReplyUid().getUid())) {
-            fBallReply.delete();
-        } else {
-            throw new Throwable("missMatchUid");
-        }
+    public FBallReplyResDto deleteFBallReply(UserAdapter userAdapter, String replyUuid) throws Throwable {
+        FBallReply fBallReply = fBallReplyQueryRepository.findByIdAndReplyUid(replyUuid,userAdapter.getfUserInfo());
+        fBallReply.delete();
         return new FBallReplyResDto(fBallReply,null);
     }
 

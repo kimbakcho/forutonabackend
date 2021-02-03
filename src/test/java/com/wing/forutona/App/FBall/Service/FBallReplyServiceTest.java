@@ -93,7 +93,7 @@ class FBallReplyServiceTest extends BaseTest {
         when(fireBaseToken.getUserFireBaseUid()).thenReturn(fBallReply.getReplyUid().getUid());
 
         //when
-        fBallReplyService.deleteFBallReply(fireBaseToken, fBallReply.getReplyUuid());
+//        fBallReplyService.deleteFBallReply(fireBaseToken, fBallReply.getReplyUuid());
         //then
         assertEquals(true, fBallReply.getDeleteFlag());
     }

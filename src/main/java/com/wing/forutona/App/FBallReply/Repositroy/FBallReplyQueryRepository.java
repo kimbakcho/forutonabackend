@@ -8,9 +8,11 @@ import com.wing.forutona.App.FBall.Domain.FBall;
 import com.wing.forutona.App.FBallReply.Domain.FBallReply;
 import com.wing.forutona.App.FBall.Domain.QFBall;
 
+import com.wing.forutona.App.FBallReply.Domain.QFBallReply;
 import com.wing.forutona.App.FBallReply.Dto.FBallReplyResDto;
 
 import com.wing.forutona.App.FBallReply.Dto.QFBallReplyResDto;
+import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.Optional;
 
 import static com.wing.forutona.App.FBallReply.Domain.QFBallReply.fBallReply;
 import static com.wing.forutona.App.FBallValuation.Domain.QFBallValuation.fBallValuation;
@@ -123,6 +127,14 @@ public class FBallReplyQueryRepository {
                 pageable, fBallReplyResDtoQueryResults.getTotal());
 
         return pageWrap;
+    }
+
+    public FBallReply findByIdAndReplyUid (String replyUuid, FUserInfo replyUid){
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        FBallReply fBallReply = queryFactory.select(QFBallReply.fBallReply).from(QFBallReply.fBallReply).where(QFBallReply.fBallReply.replyUuid.eq(replyUuid),
+                QFBallReply.fBallReply.replyUid.eq(replyUid))
+                .fetchOne();
+        return fBallReply;
     }
 
 }
