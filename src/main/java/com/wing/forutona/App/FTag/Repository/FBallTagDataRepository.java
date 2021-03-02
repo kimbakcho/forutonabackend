@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FBallTagDataRepository  extends JpaRepository<FBalltag,Long> {
-    List<FBalltag> findByBallUuid(FBall BallUuid);
+    List<FBalltag> findByBallUuidOrderByTagIndexAsc(FBall BallUuid);
+    void deleteByBallUuid(FBall ballUuid);
 }

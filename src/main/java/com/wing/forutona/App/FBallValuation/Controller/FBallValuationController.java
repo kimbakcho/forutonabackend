@@ -1,29 +1,28 @@
 package com.wing.forutona.App.FBallValuation.Controller;
 
-import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
-import com.wing.forutona.CustomUtil.FFireBaseToken;
-import com.wing.forutona.App.FBallValuation.Dto.FBallLikeReqDto;
-import com.wing.forutona.App.FBallValuation.Dto.FBallLikeResDto;
+import com.wing.forutona.App.FBallValuation.Dto.FBallVoteReqDto;
+import com.wing.forutona.App.FBallValuation.Dto.FBallVoteResDto;
 import com.wing.forutona.App.FBallValuation.Service.BallLikeService.BallLIkeServiceFactory;
-import com.wing.forutona.App.FBallValuation.Service.BallLikeService.BallLikeStateSearchService;
+import com.wing.forutona.App.FBallValuation.Service.BallLikeService.BallVoteStateSearchService;
+import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class FBallValuationController {
     final BallLIkeServiceFactory ballLIkeServiceFactory;
-    final BallLikeStateSearchService ballLikeStateSearchService;
+    final BallVoteStateSearchService ballVoteStateSearchService;
 
-    @AuthFireBaseJwtCheck
-    @PostMapping(value = "/v1/FBallValuation/BallLike")
-    public FBallLikeResDto ballLike(@RequestBody FBallLikeReqDto reqDto, FFireBaseToken fireBaseToken) throws Exception {
-        return ballLIkeServiceFactory.create(reqDto.getLikeActionType()).execute(reqDto,fireBaseToken.getUserFireBaseUid());
+    @PostMapping(value = "/v1/FBallValuation/BallVote")
+    public FBallVoteResDto ballVote(@RequestBody FBallVoteReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballLIkeServiceFactory.create(reqDto.getLikeActionType()).execute(reqDto,userAdapter.getfUserInfo().getUid());
     }
 
-    @GetMapping(value = "/v1/FBallValuation/BallLike")
-    public FBallLikeResDto ballLike(String ballUuid,String uid) throws Exception {
-        return ballLikeStateSearchService.getLikeState(ballUuid,uid);
+    @GetMapping(value = "/v1/FBallValuation/BallVote")
+    public FBallVoteResDto getBallVoteState(String ballUuid, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballVoteStateSearchService.getVoteState(ballUuid,userAdapter.getfUserInfo().getUid());
     }
 
 }

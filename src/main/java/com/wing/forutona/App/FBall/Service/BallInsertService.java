@@ -5,10 +5,12 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.App.FBall.Domain.FBall;
+import com.wing.forutona.App.FBall.Domain.FBallState;
 import com.wing.forutona.App.FBall.Dto.FBallInsertReqDto;
 import com.wing.forutona.App.FBall.Dto.FBallResDto;
-import com.wing.forutona.App.FBall.Domain.FBallState;
 import com.wing.forutona.App.FBall.Repository.FBallDataRepository;
+import com.wing.forutona.App.FTag.Domain.FBalltag;
+import com.wing.forutona.App.FTag.Repository.FBallTagDataRepository;
 import com.wing.forutona.App.FireBaseMessage.Service.FBallInsertFCMService;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public interface BallInsertService {
     FBallResDto insertBall(FBallInsertReqDto reqDto, String userUid) throws ParseException;
 }
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,6 +35,8 @@ class BallInsertServiceImpl implements BallInsertService {
     final FBallInsertFCMService fBallInsertFCMService;
 
     final FUserInfoDataRepository fUserInfoDataRepository;
+
+    final FBallTagDataRepository fBallTagDataRepository;
 
 
     @Override
@@ -53,7 +58,7 @@ class BallInsertServiceImpl implements BallInsertService {
                 .ballType(reqDto.getBallType())
                 .placeAddress(reqDto.getPlaceAddress())
                 .description(reqDto.getDescription())
-                .ballPower(0L)
+                .ballPower(0)
                 .ballHits(0)
                 .makeExp(300)
                 .uid(userInfo.get())
@@ -62,6 +67,14 @@ class BallInsertServiceImpl implements BallInsertService {
                 .build();
 
         FBall saveBall = fBallDataRepository.saveAndFlush(fBall);
+
+        for(int i=0;i<reqDto.getTags().size();i++){
+            FBalltag tag = FBalltag.builder().ballUuid(saveBall)
+                    .tagItem(reqDto.getTags().get(i).getTagItem())
+                    .tagIndex(i)
+                    .build();
+            fBallTagDataRepository.save(tag);
+        }
 
         fBallInsertFCMService.sendInsertFCMMessage(saveBall);
 

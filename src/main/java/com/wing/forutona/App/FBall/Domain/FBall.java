@@ -50,11 +50,11 @@ public class FBall {
     @ColumnDefault("0")
     private Long ballHits = 0L;
     @ColumnDefault("0")
-    private Long ballLikes = 0L;
+    private Integer ballLikes = 0;
     @ColumnDefault("0")
-    private Long ballDisLikes = 0L;
+    private Integer ballDisLikes = 0;
     @ColumnDefault("0")
-    private Long ballPower = 0L;
+    private Integer ballPower = 0;
     @ColumnDefault("0")
     private Long joinPlayer = 0L;
     private Long maximumPlayers = -1L;
@@ -78,10 +78,17 @@ public class FBall {
     @Transient
     private Double BI = 0.0;
 
+    @ColumnDefault("0")
+    private Boolean isEditContent = false;
+
+    private LocalDateTime editContentTime;
+
+
+
     @Builder
     public FBall(String ballUuid, LocalDateTime makeTime, FBallState ballState, FUserInfo uid,
                  Double longitude,Double latitude,String ballName,FBallType ballType,
-                 String placeAddress,String description, Long ballPower,
+                 String placeAddress,String description, Integer ballPower,
                  double pointReward, double influenceReward, LocalDateTime activationTime,
                  long ballHits, double makeExp) {
         this.ballUuid = ballUuid;
@@ -146,21 +153,21 @@ public class FBall {
         this.contributor = contributor;
     }
 
-    public Long plusBallLike(Long point) {
+    public Integer plusBallLike(Integer point) {
         this.ballLikes += point;
         return ballLikes;
     }
 
-    public Long plusBallDisLike(Long point) {
+    public Integer plusBallDisLike(Integer point) {
         this.ballDisLikes += point;
         return this.ballDisLikes;
     }
 
-    public void minusBallLike(Long point) {
+    public void minusBallLike(Integer point) {
         this.ballLikes -= point;
     }
 
-    public void minusBallDisLike(Long point) {
+    public void minusBallDisLike(Integer point) {
         this.ballDisLikes -= point;
     }
 
@@ -168,7 +175,7 @@ public class FBall {
         this.ballPower = this.ballLikes - this.ballDisLikes;
     }
 
-    public void setBallPower(Long ballPower) {
+    public void setBallPower(Integer ballPower) {
         this.ballPower = ballPower;
     }
 
@@ -191,5 +198,9 @@ public class FBall {
 
     public void setBI(Double BI) {
         this.BI = BI;
+    }
+
+    public void setEditContent(Boolean editContent) {
+        isEditContent = editContent;
     }
 }

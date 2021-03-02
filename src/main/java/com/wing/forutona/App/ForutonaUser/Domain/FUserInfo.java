@@ -102,6 +102,12 @@ public class FUserInfo {
     LocalDateTime stopPeriod;
     Boolean maliciousMessageCheck = false;
     String maliciousCause;
+    @ColumnDefault("1")
+    private Integer influenceTicket = 0;
+    @ColumnDefault("1")
+    private Integer maxInfluenceTicket = 0;
+    LocalDateTime influenceTicketReceiveTime;
+    LocalDateTime nextGiveInfluenceTicketTime;
 
     @Builder
     public FUserInfo(String uid, String fCMtoken, String nickName, double longitude, double latitude) {
@@ -203,5 +209,17 @@ public class FUserInfo {
 
     public void setAlarmSponNewContent(Boolean alarmSponNewContent) {
         this.alarmSponNewContent = alarmSponNewContent;
+    }
+
+    public void setInfluenceTicket(Integer influenceTicket) {
+        this.influenceTicket = influenceTicket;
+    }
+
+    public void setInfluenceTicketReceiveTime(LocalDateTime influenceTicketReceiveTime) {
+        this.influenceTicketReceiveTime = influenceTicketReceiveTime;
+    }
+
+    public void setNextGiveInfluenceTicketTime(LocalDateTime nextGiveInfluenceTicketTime) {
+        this.nextGiveInfluenceTicketTime = nextGiveInfluenceTicketTime;
     }
 }

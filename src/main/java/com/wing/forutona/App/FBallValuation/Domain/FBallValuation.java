@@ -9,6 +9,8 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
+@AllArgsConstructor
 public class FBallValuation {
     @Id
     String valueUuid;
@@ -21,31 +23,20 @@ public class FBallValuation {
     @JoinColumn(name = "uid")
     FUserInfo uid;
 
-    Long ballLike = 0L;
-    Long ballDislike = 0L;
-    Long point = 0L;
+    Integer ballLike = 0;
+    Integer ballDislike = 0;
+    Integer point = 0;
 
-    @Builder
-    public FBallValuation(String valueUuid,FBall ballUuid,FUserInfo uid,Long ballLike,Long ballDislike,Long point){
-        this.valueUuid = valueUuid;
-        this.ballUuid = ballUuid;
-        this.uid =uid;
-        this.point = point;
+
+    public void setBallLike(Integer ballLike) {
         this.ballLike = ballLike;
+    }
+
+    public void setBallDislike(Integer ballDislike) {
         this.ballDislike = ballDislike;
     }
 
-    public void setPoint(Long point) {
+    public void setPoint(Integer point) {
         this.point = point;
     }
-
-    public void setBallLike(Long like) {
-        this.ballLike = like;
-    }
-
-    public void setBallDislike(Long dislike) {
-        this.ballDislike = dislike;
-    }
-
-
 }

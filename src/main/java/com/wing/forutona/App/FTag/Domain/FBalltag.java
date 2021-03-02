@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FBalltag {
   @Id
@@ -19,9 +21,7 @@ public class FBalltag {
   //ALTER TABLE `FBalltag` ADD FULLTEXT INDEX `tagindex` (`tagItem`) WITH PARSER ngram;  ngram index 사용
   private String tagItem;
 
-  @Builder
-  public FBalltag(FBall ballUuid, String tagItem){
-    this.ballUuid = ballUuid;
-    this.tagItem = tagItem;
-  }
+  Integer tagIndex;
+
+
 }

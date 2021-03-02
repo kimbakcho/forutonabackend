@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,9 +70,9 @@ public class FBallReplyService {
         FBallReply saveReply = fBallReplyDataRepository.save(fBallReply);
         FBallValuation fBallValuation = null;
 
-        Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
-        if(valuationOptional.isPresent()){
-            fBallValuation = valuationOptional.get();
+        List<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, replyUser);
+        if(valuationOptional.size()>0){
+            fBallValuation = valuationOptional.get(0);
         }
 
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
@@ -94,9 +95,9 @@ public class FBallReplyService {
         FBall fBall = fBallDataRepository.findById(fBallReply.getBallUuid()).get();
         FUserInfo replyUser = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
         FBallValuation fBallValuation = null;
-        Optional<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, replyUser);
-        if(valuationOptional.isPresent()){
-            fBallValuation = valuationOptional.get();
+        List<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, replyUser);
+        if(valuationOptional.size()>0){
+            fBallValuation = valuationOptional.get(0);
         }
         return new FBallReplyResDto(fBallReply,fBallValuation);
     }

@@ -59,6 +59,11 @@ public class FUserInfoResDto {
     LocalDateTime stopPeriod;
     String maliciousCause;
     Boolean maliciousMessageCheck;
+    private Integer influenceTicket;
+    private Integer maxInfluenceTicket;
+    private LocalDateTime influenceTicketReceiveTime;
+    private LocalDateTime nextGiveInfluenceTicketTime;
+    Double playerPower;
 
     @QueryProjection
     public FUserInfoResDto(FUserInfo fUserInfo){
@@ -109,6 +114,11 @@ public class FUserInfoResDto {
         this.stopPeriod = fUserInfo.getStopPeriod();
         this.maliciousCause = fUserInfo.getMaliciousCause();
         this.maliciousMessageCheck = fUserInfo.getMaliciousMessageCheck();
+        this.influenceTicket = fUserInfo.getInfluenceTicket();
+        this.maxInfluenceTicket = fUserInfo.getMaxInfluenceTicket();
+        this.influenceTicketReceiveTime = fUserInfo.getInfluenceTicketReceiveTime();
+        this.nextGiveInfluenceTicketTime = fUserInfo.getNextGiveInfluenceTicketTime();
+        this.playerPower = fUserInfo.getPlayerPower();
 
     }
 }

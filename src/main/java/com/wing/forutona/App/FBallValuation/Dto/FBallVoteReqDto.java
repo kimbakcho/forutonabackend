@@ -4,10 +4,10 @@ import com.wing.forutona.App.FBallValuation.Domain.LikeActionType;
 import lombok.Data;
 
 @Data
-public class FBallLikeReqDto {
+public class FBallVoteReqDto {
     String valueUuid;
     String ballUuid;
-    Long likePoint;
-    Long disLikePoint;
+    Integer likePoint;
+    Integer disLikePoint;
     LikeActionType likeActionType;
 }

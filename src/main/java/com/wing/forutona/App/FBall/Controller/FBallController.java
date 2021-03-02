@@ -77,8 +77,8 @@ public class FBallController {
     }
 
     @PutMapping(value = "/v1/FBall")
-    public FBallResDto updateBall(@RequestBody FBallUpdateReqDto reqDto, FFireBaseToken fireBaseToken) throws Exception {
-        return ballUpdateService.updateBall(reqDto,fireBaseToken.getUserFireBaseUid());
+    public FBallResDto updateBall(@RequestBody FBallUpdateReqDto reqDto,@AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballUpdateService.updateBall(reqDto,userAdapter.getfUserInfo().getUid());
     }
 
     @GetMapping(value = "/v1/FBall")
@@ -88,8 +88,8 @@ public class FBallController {
 
     @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBall")
-    public String deleteBall(String ballUuid,FFireBaseToken fireBaseToken) throws Exception {
-        return ballDeleteService.deleteBall(ballUuid,fireBaseToken.getUserFireBaseUid());
+    public String deleteBall(String ballUuid,@AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballDeleteService.deleteBall(ballUuid,userAdapter.getfUserInfo().getUid());
     }
 
     @PostMapping(value = "/v1/FBall/BallHit")

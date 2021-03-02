@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BallUserValuationSearch {
@@ -36,17 +37,16 @@ class BallSignUserValuationSearchImpl implements BallUserValuationSearch {
         FUserInfo userInfo = fUserInfoDataRepository.findById(userUid).get();
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
 
-        Optional<FBallValuation> fBallValuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUidIs(fBall, userInfo);
-        if (fBallValuationOptional.isPresent()) {
-            return new FBallValuationResDto(fBallValuationOptional.get());
+        List<FBallValuation> fBallValuations = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, userInfo);
+        if (fBallValuations.size()>0) {
+            return new FBallValuationResDto(fBallValuations.get(0));
         } else {
             FBallValuationResDto fBallValuationResDto = new FBallValuationResDto();
-            fBallValuationResDto.setUid(new FUserInfoSimpleResDto(userInfo));
             fBallValuationResDto.setValueUuid(null);
-            fBallValuationResDto.setBallDislike(0L);
-            fBallValuationResDto.setBallLike(0L);
+            fBallValuationResDto.setBallDislike(0);
+            fBallValuationResDto.setBallLike(0);
             fBallValuationResDto.setBallUuid(new FBallResDto(fBall));
-            fBallValuationResDto.setPoint(0L);
+            fBallValuationResDto.setPoint(0);
             return fBallValuationResDto;
         }
 
@@ -68,10 +68,10 @@ class BallGuestUserValuationSearchImpl implements BallUserValuationSearch {
     public FBallValuationResDto search(String ballUuid, String userUid) throws Exception {
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
         FBallValuationResDto fBallValuationResDto = new FBallValuationResDto();
-        fBallValuationResDto.setBallDislike(0L);
-        fBallValuationResDto.setBallLike(0L);
+        fBallValuationResDto.setBallDislike(0);
+        fBallValuationResDto.setBallLike(0);
         fBallValuationResDto.setBallUuid(new FBallResDto(fBall));
-        fBallValuationResDto.setPoint(0L);
+        fBallValuationResDto.setPoint(0);
         return fBallValuationResDto;
     }
 }

@@ -41,7 +41,7 @@ class BallSelectServiceImplTest extends BaseTest {
                 .longitude(126.79369789999998)
                 .uid(testUser)
                 .makeTime(LocalDateTime.now())
-                .ballPower(0L)
+                .ballPower(0)
                 .build();
         Optional<FBall> optionalFBall = Optional.of(fBall);
         when(fBallDataRepository.findById(testBallUuid)).thenReturn(optionalFBall);

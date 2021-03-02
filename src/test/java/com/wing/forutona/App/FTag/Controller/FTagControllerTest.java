@@ -143,13 +143,13 @@ class FTagControllerTest extends BaseTest {
     void getTagItem() throws Exception {
         List<FBallTagResDto> fBallTagResDtos = new ArrayList<>();
         FBallTagResDto fBallTagResDto1 = new FBallTagResDto();
-        fBallTagResDto1.setBallUuid(basicBall("TESTUUID","TESTBALL"));
+//        fBallTagResDto1.setBallUuid(basicBall("TESTUUID","TESTBALL"));
         fBallTagResDto1.setIdx(10L);
         fBallTagResDto1.setTagItem("TEST");
         fBallTagResDtos.add(fBallTagResDto1);
 
         FBallTagResDto fBallTagResDto2 = new FBallTagResDto();
-        fBallTagResDto2.setBallUuid(basicBall("TESTUUID","TESTBALL"));
+//        fBallTagResDto2.setBallUuid(basicBall("TESTUUID","TESTBALL"));
         fBallTagResDto2.setIdx(11L);
         fBallTagResDto2.setTagItem("TEST");
         fBallTagResDtos.add(fBallTagResDto2);

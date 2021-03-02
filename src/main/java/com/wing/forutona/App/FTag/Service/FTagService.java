@@ -108,7 +108,7 @@ class FTagServiceImpl implements FTagService {
 
     public List<FBallTagResDto> getTagFromBallUuid(String ballUuid) {
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
-        List<FBalltag> fBallTags = fBallTagDataRepository.findByBallUuid(fBall);
+        List<FBalltag> fBallTags = fBallTagDataRepository.findByBallUuidOrderByTagIndexAsc(fBall);
         List<FBallTagResDto> collect = fBallTags.stream().map(x -> new FBallTagResDto(x)).collect(Collectors.toList());
         return collect;
     }

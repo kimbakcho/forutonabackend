@@ -32,7 +32,7 @@ public class MaliciousReplyService {
             maliciousReply.addEtc(reqDto.getEtc());
             maliciousReply.addSexual(reqDto.getSexual());
             result = MaliciousReplyResDto.fromMaliciousReply(maliciousReply);
-        }else {
+        } else {
             MaliciousReply saveItem = MaliciousReply.builder()
                     .abuse(reqDto.getAbuse())
                     .advertising(reqDto.getAdvertising())

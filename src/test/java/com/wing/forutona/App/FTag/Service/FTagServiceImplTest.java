@@ -75,7 +75,7 @@ class FTagServiceImplTest extends BaseTest {
             return x;
         }).sorted(Comparator.comparing(FBall::getBI).reversed()).collect(Collectors.toList());
 
-        List<FBalltag> topBITag = fBallTagDataRepository.findByBallUuid(
+        List<FBalltag> topBITag = fBallTagDataRepository.findByBallUuidOrderByTagIndexAsc(
                 fBallSortBI.get(0));
 
         //when
@@ -185,7 +185,7 @@ class FTagServiceImplTest extends BaseTest {
                 .placeAddress("address" + (int) (Math.random() * 100000))
                 .uid(testUser)
                 .pointReward(0)
-                .ballPower(20L)
+                .ballPower(20)
                 .build();
     }
 

@@ -59,7 +59,7 @@ class BallOfInfluenceCalcImplTest extends BaseTest {
                 .ballHits(0)
                 .activationTime(LocalDateTime.now().plusDays(3))
                 .uid(testUser)
-                .ballPower(40L)
+                .ballPower(40)
                 .build());
 
         double roundBallLongitude = Math.round(ballLongitude * 100.0) / 100.0;
@@ -110,7 +110,7 @@ class BallOfInfluenceCalcImplTest extends BaseTest {
                 .ballHits(0)
                 .activationTime(LocalDateTime.now().plusDays(3))
                 .uid(testUser)
-                .ballPower(40L)
+                .ballPower(40)
                 .build());
 
 

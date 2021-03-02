@@ -34,6 +34,8 @@ public class FBallResDto implements Cloneable {
     private long contributor;
     private boolean ballDeleteFlag;
     private double bi;
+    private Boolean isEditContent;
+    private LocalDateTime editContentTime;
 
     @QueryProjection
     public FBallResDto(FBall fball) {
@@ -56,6 +58,8 @@ public class FBallResDto implements Cloneable {
         this.contributor = fball.getContributor();
         this.ballDeleteFlag = fball.getBallDeleteFlag();
         this.bi = fball.getBI();
+        this.isEditContent = fball.getIsEditContent();
+        this.editContentTime = fball.getEditContentTime();
     }
 
     @Override
