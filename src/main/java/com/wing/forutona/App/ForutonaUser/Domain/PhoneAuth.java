@@ -31,7 +31,7 @@ public class PhoneAuth {
         double dValue = Math.random();
         int iValue = (int) (dValue * 100000) + 100000;
         phoneAuth.authNumber  = String.format("%d", iValue);
-        phoneAuth.authTime = LocalDateTime.now().plusMinutes(30);
+        phoneAuth.authTime = LocalDateTime.now().plusMinutes(5);
         phoneAuth.makeTime = LocalDateTime.now();
         phoneAuth.authRetryAvailableTime = LocalDateTime.now().plusMinutes(2);
         phoneAuth.isoCode = reqDto.getIsoCode();

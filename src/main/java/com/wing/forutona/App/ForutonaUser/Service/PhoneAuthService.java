@@ -96,18 +96,19 @@ public class PhoneAuthService {
         String sendmessage = "<#>\n";
         if (isocode.equals("KR")) {
             sendmessage += "[인증번호:" + authNumber + "] FORUTONA 계정 인증번호 입니다. [FORUTONA]\n";
+            sendmessage += smssretrieverappsign;
+            snsobject.put("text", sendmessage);
+            snsobject.put("from", sureMFrom.replaceAll("-", ""));
+            System.out.println(snsobject.toString());
+            HttpEntity<String> request = new HttpEntity<>(snsobject.toString(), headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(SureMuri, request, String.class);
+            JSONObject responsesns = new JSONObject(response.getBody());
+            String snsreslutcode = responsesns.getString("code");
+            if (snsreslutcode.equals("200")) {
+                return 1;
+            }
         }
-        sendmessage += smssretrieverappsign;
-        snsobject.put("text", sendmessage);
-        snsobject.put("from", sureMFrom.replaceAll("-", ""));
-        System.out.println(snsobject.toString());
-        HttpEntity<String> request = new HttpEntity<>(snsobject.toString(), headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(SureMuri, request, String.class);
-        JSONObject responsesns = new JSONObject(response.getBody());
-        String snsreslutcode = responsesns.getString("code");
-        if (snsreslutcode.equals("200")) {
-            return 1;
-        }
+
         return 0;
     }
 
@@ -236,7 +237,7 @@ public class PhoneAuthService {
                         return resDto;
                     }
                 } else {
-                    throw new Exception("don't have authHistory");
+                    throw new Exception("휴대폰번호를 확인하세요");
                 }
             }
         }
