@@ -1,11 +1,10 @@
 package com.wing.forutona.App.FBall.Controller;
 
 import com.vividsolutions.jts.io.ParseException;
-import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
-import com.wing.forutona.CustomUtil.FFireBaseToken;
-import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.App.FBall.Dto.*;
 import com.wing.forutona.App.FBall.Service.*;
+import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
+import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,12 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,34 +30,34 @@ public class FBallController {
 
     final BallUpdateService ballUpdateService;
 
-    final  BallSelectService ballSelectService;
+    final BallSelectService ballSelectService;
 
-    final  BallDeleteService ballDeleteService;
+    final BallDeleteService ballDeleteService;
 
     @GetMapping(value = "/v1/FBall/ListUpFromMapArea")
-    public Page<FBallResDto> getListUpBallFromMapArea( BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpFromMapAreaOrderByBP(reqDto,pageable);
+    public Page<FBallResDto> getListUpBallFromMapArea(BallFromMapAreaReqDto reqDto, Pageable pageable) throws Exception {
+        return ballListUpService.searchBallListUpFromMapAreaOrderByBP(reqDto, pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromSearchTitle")
-    public Page<FBallResDto>  getListUpBallFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto
+    public Page<FBallResDto> getListUpBallFromSearchTitle(FBallListUpFromSearchTitleReqDto reqDto
             , Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpFromSearchTitle(reqDto,pageable);
+        return ballListUpService.searchBallListUpFromSearchTitle(reqDto, pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpFromTagName")
     public Page<FBallResDto> ListUpFromTagName(FBallListUpFromTagReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpFromTagName(reqDto,pageable);
+        return ballListUpService.searchBallListUpFromTagName(reqDto, pageable);
     }
 
     @GetMapping(value = "/v1/FBall/UserToMakerBalls")
     public Page<FBallResDto> searchUserToMakerBalls(String makerUid, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpUserMakerBall(makerUid,pageable);
+        return ballListUpService.searchBallListUpUserMakerBall(makerUid, pageable);
     }
 
     @GetMapping(value = "/v1/FBall/ListUpBallListUpOrderByBI")
     public Page<FBallResDto> searchBallListUpOrderByBI(FBallListUpFromBIReqDto reqDto, Pageable pageable) throws Exception {
-        return ballListUpService.searchBallListUpOrderByBI(reqDto,pageable);
+        return ballListUpService.searchBallListUpOrderByBI(reqDto, pageable);
     }
 
     @ResponseAddJsonHeader
@@ -73,27 +69,27 @@ public class FBallController {
 
     @PostMapping(value = "/v1/FBall")
     public FBallResDto insertBall(@RequestBody FBallInsertReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws ParseException {
-       return ballInsertService.insertBall(reqDto,userAdapter.getfUserInfo().getUid());
+        return ballInsertService.insertBall(reqDto, userAdapter.getfUserInfo().getUid());
     }
 
     @PutMapping(value = "/v1/FBall")
-    public FBallResDto updateBall(@RequestBody FBallUpdateReqDto reqDto,@AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
-        return ballUpdateService.updateBall(reqDto,userAdapter.getfUserInfo().getUid());
+    public FBallResDto updateBall(@RequestBody FBallUpdateReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballUpdateService.updateBall(reqDto, userAdapter.getfUserInfo().getUid());
     }
 
     @GetMapping(value = "/v1/FBall")
-    public FBallResDto selectBall(String ballUuid){
+    public FBallResDto selectBall(String ballUuid) {
         return ballSelectService.selectBall(ballUuid);
     }
 
     @AuthFireBaseJwtCheck
     @DeleteMapping(value = "/v1/FBall")
-    public String deleteBall(String ballUuid,@AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
-        return ballDeleteService.deleteBall(ballUuid,userAdapter.getfUserInfo().getUid());
+    public String deleteBall(String ballUuid, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        return ballDeleteService.deleteBall(ballUuid, userAdapter.getfUserInfo().getUid());
     }
 
     @PostMapping(value = "/v1/FBall/BallHit")
-    public Long deleteBall(String ballUuid){
+    public Long ballHit(String ballUuid) {
         return ballHitService.hit(ballUuid);
     }
 

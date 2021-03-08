@@ -140,7 +140,7 @@ public class PhoneAuthService {
         } else {
             PhoneAuthNumberResDto resDto = new PhoneAuthNumberResDto();
             resDto.setErrorFlag(true);
-            resDto.setErrorCause("don't have authHistory");
+            resDto.setErrorCause("휴대폰번호를 확인하세요");
             return resDto;
         }
 
@@ -220,7 +220,7 @@ public class PhoneAuthService {
                     if (phoneAuth.getAuthTime().isBefore(LocalDateTime.now())) {
                         PwFindPhoneAuthNumberResDto resDto = new PwFindPhoneAuthNumberResDto();
                         resDto.setErrorFlag(true);
-                        resDto.setErrorCause("authTime Over");
+                        resDto.setErrorCause("인증번호 유효시간이 만료되었습니다");
                         return resDto;
                     } else if (phoneAuth.getAuthNumber().equals(reqDto.getAuthNumber())) {
                         PwFindPhoneAuthNumberResDto resDto = new PwFindPhoneAuthNumberResDto();
