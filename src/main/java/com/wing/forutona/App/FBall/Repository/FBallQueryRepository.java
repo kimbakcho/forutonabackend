@@ -6,6 +6,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -187,6 +188,12 @@ public class FBallQueryRepository  {
 
         return queryFactory.select(fBall).from(fBall).where(st_within.eq(1),
                 fBall.activationTime.after(LocalDateTime.now()), fBall.ballDeleteFlag.eq(false)).fetchCount();
+    }
+
+    public List<FBall> findByBallUuids(List<String> ballUuids){
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        List<FBall> fetch = queryFactory.select(fBall).from(fBall).where(fBall.ballUuid.in(ballUuids)).fetch();
+        return fetch;
     }
 
 }

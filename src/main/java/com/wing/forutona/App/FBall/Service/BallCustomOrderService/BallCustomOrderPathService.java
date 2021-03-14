@@ -24,6 +24,7 @@ class BallCustomOrderDistance implements BallCustomOrderPathService {
     LatLng position;
     Sort.Order sort;
 
+
     public BallCustomOrderDistance(LatLng position, Sort.Order sort) {
         this.position = position;
         this.sort = sort;
@@ -36,7 +37,12 @@ class BallCustomOrderDistance implements BallCustomOrderPathService {
             NumberTemplate st_distance_sphere = Expressions.numberTemplate(Double.class,
                     "function('st_distance_sphere',{0},{1})", fBall.placePoint,
                     GisGeometryUtil.createPoint(position.getLatitude(), position.getLongitude()));
-            orderSpecifiers.add(st_distance_sphere.desc());
+            if(sort.getDirection().isAscending()){
+                orderSpecifiers.add(st_distance_sphere.asc());
+            }else {
+                orderSpecifiers.add(st_distance_sphere.desc());
+            }
+
         }
         return orderSpecifiers;
     }

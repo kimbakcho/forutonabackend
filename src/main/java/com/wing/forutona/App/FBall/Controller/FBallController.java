@@ -82,7 +82,11 @@ public class FBallController {
         return ballSelectService.selectBall(ballUuid);
     }
 
-    @AuthFireBaseJwtCheck
+    @GetMapping(value = "/v1/FBalls")
+    public List<FBallResDto> selectBalls(@RequestParam(value = "ballUuids") List<String> ballUuids) {
+        return ballSelectService.selectBalls(ballUuids);
+    }
+
     @DeleteMapping(value = "/v1/FBall")
     public String deleteBall(String ballUuid, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
         return ballDeleteService.deleteBall(ballUuid, userAdapter.getfUserInfo().getUid());

@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.
                 authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/v1/FUserInfo/CheckNickNameDuplication")
+                .antMatchers(HttpMethod.GET,"/v1/FUserInfo/CheckNickNameDuplication","/v1/FUserInfo/UserNickNameWithFullTextMatchIndex")
                 .permitAll();
 
         http.
@@ -61,9 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/v1/FUserInfo**","/v1/FUserInfo/**")
                 .authenticated();
-
-
-
     }
 
 

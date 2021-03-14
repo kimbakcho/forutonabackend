@@ -157,6 +157,7 @@ class FUserInfoServiceImpl implements FUserInfoService {
         if(reqDto.isBackGroundIsEmpty()){
             fUserInfo.setBackGroundImageUrl(null);
         }
+        fUserInfo.setGender(reqDto.getGender());
         return new FUserInfoResDto(fUserInfo);
     }
 

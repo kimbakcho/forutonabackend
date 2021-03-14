@@ -222,4 +222,8 @@ public class FUserInfo {
     public void setNextGiveInfluenceTicketTime(LocalDateTime nextGiveInfluenceTicketTime) {
         this.nextGiveInfluenceTicketTime = nextGiveInfluenceTicketTime;
     }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
 }
