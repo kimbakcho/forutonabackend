@@ -11,6 +11,7 @@ import com.wing.forutona.App.ForutonaUser.Service.FUserInfoService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 abstract public class SnsLoginService {
 
@@ -48,6 +49,11 @@ abstract public class SnsLoginService {
         if(backGroundImage != null){
             fUserInfoService.updateUserBackGroundImage(fUserInfo,backGroundImage);
         }
+
+        fUserInfo.setInfluenceTicket(1);
+        fUserInfo.setMaxInfluenceTicket(1);
+        fUserInfo.setInfluenceTicketReceiveTime(LocalDateTime.now());
+        fUserInfo.setNextGiveInfluenceTicketTime(LocalDateTime.now().plusHours(1));
 
         fUserInfoDataRepository.save(fUserInfo);
         FUserInfoJoinResDto resDto = new FUserInfoJoinResDto();

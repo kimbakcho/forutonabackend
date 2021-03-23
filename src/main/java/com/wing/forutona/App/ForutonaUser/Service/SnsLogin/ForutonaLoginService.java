@@ -13,6 +13,7 @@ import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class ForutonaLoginService extends SnsLoginService {
 
@@ -44,6 +45,10 @@ public class ForutonaLoginService extends SnsLoginService {
         if(encSHA256.equals(reqDto.getPhoneAuthToken())){
             UserRecord user = null;
             try {
+                fUserInfo.setInfluenceTicket(1);
+                fUserInfo.setMaxInfluenceTicket(1);
+                fUserInfo.setInfluenceTicketReceiveTime(LocalDateTime.now());
+                fUserInfo.setNextGiveInfluenceTicketTime(LocalDateTime.now().plusHours(1));
                 FUserInfo saveUser = fUserInfoDataRepository.save(fUserInfo);
                 if(profileImage != null){
                     fUserInfoService.updateUserProfileImage(saveUser,profileImage);
@@ -60,6 +65,7 @@ public class ForutonaLoginService extends SnsLoginService {
                 resDto.setJoinComplete(false);
             }else {
                 String customToken = FirebaseAuth.getInstance().createCustomToken(reqDto.getEmailUserUid());
+
                 resDto.setCustomToken(customToken);
                 resDto.setJoinComplete(true);
             }

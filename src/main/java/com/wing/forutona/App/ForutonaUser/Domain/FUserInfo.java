@@ -226,4 +226,8 @@ public class FUserInfo {
     public void setGender(GenderType gender) {
         this.gender = gender;
     }
+
+    public void setMaxInfluenceTicket(Integer maxInfluenceTicket) {
+        this.maxInfluenceTicket = maxInfluenceTicket;
+    }
 }

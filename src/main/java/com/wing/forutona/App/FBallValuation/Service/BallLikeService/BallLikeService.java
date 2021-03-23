@@ -1,11 +1,11 @@
 package com.wing.forutona.App.FBallValuation.Service.BallLikeService;
 
 import com.wing.forutona.App.FBall.Domain.FBall;
+import com.wing.forutona.App.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.App.FBallValuation.Domain.FBallValuation;
+import com.wing.forutona.App.FBallValuation.Dto.FBallValuationResDto;
 import com.wing.forutona.App.FBallValuation.Dto.FBallVoteReqDto;
 import com.wing.forutona.App.FBallValuation.Dto.FBallVoteResDto;
-import com.wing.forutona.App.FBallValuation.Dto.FBallValuationResDto;
-import com.wing.forutona.App.FBall.Repository.FBallDataRepository;
 import com.wing.forutona.App.FBallValuation.Repositroy.FBallValuationDataRepository;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
@@ -46,6 +46,12 @@ public abstract class BallLikeService {
         }
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(userUid).get();
 
+        //0밑으로 못 떨어짐
+        int setTicket = fUserInfo.getInfluenceTicket() - (reqDto.getLikePoint() + reqDto.getDisLikePoint());
+        if (setTicket < 0) {
+            fUserInfo.setInfluenceTicket(0);
+            throw new Exception("ticketOver");
+        }
 
         FBallValuation saveFBallValuation = setFBallValuation(fBall, reqDto, fUserInfo);
 
@@ -59,10 +65,11 @@ public abstract class BallLikeService {
         fBallVoteResDto.setBallLike(fBall.getBallLikes());
         fBallVoteResDto.setBallDislike(fBall.getBallDisLikes());
         fBallVoteResDto.setBallPower(fBall.getBallPower());
+        fUserInfo.setInfluenceTicket(setTicket);
 
         List<FBallValuation> byBallUuidIsAndUid = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, fUserInfo);
 
-        List<FBallValuationResDto>valuationResDtos = byBallUuidIsAndUid.stream().map(x -> new FBallValuationResDto(x)).collect(Collectors.toList());
+        List<FBallValuationResDto> valuationResDtos = byBallUuidIsAndUid.stream().map(x -> new FBallValuationResDto(x)).collect(Collectors.toList());
 
         fBallVoteResDto.setFballValuationResDtos(valuationResDtos);
 

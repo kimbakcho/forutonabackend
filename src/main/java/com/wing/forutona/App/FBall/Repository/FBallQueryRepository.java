@@ -126,7 +126,7 @@ public class FBallQueryRepository  {
 
         QueryResults<FBallResDto> fBallResDtoQueryResults = queryFactory.select(new QFBallResDto(fBall))
                 .from(fBall)
-                .where(fBall.uid.uid.eq(makerUid))
+                .where(fBall.uid.uid.eq(makerUid),fBall.ballDeleteFlag.eq(false))
                 .orderBy(fBallOrderSpecifier.stream().toArray(OrderSpecifier[]::new))
                 .limit(pageable.getPageSize()).offset(pageable.getOffset()).fetchResults();
         List<FBallResDto> collect = fBallResDtoQueryResults.getResults();
