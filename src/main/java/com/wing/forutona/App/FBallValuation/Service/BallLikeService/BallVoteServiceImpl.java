@@ -10,6 +10,7 @@ import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.lang.Math.abs;
@@ -42,6 +43,10 @@ public class BallVoteServiceImpl extends BallLikeService {
         int useTicket = abs(reqDto.getDisLikePoint()) + abs(reqDto.getLikePoint());
 
         fUserInfo.setInfluenceTicket(fUserInfo.getInfluenceTicket() - useTicket);
+
+        if(fUserInfo.getInfluenceTicket() == 0){
+            fUserInfo.setNextGiveInfluenceTicketTime(LocalDateTime.now().plusHours(1));
+        }
 
         FBallValuation saveItem = fBallValuationDataRepository.save(fBallValuation);
 

@@ -77,7 +77,7 @@ public class FBallReplyService {
 
         FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
 
-        fBallReplyFCMService.sendFCM(saveReply);
+//        fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
     }
 
