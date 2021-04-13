@@ -56,7 +56,7 @@ class FBallRootReplyFCMServiceTest extends BaseTest {
 
         //when
         //TODO 다시 테스트 필요 라이브러리 문제 있음
-//        fBallReplyFCMService.sendFCM(fBallReply);
+        fBallReplyFCMService.sendFCM(fBallReply);
         //then
 
 

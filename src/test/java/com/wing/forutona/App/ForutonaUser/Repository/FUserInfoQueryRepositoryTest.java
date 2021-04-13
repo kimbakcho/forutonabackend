@@ -40,7 +40,7 @@ class FUserInfoQueryRepositoryTest extends BaseTest {
             fUserInfo.updatePlacePoint(geoTestLat, geoTestLong);
         }
         LatLng latLng = LatLng.newBuilder().setLatitude(geoTestLat).setLongitude(geoTestLong).build();
-        List<FUserInfoResDto> findNearUserFromGeoLocation = fUserInfoQueryRepository.getFindNearUserFromGeoLocation(latLng, 100);
+        List<FUserInfoResDto> findNearUserFromGeoLocation = fUserInfoQueryRepository.getFindNearUserFromGeoLocationWithOutUser(latLng, 1000,testUser);
         System.out.println(findNearUserFromGeoLocation.size());
         assertTrue(findNearUserFromGeoLocation.size() >= 10);
     }

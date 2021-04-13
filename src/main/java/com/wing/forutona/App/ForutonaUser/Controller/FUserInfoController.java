@@ -38,8 +38,8 @@ public class FUserInfoController {
     }
 
     @PutMapping(value = "/v1/FUserInfo/UserPosition")
-    void updateUserPosition(UserPositionUpdateReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
-        fUserInfoService.updateUserPosition(reqDto,userAdapter.getfUserInfo());
+    void updateUserPosition(@RequestBody UserPositionUpdateReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws Exception {
+        fUserInfoService.updateUserPosition(reqDto,userAdapter.getfUserInfo().getUid());
     }
 
     @PutMapping(value = "/v1/FUserInfo/FireBaseMessageToken")

@@ -41,7 +41,7 @@ public abstract class FBallReplyFCMService {
         }
 
         FireBaseMessageSendDto replyDtoFireBaseMessageSendDto =
-                FireBaseMessageSendDto.builder().commandKey("CommentChannelUseCase")
+                FireBaseMessageSendDto.builder()
                         .serviceKey("FBallReplyFCMService")
                         .isNotification(true)
                         .payLoad(fcmReplyDto)

@@ -22,7 +22,7 @@ public class LocalPreference implements CustomPreference{
 
     @Override
     public String getAppDBUrl() {
-        return "jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_beta?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false";
+        return "jdbc:mysql://forutonadb.thkomeet.com:3306/forutona_test?serverTimezone=Asia/Seoul&useSSL=yes&verifyServerCertificate=false";
     }
 
     @Override

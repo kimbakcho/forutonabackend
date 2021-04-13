@@ -7,6 +7,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.App.FBall.Domain.FBall;
 import com.wing.forutona.App.FireBaseMessage.Dto.FireBaseMessageSendDto;
 import com.wing.forutona.App.FireBaseMessage.PayloadDto.FCMFBallMakeDto;
+import com.wing.forutona.App.FireBaseMessage.Value.NotificationServiceType;
 import com.wing.forutona.App.ForutonaUser.Dto.FUserInfoResDto;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,21 +33,20 @@ class FBallInsertFCMServiceImpl implements FBallInsertFCMService {
                 .setLatitude(fBall.getLatitude())
                 .setLongitude(fBall.getLongitude())
                 .build();
-        List<FUserInfoResDto> findNearUserFromGeoLocation =
-                fUserInfoQueryRepository.getFindNearUserFromGeoLocation(latLng, 1500);
 
-        receiveFCMListRemoveBallMakerUser(fBall, findNearUserFromGeoLocation);
+        List<FUserInfoResDto> findNearUserFromGeoLocation =
+                fUserInfoQueryRepository.getFindNearUserFromGeoLocationWithOutUser(latLng, 1000,fBall.getUid());
 
         FCMFBallMakeDto fcmfBallMakeDto = new FCMFBallMakeDto();
         fcmfBallMakeDto.setBallMakerNickName(fBall.getMakerNickName());
         fcmfBallMakeDto.setBallMakerProfileImageUrl(fBall.getMakerProfileImage());
         fcmfBallMakeDto.setBallTitle(fBall.getBallName());
         fcmfBallMakeDto.setBallUuid(fBall.getBallUuid());
+        fcmfBallMakeDto.setFBallType(fBall.getBallType());
 
         findNearUserFromGeoLocation.forEach(x -> {
             FireBaseMessageSendDto fireBaseMessageSendDto = FireBaseMessageSendDto.builder()
-                    .commandKey("RadarBasicChannelUseCase")
-                    .serviceKey("IssueFBalIInsertFCMService")
+                    .serviceKey(NotificationServiceType.NearBallCreate.name())
                     .isNotification(true)
                     .fcmToken(x.getFCMtoken())
                     .payLoad(fcmfBallMakeDto)

@@ -20,13 +20,12 @@ class FireBaseMessageAdapterImpl implements  FireBaseMessageAdapter {
         String jsonDto = objectMapper.writeValueAsString(sendDto.getPayLoad());
 
         Message message = Message.builder()
-                .putData(FireBaseMessageKey.CommandKey,sendDto.getCommandKey())
                 .putData(FireBaseMessageKey.ServiceKey,sendDto.getServiceKey())
                 .putData(FireBaseMessageKey.IsNotification,sendDto.getIsNotification())
                 .putData("payload",jsonDto)
                 .setToken(sendDto.getFcmToken())
                 .build();
-
-        return FirebaseMessaging.getInstance().send(message);
+        String send = FirebaseMessaging.getInstance().send(message);
+        return send;
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -22,7 +23,7 @@ public class BaseTest {
     @Autowired
     protected  MockMvc mockMvc;
 
-    @Autowired
+    @PersistenceContext
     EntityManager em;
 
     protected FUserInfo testUser;

@@ -1,6 +1,7 @@
 package com.wing.forutona.App.ForutonaUser.Repository;
 
 
+import com.google.firebase.auth.UserInfo;
 import com.google.type.LatLng;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
@@ -25,6 +26,7 @@ import javax.persistence.PersistenceContext;
 
 import java.util.List;
 
+import static com.wing.forutona.App.FBall.Domain.QFBall.fBall;
 import static com.wing.forutona.App.ForutonaUser.Domain.QFUserInfo.fUserInfo;
 
 @Repository
@@ -43,16 +45,19 @@ public class FUserInfoQueryRepository extends QuerydslRepositorySupport {
         super.setEntityManager(entityManager);
     }
 
-    public List<FUserInfoResDto> getFindNearUserFromGeoLocation(LatLng latLng, double distance) throws ParseException {
+    public List<FUserInfoResDto> getFindNearUserFromGeoLocationWithOutUser(LatLng latLng,
+                                                                           int distance,
+                                                                           FUserInfo withOutUserInfo) throws ParseException {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
-        NumberTemplate st_distance = Expressions.numberTemplate(Double.class,
-                "function('st_distance_sphere',{0},{1})", fUserInfo.placePoint,
-                GisGeometryUtil.createPoint(latLng.getLatitude(), latLng.getLongitude()));
+
+        NumberTemplate<Integer> st_within = Expressions.numberTemplate(Integer.class, "function('st_within',{0},{1})", fUserInfo.placePoint,
+                GisGeometryUtil.createDistanceEllipse(latLng, distance));
 
         List<FUserInfoResDto> result = queryFactory.select(new QFUserInfoResDto(fUserInfo))
                 .from(fUserInfo)
-                .where(st_distance.loe(distance))
+                .where(st_within.eq(1))
+                .where(fUserInfo.ne(withOutUserInfo))
                 .fetch();
 
         return result;
