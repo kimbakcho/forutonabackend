@@ -6,6 +6,7 @@ import com.wing.forutona.App.FBallReply.Domain.FBallReply;
 import com.wing.forutona.App.FBallReply.Repositroy.FBallReplyDataRepository;
 import com.wing.forutona.App.FireBaseMessage.Dto.FireBaseMessageSendDto;
 import com.wing.forutona.App.FireBaseMessage.PayloadDto.FCMReplyDto;
+import com.wing.forutona.App.FireBaseMessage.Value.NotificationServiceType;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import com.wing.forutona.App.ForutonaUser.Repository.FUserInfoDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,13 @@ public abstract class FBallReplyFCMService {
 
     public void sendFCM(FBallReply fBallReply) throws FirebaseMessagingException, JsonProcessingException {
         String fcmToken = getFCMToken(fBallReply);
+
+
         if(fcmToken == null){
+            return ;
+        }
+
+        if(fBallReply.getBallMakerUerInfo().getUid().equals(fBallReply.getReplyUserUid())){
             return ;
         }
         FCMReplyDto fcmReplyDto = new FCMReplyDto();
@@ -34,6 +41,7 @@ public abstract class FBallReplyFCMService {
         fcmReplyDto.setReplyText(fBallReply.getReplyText());
         fcmReplyDto.setUserProfileImageUrl(fBallReply.getReplyUserProfileImageUrl());
         fcmReplyDto.setBallUuid(fBallReply.getBallUuid());
+        fcmReplyDto.setFBallType(fBallReply.getReplyBallUuid().getBallType());
         if(isRootNode(fBallReply)){
             fcmReplyDto.setReplyTitleType("COMMENT");
         }else {
@@ -42,7 +50,7 @@ public abstract class FBallReplyFCMService {
 
         FireBaseMessageSendDto replyDtoFireBaseMessageSendDto =
                 FireBaseMessageSendDto.builder()
-                        .serviceKey("FBallReplyFCMService")
+                        .serviceKey(NotificationServiceType.FBallReply.name())
                         .isNotification(true)
                         .payLoad(fcmReplyDto)
                         .fcmToken(fcmToken)
@@ -91,6 +99,9 @@ class FBallSubReplyFCMService extends FBallReplyFCMService {
 
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(rootReply.getReplyUid().getUid()).get();
 
+        if(rootReply.getReplyUid().getUid().equals(fBallReply.getReplyUserUid())){
+            return  null;
+        }
         return fUserInfo.getFCMtoken();
     }
 

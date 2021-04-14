@@ -2,6 +2,7 @@ package com.wing.forutona.App.FBallReply.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.wing.forutona.App.FireBaseMessage.Service.FBallReplyFCMService;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.App.FBallReply.Domain.FBallReply;
 import com.wing.forutona.App.FBallReply.Dto.FBallReplyInsertReqDto;
@@ -9,6 +10,8 @@ import com.wing.forutona.App.FBallReply.Repositroy.FBallReplyDataRepository;
 import com.wing.forutona.App.FBallReply.Repositroy.FBallReplyQueryRepository;
 import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,7 @@ public interface FBallReplyInsertService {
 class FBallReplyRootInsertServiceImpl implements FBallReplyInsertService{
 
     final FBallReplyQueryRepository fBallReplyQueryRepository;
+
 
     @Override
     public FBallReply insertReply(UserAdapter userAdapter, FBallReplyInsertReqDto reqDto,FBallReply saveFBallReplyItem) throws FirebaseMessagingException, JsonProcessingException {

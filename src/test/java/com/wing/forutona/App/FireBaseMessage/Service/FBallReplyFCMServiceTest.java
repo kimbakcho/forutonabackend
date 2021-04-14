@@ -15,14 +15,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Transactional
-class FBallRootReplyFCMServiceTest extends BaseTest {
+@Disabled
+class FBallReplyFCMServiceTest extends BaseTest {
 
     @Autowired
     @Qualifier("FBallRootReplyFCMService")
-    FBallReplyFCMService fBallReplyFCMService;
+    FBallReplyFCMService fBallRootReplyFCMService;
+
+    @Autowired
+    @Qualifier("FBallSubReplyFCMService")
+    FBallReplyFCMService fBallSubReplyFCMService;
 
     @Autowired
     FBallDataRepository fBallDataRepository;
@@ -31,20 +35,18 @@ class FBallRootReplyFCMServiceTest extends BaseTest {
     FUserInfoDataRepository fUserInfoDataRepository;
 
 
-
-
     @Test
     @Disabled
-    void sendFCM() throws FirebaseMessagingException, JsonProcessingException {
+    void sendRootReplyFCM() throws FirebaseMessagingException, JsonProcessingException {
         //given
-        FUserInfo testReplyUser = fUserInfoDataRepository.findById("usSMKjNv62eJLkXzFpQux8jWqkT2").get();
-        FUserInfo testBallUser = fUserInfoDataRepository.findById("h2q2jl3nRPXZ8809Uvi9KdzSss83").get();
-        List<FBall> testFBalls = fBallDataRepository.findByUid(testBallUser);
-        FBall testBall = testFBalls.get(0);
+        FUserInfo testReplyUser = fUserInfoDataRepository.findById("hYNJ4omLHQWRqAK9JyIdTjdKcIR2").get();
+
+        FBall fBall = fBallDataRepository.findById("fa7f8330-4e63-4d3d-a9e6-eb8c664d97b9").get();
+
 
         FBallReply fBallReply = FBallReply.builder().
                 replyUuid("testUUid")
-                .replyBallUuid(testBall)
+                .replyBallUuid(fBall)
                 .replyDepth(0L)
                 .replyText("testUtil")
                 .replyUid(testReplyUser)
@@ -55,10 +57,32 @@ class FBallRootReplyFCMServiceTest extends BaseTest {
                 .build();
 
         //when
-        //TODO 다시 테스트 필요 라이브러리 문제 있음
-        fBallReplyFCMService.sendFCM(fBallReply);
+        fBallRootReplyFCMService.sendFCM(fBallReply);
         //then
 
+    }
+
+    @Test
+    @Disabled
+    void sendSubReplyFCM() throws FirebaseMessagingException, JsonProcessingException {
+        FUserInfo testReplyUser = fUserInfoDataRepository.findById("hYNJ4omLHQWRqAK9JyIdTjdKcIR2").get();
+
+        FBall fBall = fBallDataRepository.findById("0eb40f6c-c84c-4bf8-a612-818ad7181aa0").get();
+
+
+        FBallReply fBallReply = FBallReply.builder().
+                replyUuid("testUUid")
+                .replyBallUuid(fBall)
+                .replyDepth(1L)
+                .replyText("testUtil")
+                .replyUid(testReplyUser)
+                .replyUpdateDateTime(LocalDateTime.now())
+                .replyNumber(1L)
+                .replyUploadDateTime(LocalDateTime.now())
+                .replySort(1L)
+                .build();
+
+        fBallSubReplyFCMService.sendFCM(fBallReply);
 
     }
 }
