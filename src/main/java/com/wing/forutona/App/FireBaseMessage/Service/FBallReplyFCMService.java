@@ -27,14 +27,10 @@ public abstract class FBallReplyFCMService {
     public void sendFCM(FBallReply fBallReply) throws FirebaseMessagingException, JsonProcessingException {
         String fcmToken = getFCMToken(fBallReply);
 
-
         if(fcmToken == null){
             return ;
         }
 
-        if(fBallReply.getBallMakerUerInfo().getUid().equals(fBallReply.getReplyUserUid())){
-            return ;
-        }
         FCMReplyDto fcmReplyDto = new FCMReplyDto();
         fcmReplyDto.setReplyUserUid(fBallReply.getReplyUserUid());
         fcmReplyDto.setNickName(fBallReply.getReplyUserNickName());
@@ -76,6 +72,9 @@ class FBallRootReplyFCMService extends FBallReplyFCMService {
     String getFCMToken(FBallReply fBallReply) {
         Optional<FUserInfo> ballMakerOptional = fUserInfoDataRepository.findById(fBallReply.getBallMakerUerInfo().getUid());
         System.out.println(fBallReply.getBallMakerUerInfo().getUid());
+        if(fBallReply.getBallMakerUerInfo().getUid().equals(fBallReply.getReplyUserUid())){
+            return null;
+        }
         return ballMakerOptional.get().getFCMtoken();
     }
 }
@@ -98,7 +97,6 @@ class FBallSubReplyFCMService extends FBallReplyFCMService {
                 fBallReply.getReplyNumber(), 0L);
 
         FUserInfo fUserInfo = fUserInfoDataRepository.findById(rootReply.getReplyUid().getUid()).get();
-
         if(rootReply.getReplyUid().getUid().equals(fBallReply.getReplyUserUid())){
             return  null;
         }

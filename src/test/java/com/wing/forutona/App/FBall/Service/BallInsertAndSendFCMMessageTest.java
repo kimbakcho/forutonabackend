@@ -37,11 +37,11 @@ public class BallInsertAndSendFCMMessageTest extends BaseTest {
     @Autowired
     FBallInsertFCMService fBallInsertFCMService;
 
-
     @Test
     @Disabled
     public void TestFCMSend() throws FirebaseMessagingException, JsonProcessingException, ParseException {
         FBall fBall = fBallDataRepository.findById("9597a088-6761-4ebb-92d1-2f78d0b8ebce").get();
         fBallInsertFCMService.sendInsertFCMMessage(fBall);
     }
+
 }

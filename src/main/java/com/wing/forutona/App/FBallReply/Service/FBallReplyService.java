@@ -2,6 +2,7 @@ package com.wing.forutona.App.FBallReply.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.wing.forutona.App.FBallValuation.Dto.FBallValuationResDto;
 import com.wing.forutona.CustomUtil.FFireBaseToken;
 import com.wing.forutona.App.FBall.Domain.FBall;
 import com.wing.forutona.App.FBallReply.Domain.FBallReply;
@@ -71,11 +72,11 @@ public class FBallReplyService {
         FBallValuation fBallValuation = null;
 
         List<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, replyUser);
+        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply);
         if(valuationOptional.size()>0){
             fBallValuation = valuationOptional.get(0);
+            fBallReplyResDto.setFballValuationResDto(new FBallValuationResDto(fBallValuation));
         }
-
-        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(saveReply,fBallValuation);
 
         fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
@@ -95,18 +96,21 @@ public class FBallReplyService {
         FBall fBall = fBallDataRepository.findById(fBallReply.getBallUuid()).get();
         FUserInfo replyUser = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
         FBallValuation fBallValuation = null;
+        FBallReplyResDto fBallReplyResDto = new FBallReplyResDto(fBallReply);
         List<FBallValuation> valuationOptional = fBallValuationDataRepository.findByBallUuidIsAndUid(fBall, replyUser);
         if(valuationOptional.size()>0){
             fBallValuation = valuationOptional.get(0);
+            fBallReplyResDto.setFballValuationResDto(new FBallValuationResDto(fBallValuation));
         }
-        return new FBallReplyResDto(fBallReply,fBallValuation);
+
+        return fBallReplyResDto;
     }
 
     @Transactional
     public FBallReplyResDto deleteFBallReply(UserAdapter userAdapter, String replyUuid) throws Throwable {
         FBallReply fBallReply = fBallReplyQueryRepository.findByIdAndReplyUid(replyUuid,userAdapter.getfUserInfo());
         fBallReply.delete();
-        return new FBallReplyResDto(fBallReply,null);
+        return new FBallReplyResDto(fBallReply);
     }
 
     public Long getFBallReplyCount(String ballUuid) {

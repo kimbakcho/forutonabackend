@@ -3,6 +3,7 @@ package com.wing.forutona.App.FBallReply.Repositroy;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wing.forutona.App.FBall.Domain.FBall;
 import com.wing.forutona.App.FBallReply.Domain.FBallReply;
@@ -12,6 +13,8 @@ import com.wing.forutona.App.FBallReply.Domain.QFBallReply;
 import com.wing.forutona.App.FBallReply.Dto.FBallReplyResDto;
 
 import com.wing.forutona.App.FBallReply.Dto.QFBallReplyResDto;
+import com.wing.forutona.App.FBallValuation.Domain.FBallValuation;
+import com.wing.forutona.App.FBallValuation.Dto.FBallValuationResDto;
 import com.wing.forutona.App.ForutonaUser.Domain.FUserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.wing.forutona.App.FBallReply.Domain.QFBallReply.fBallReply;
@@ -99,7 +103,6 @@ public class FBallReplyQueryRepository {
 
     public Page<FBallReplyResDto> getFBallSubNodeReply(FBall fBall, Long replyNumber, Pageable pageable) {
 
-
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         OrderSpecifier orderSpecifier;
         orderSpecifier = fBallReply.replySort.asc();
@@ -115,13 +118,28 @@ public class FBallReplyQueryRepository {
             BooleanBuilder booleanBuilder,
             OrderSpecifier orderSpecifier) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        QueryResults<FBallReplyResDto> fBallReplyResDtoQueryResults = queryFactory.select(new QFBallReplyResDto(fBallReply, fBallValuation))
+        QueryResults<FBallReplyResDto> fBallReplyResDtoQueryResults = queryFactory.select(new QFBallReplyResDto(fBallReply))
                 .from(fBallReply)
-                .leftJoin(fBallValuation)
-                .on(fBallReply.replyBallUuid.eq(fBallValuation.ballUuid))
-                .on(fBallReply.replyUid.eq(fBallValuation.uid))
                 .where(fBallReply.replyBallUuid.eq(fBall), booleanBuilder)
                 .orderBy(orderSpecifier).limit(pageable.getPageSize()).offset(pageable.getOffset()).fetchResults();
+
+        fBallReplyResDtoQueryResults.getResults().forEach(x->{
+            List<FBallValuation> fBallValuations = queryFactory.select(fBallValuation).from(fBallValuation)
+                    .where(fBallValuation.ballUuid.ballUuid.eq(x.getBallUuid().getBallUuid()),
+                            fBallValuation.uid.uid.eq(x.getUid().getUid()))
+                    .fetch();
+
+            FBallValuationResDto fBallValuationResDto = new FBallValuationResDto();
+            fBallValuationResDto.setBallUuid(x.getBallUuid());
+            fBallValuationResDto.setValueUuid("SummaryUuid");
+            fBallValuations.forEach(fBallValuation1 -> {
+                fBallValuationResDto.setPoint(fBallValuationResDto.getPoint() + fBallValuation1.getPoint());
+                fBallValuationResDto.setBallLike(fBallValuationResDto.getBallLike() + fBallValuation1.getBallLike());
+                fBallValuationResDto.setBallDislike(fBallValuationResDto.getBallDislike() + fBallValuation1.getBallDislike());
+            });
+
+            x.setFballValuationResDto(fBallValuationResDto);
+        });
 
         Page<FBallReplyResDto> pageWrap = new PageImpl<FBallReplyResDto>(fBallReplyResDtoQueryResults.getResults(),
                 pageable, fBallReplyResDtoQueryResults.getTotal());

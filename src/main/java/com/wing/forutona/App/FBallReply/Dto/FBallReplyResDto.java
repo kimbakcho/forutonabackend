@@ -30,7 +30,7 @@ public class FBallReplyResDto {
     Long childCount;
 
     @QueryProjection
-    public FBallReplyResDto(FBallReply fBallReply, FBallValuation fBallValuation) {
+    public FBallReplyResDto(FBallReply fBallReply) {
         this.replyUuid = fBallReply.getReplyUuid();
         this.ballUuid = new FBallResDto(fBallReply.getReplyBallUuid());
         this.uid = new FUserInfoSimpleResDto(fBallReply.getReplyUid());
@@ -44,9 +44,6 @@ public class FBallReplyResDto {
         this.replyUpdateDateTime = fBallReply.getReplyUpdateDateTime();
         this.deleteFlag = fBallReply.getDeleteFlag();
         this.childCount = 0L;
-        if(fBallValuation != null){
-            this.fballValuationResDto = new FBallValuationResDto(fBallValuation);
-        }
     }
 
 }
