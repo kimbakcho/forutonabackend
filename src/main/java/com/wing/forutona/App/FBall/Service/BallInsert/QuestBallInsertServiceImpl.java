@@ -1,4 +1,4 @@
-package com.wing.forutona.App.FBall.Service;
+package com.wing.forutona.App.FBall.Service.BallInsert;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -21,15 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface BallInsertService {
-    FBallResDto insertBall(FBallInsertReqDto reqDto, String userUid) throws ParseException;
-}
-
-@Service
+@Service("QuestBallInsertServiceImpl")
 @Transactional
 @RequiredArgsConstructor
-class BallInsertServiceImpl implements BallInsertService {
-
+public class QuestBallInsertServiceImpl implements BallInsertService{
     final FBallDataRepository fBallDataRepository;
 
     final FBallInsertFCMService fBallInsertFCMService;
@@ -38,10 +33,8 @@ class BallInsertServiceImpl implements BallInsertService {
 
     final FBallTagDataRepository fBallTagDataRepository;
 
-
     @Override
     public FBallResDto insertBall(FBallInsertReqDto reqDto, String userUid) throws ParseException {
-
         GeometryFactory geomFactory = new GeometryFactory();
         Point placePoint = geomFactory.createPoint(new Coordinate(reqDto.getLongitude(), reqDto.getLatitude()));
         placePoint.setSRID(4326);
@@ -50,10 +43,10 @@ class BallInsertServiceImpl implements BallInsertService {
 
         FBall fBall = FBall.builder().ballUuid(reqDto.getBallUuid())
                 .makeTime(LocalDateTime.now())
-                .ballState(FBallState.Play)
+                .ballState(FBallState.Wait)
                 .longitude(reqDto.getLongitude())
                 .latitude(reqDto.getLatitude())
-                .activationTime(LocalDateTime.now().plusDays(7))
+                .activationTime(LocalDateTime.now())
                 .ballName(reqDto.getBallName())
                 .ballType(reqDto.getBallType())
                 .placeAddress(reqDto.getPlaceAddress())

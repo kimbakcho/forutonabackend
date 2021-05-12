@@ -36,6 +36,7 @@ public class FBallResDto implements Cloneable {
     private double bi;
     private Boolean isEditContent;
     private LocalDateTime editContentTime;
+    private Integer replyCount ;
 
     @QueryProjection
     public FBallResDto(FBall fball) {
@@ -60,6 +61,8 @@ public class FBallResDto implements Cloneable {
         this.bi = fball.getBI();
         this.isEditContent = fball.getIsEditContent();
         this.editContentTime = fball.getEditContentTime();
+        this.replyCount = fball.getReplyCount();
+
     }
 
     @Override

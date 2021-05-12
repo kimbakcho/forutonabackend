@@ -81,6 +81,9 @@ public class FBall {
     @ColumnDefault("0")
     private Boolean isEditContent = false;
 
+    @ColumnDefault("0")
+    private Integer replyCount = 0;
+
     private LocalDateTime editContentTime;
 
 
@@ -202,5 +205,9 @@ public class FBall {
 
     public void setEditContent(Boolean editContent) {
         isEditContent = editContent;
+    }
+
+    public void setReplyCount(Integer replyCount) {
+        this.replyCount = replyCount;
     }
 }

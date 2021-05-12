@@ -3,7 +3,8 @@ package com.wing.forutona.App.FBall.Controller;
 import com.vividsolutions.jts.io.ParseException;
 import com.wing.forutona.App.FBall.Dto.*;
 import com.wing.forutona.App.FBall.Service.*;
-import com.wing.forutona.CustomUtil.AuthFireBaseJwtCheck;
+import com.wing.forutona.App.FBall.Service.BallInsert.BallInsertService;
+import com.wing.forutona.App.FBall.Service.BallInsert.InsertBallServiceFactory;
 import com.wing.forutona.CustomUtil.ResponseAddJsonHeader;
 import com.wing.forutona.SpringSecurity.UserAdapter;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class FBallController {
 
     final BallImageUploadService ballImageUploadService;
 
-    final BallInsertService ballInsertService;
+    final InsertBallServiceFactory insertBallServiceFactory;
 
     final BallUpdateService ballUpdateService;
 
@@ -62,13 +63,14 @@ public class FBallController {
 
     @ResponseAddJsonHeader
     @PostMapping(value = "/v1/FBall/BallImageUpload")
-    public FBallImageUploadResDto ballImageUpload(@RequestParam("imageFiles[]") List<MultipartFile> files) throws IOException {
+    public FBallImageUploadResDto ballImageUpload(@RequestParam("imageFiles") List<MultipartFile> files) throws IOException {
         FBallImageUploadResDto fBallImageUploadResDto = ballImageUploadService.ballImageUpload(files);
         return fBallImageUploadResDto;
     }
 
     @PostMapping(value = "/v1/FBall")
     public FBallResDto insertBall(@RequestBody FBallInsertReqDto reqDto, @AuthenticationPrincipal UserAdapter userAdapter) throws ParseException {
+        BallInsertService ballInsertService = insertBallServiceFactory.getBallInsertService(reqDto.getBallType());
         return ballInsertService.insertBall(reqDto, userAdapter.getfUserInfo().getUid());
     }
 

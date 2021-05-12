@@ -78,6 +78,8 @@ public class FBallReplyService {
             fBallReplyResDto.setFballValuationResDto(new FBallValuationResDto(fBallValuation));
         }
 
+        fBall.setReplyCount(fBall.getReplyCount()+1);
+
         fBallReplyFCMService.sendFCM(saveReply);
         return fBallReplyResDto;
     }
