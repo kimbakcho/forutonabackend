@@ -45,7 +45,7 @@ public class BallVoteServiceImpl extends BallLikeService {
         fUserInfo.setInfluenceTicket(fUserInfo.getInfluenceTicket() - useTicket);
 
         if(fUserInfo.getInfluenceTicket() == 0){
-            fUserInfo.setNextGiveInfluenceTicketTime(LocalDateTime.now().plusHours(1));
+            fUserInfo.setNextGiveInfluenceTicketTime(LocalDateTime.now().plusMinutes(3));
         }
 
         FBallValuation saveItem = fBallValuationDataRepository.save(fBallValuation);

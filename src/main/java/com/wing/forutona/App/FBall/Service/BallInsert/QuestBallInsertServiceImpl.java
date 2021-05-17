@@ -46,7 +46,7 @@ public class QuestBallInsertServiceImpl implements BallInsertService{
                 .ballState(FBallState.Wait)
                 .longitude(reqDto.getLongitude())
                 .latitude(reqDto.getLatitude())
-                .activationTime(LocalDateTime.now())
+                .activationTime(LocalDateTime.now().plusDays(7))
                 .ballName(reqDto.getBallName())
                 .ballType(reqDto.getBallType())
                 .placeAddress(reqDto.getPlaceAddress())

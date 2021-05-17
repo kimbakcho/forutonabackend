@@ -210,4 +210,8 @@ public class FBall {
     public void setReplyCount(Integer replyCount) {
         this.replyCount = replyCount;
     }
+
+    public void setBallState(FBallState ballState) {
+        this.ballState = ballState;
+    }
 }
