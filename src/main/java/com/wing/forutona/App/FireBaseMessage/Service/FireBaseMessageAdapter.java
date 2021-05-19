@@ -26,6 +26,7 @@ class FireBaseMessageAdapterImpl implements  FireBaseMessageAdapter {
                 .setToken(sendDto.getFcmToken())
                 .build();
         String send = FirebaseMessaging.getInstance().send(message);
+
         return send;
     }
 }

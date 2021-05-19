@@ -57,6 +57,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/FUserInfo/SnsUserJoinCheckInfo")
                 .permitAll();
 
+        http.
+                authorizeRequests()
+                .antMatchers("/QuestBall/StateParticipatesCount","/QuestBall/Participates")
+                .permitAll();
+
         http
                 .authorizeRequests()
                 .antMatchers("/v1/FUserInfo**","/v1/FUserInfo/**")

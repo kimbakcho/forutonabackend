@@ -24,4 +24,5 @@ public class QuestBallDescriptionDto extends IssueBallDescriptionDto{
     Boolean startPositionFlag;
     Boolean isOpenCheckInPosition;
     String qualifyingForQuestText;
+    String checkInPositionDescription;
 }

@@ -93,7 +93,7 @@ public class QuestBallActionService {
 
     }
 
-    public List<QuestBallParticipantResDto> getParticipates(String ballUuid, QuestBallParticipateState state, UserAdapter userAdapter) {
+    public List<QuestBallParticipantResDto> getParticipates(String ballUuid, QuestBallParticipateState state) {
         FBall fBall = fBallDataRepository.findById(ballUuid).get();
         List<QuestBallParticipant> byBallUuidAndCurrentState = questBallParticipantDataRepository.findByBallUuidAndCurrentState(fBall, state);
         List<QuestBallParticipantResDto> collect = byBallUuidAndCurrentState.stream().map(x -> QuestBallParticipantResDto.fromQuestBallParticipant(x)).collect(Collectors.toList());
@@ -102,14 +102,34 @@ public class QuestBallActionService {
 
 
     public void participateAccept(QuestParticipateAcceptReqDto reqDto, UserAdapter userAdapter) throws AuthException {
-        FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
-        FUserInfo maker = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
-        if(!fBall.getUid().getUid().equals(maker.getUid())){
-            throw new AuthException("don't auth");
-        }
+        FBall fBall = checkAuth(userAdapter, reqDto.getBallUuid());
         FUserInfo user = fUserInfoDataRepository.findById(reqDto.getUid()).get();
         QuestBallParticipant questBallParticipant = questBallParticipantDataRepository.findByBallUuidAndUid(fBall, user).get();
         questBallParticipant.setCurrentState(QuestBallParticipateState.Accept);
         questBallParticipant.setAcceptTime(LocalDateTime.now());
+    }
+
+    public void participateDenied(QuestParticipateDeniedReqDto reqDto, UserAdapter userAdapter) throws AuthException {
+        FBall fBall = checkAuth(userAdapter, reqDto.getBallUuid());
+        FUserInfo user = fUserInfoDataRepository.findById(reqDto.getUid()).get();
+        QuestBallParticipant questBallParticipant = questBallParticipantDataRepository.findByBallUuidAndUid(fBall, user).get();
+        questBallParticipant.setCurrentState(QuestBallParticipateState.ForceOut);
+
+    }
+
+    public FBall checkAuth(UserAdapter userAdapter, String ballUuid) throws AuthException {
+        FBall fBall = fBallDataRepository.findById(ballUuid).get();
+        FUserInfo maker = fUserInfoDataRepository.findById(userAdapter.getfUserInfo().getUid()).get();
+        if (!fBall.getUid().getUid().equals(maker.getUid())) {
+            throw new AuthException("don't auth");
+        }
+        return fBall;
+    }
+
+    public int getStateParticipatesCount(String ballUuid, QuestBallParticipateState state) {
+        FBall fBall = fBallDataRepository.findById(ballUuid).get();
+        int count  =
+                questBallParticipantDataRepository.countByBallUuidAndCurrentState(fBall, state);
+        return count;
     }
 }

@@ -1,4 +1,4 @@
-package com.wing.forutona.App.FBall.Service;
+package com.wing.forutona.App.FBall.Service.BallUpdate;
 
 import com.wing.forutona.App.FBall.Domain.FBall;
 import com.wing.forutona.App.FBall.Dto.FBallResDto;
@@ -10,20 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface BallUpdateService {
-    FBallResDto updateBall(FBallUpdateReqDto reqDto,String userUid) throws Exception;
-}
-
 @Service
 @Transactional
 @RequiredArgsConstructor
-class BallUpdateServiceImpl implements BallUpdateService {
+public class BallUpdateServiceImpl implements BallUpdateService {
 
     final FBallDataRepository fBallDataRepository;
     final FBallTagDataRepository fBallTagDataRepository;
 
     @Override
-    public FBallResDto updateBall(FBallUpdateReqDto reqDto,String userUid) throws Exception {
+    public FBallResDto updateBall(FBallUpdateReqDto reqDto, String userUid) throws Exception {
         FBall fBall = fBallDataRepository.findById(reqDto.getBallUuid()).get();
         if (!fBall.getMakerUid().equals(userUid)) {
             throw new Exception("don't Have updateBall Permisstion");
@@ -45,6 +41,4 @@ class BallUpdateServiceImpl implements BallUpdateService {
 
         return new FBallResDto(fBall);
     }
-
-
 }

@@ -13,5 +13,7 @@ import java.util.Optional;
 public interface QuestBallParticipantDataRepository extends JpaRepository<QuestBallParticipant, Integer> {
     Optional<QuestBallParticipant> findByBallUuidAndUid(FBall fBall, FUserInfo userInfo);
 
+    int countByBallUuidAndCurrentState(FBall fBall,QuestBallParticipateState participateState);
+
     List<QuestBallParticipant> findByBallUuidAndCurrentState(FBall fBall, QuestBallParticipateState state);
 }

@@ -36,12 +36,22 @@ public class QuestBallActionController {
     }
 
     @GetMapping("/Participates")
-    List<QuestBallParticipantResDto> getParticipates(String ballUuid, QuestBallParticipateState state,@AuthenticationPrincipal UserAdapter userAdapter){
-        return questBallActionService.getParticipates(ballUuid,state,userAdapter);
+    List<QuestBallParticipantResDto> getParticipates(String ballUuid, QuestBallParticipateState state){
+        return questBallActionService.getParticipates(ballUuid,state);
+    }
+
+    @GetMapping("/StateParticipatesCount")
+    int getStateParticipatesCount(String ballUuid, QuestBallParticipateState state){
+        return questBallActionService.getStateParticipatesCount(ballUuid,state);
     }
 
     @PostMapping("/ParticipateAccept")
     void participateAccept(@RequestBody QuestParticipateAcceptReqDto reqDto,@AuthenticationPrincipal UserAdapter userAdapter) throws AuthException {
         questBallActionService.participateAccept(reqDto,userAdapter);
+    }
+
+    @PostMapping("/ParticipateDenied")
+    void participateDenied(@RequestBody QuestParticipateDeniedReqDto reqDto,@AuthenticationPrincipal UserAdapter userAdapter) throws AuthException {
+        questBallActionService.participateDenied(reqDto,userAdapter);
     }
 }

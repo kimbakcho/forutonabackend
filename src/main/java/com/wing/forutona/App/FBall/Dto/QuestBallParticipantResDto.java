@@ -37,6 +37,8 @@ public class QuestBallParticipantResDto {
 
     QuestBallParticipateState currentState;
 
+    LocalDateTime acceptTime;
+
     public static QuestBallParticipantResDto fromQuestBallParticipant(QuestBallParticipant questBallParticipant){
         QuestBallParticipantResDto questBallParticipantResDto = new QuestBallParticipantResDto();
         questBallParticipantResDto.setBallUuid(questBallParticipant.getBallUuid().getBallUuid());
@@ -51,6 +53,7 @@ public class QuestBallParticipantResDto {
         questBallParticipantResDto.setPhotoShotForCertificationImage(questBallParticipant.getPhotoShotForCertificationImage());
         questBallParticipantResDto.setStartPositionLat(questBallParticipant.getStartPositionLat());
         questBallParticipantResDto.setStartPositionLng(questBallParticipant.getStartPositionLng());
+        questBallParticipantResDto.setAcceptTime(questBallParticipant.getAcceptTime());
         return questBallParticipantResDto;
     }
 
